@@ -1,0 +1,21 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 19/10/2020, 11:35:17
+    Author     : carlo
+.text-field,.combobox
+{
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: white;
+}
+*/
+
+.list-cell 
+{
+    -fx-control-inner-background:  #040921;
+    -fx-text-fill: white;
+}
+

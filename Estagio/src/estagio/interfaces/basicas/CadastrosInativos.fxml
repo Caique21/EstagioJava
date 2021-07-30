@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <Label alignment="CENTER" prefHeight="17.0" prefWidth="1240.0" text="Gerenciamento de Dados Inativos" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+   </top>
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="67.0" prefWidth="1200.0" spacing="20.0" BorderPane.alignment="CENTER">
+         <children>
+            <JFXButton buttonType="RAISED" text="RESTAURAR">
+               <graphic>
+                  <FontAwesomeIconView glyphName="REPLY" size="12" />
+               </graphic>
+            </JFXButton>
+            <JFXButton buttonType="RAISED" text="APAGAR">
+               <graphic>
+                  <FontAwesomeIconView glyphName="TRASH" size="12" />
+               </graphic>
+            </JFXButton>
+         </children>
+      </HBox>
+   </bottom>
+   <center>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <TabPane prefHeight="539.0" prefWidth="1150.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="CLIENTES">
+                     <content>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <JFXTextField labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar por Nome" />
+                              <JFXTextField labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar por CPF" visible="false" />
+                              <HBox alignment="CENTER_LEFT" layoutX="56.0" layoutY="84.0" prefHeight="17.0" prefWidth="281.0" spacing="20.0">
+                                 <children>
+                                    <JFXRadioButton text="Listar Todos" />
+                                    <JFXRadioButton text="Nome" />
+                                    <JFXRadioButton text="CPF" />
+                                 </children>
+                              </HBox>
+                              <JFXButton buttonType="RAISED" layoutX="267.0" layoutY="46.0" text="Pesquisar">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="SEARCH" size="15" />
+                                 </graphic>
+                              </JFXButton>
+                              <TableView layoutX="56.0" layoutY="131.0" prefHeight="355.0" prefWidth="1040.0">
+                                <columns>
+                                  <TableColumn prefWidth="299.0" text="Nome" />
+                                  <TableColumn prefWidth="109.0" text="CPF" />
+                                    <TableColumn prefWidth="117.0" text="RG" />
+                                    <TableColumn prefWidth="170.0" text="Email" />
+                                    <TableColumn prefWidth="344.0" text="Endereço" />
+                                </columns>
+                              </TableView>
+                              <Label alignment="CENTER" layoutX="56.0" layoutY="114.0" prefHeight="17.0" prefWidth="1040.0" text="CLIENTES">
+                                 <font>
+                                    <Font name="System Bold Italic" size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                     </content>
+                </Tab>
+                <Tab text="FUNCIONÁRIOS">
+                     <content>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <JFXTextField labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar por Nome" />
+                              <JFXTextField labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar pelo CPF" visible="false" />
+                              <HBox alignment="CENTER_LEFT" layoutX="56.0" layoutY="84.0" prefHeight="17.0" prefWidth="250.0" spacing="20.0">
+                                 <children>
+                                    <JFXRadioButton text="Listar Todos" />
+                                    <JFXRadioButton text="Nome" />
+                                    <JFXRadioButton text="CPF" />
+                                 </children>
+                              </HBox>
+                              <JFXButton buttonType="RAISED" layoutX="267.0" layoutY="46.0" text="Pesquisar">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="SEARCH" size="15" />
+                                 </graphic>
+                              </JFXButton>
+                              <TableView layoutX="56.0" layoutY="131.0" prefHeight="355.0" prefWidth="1040.0">
+                                <columns>
+                                  <TableColumn prefWidth="207.0" text="Nome" />
+                                  <TableColumn prefWidth="141.0" text="Usuário" />
+                                    <TableColumn prefWidth="95.0" text="CPF" />
+                                    <TableColumn prefWidth="85.0" text="RG" />
+                                    <TableColumn prefWidth="177.0" text="Email" />
+                                    <TableColumn prefWidth="334.0" text="Endereço" />
+                                </columns>
+                              </TableView>
+                              <Label alignment="CENTER" layoutX="56.0" layoutY="114.0" prefWidth="1040.0" text="FUNCIONÁRIOS">
+                                 <font>
+                                    <Font name="System Bold Italic" size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                     </content>
+                </Tab>
+                  <Tab text="FORNECEDORES">
+                     <content>
+                        <Pane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <JFXTextField labelFloat="true" layoutX="56.0" layoutY="46.0" prefWidth="188.0" promptText="Pesquisar por Nome" />
+                              <JFXTextField labelFloat="true" layoutX="56.0" layoutY="46.0" prefWidth="188.0" promptText="Pesquisar por CNPJ" visible="false" />
+                              <JFXButton buttonType="RAISED" layoutX="267.0" layoutY="46.0" text="Pesquisar">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="SEARCH" size="15" />
+                                 </graphic>
+                              </JFXButton>
+                              <HBox layoutX="56.0" layoutY="84.0" prefHeight="18.0" prefWidth="248.0" spacing="20.0">
+                                 <children>
+                                    <JFXRadioButton text="Listar Todos" />
+                                    <JFXRadioButton text="Nome" />
+                                    <JFXRadioButton text="CNPJ" />
+                                 </children>
+                              </HBox>
+                              <TableView layoutX="56.0" layoutY="131.0" prefHeight="355.0" prefWidth="1040.0">
+                                <columns>
+                                  <TableColumn prefWidth="336.0" text="Nome" />
+                                  <TableColumn prefWidth="108.0" text="CNPJ" />
+                                    <TableColumn prefWidth="214.0" text="Email" />
+                                    <TableColumn prefWidth="381.0" text="Endereço" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </Pane>
+                     </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+         <BorderPane.margin>
+            <Insets bottom="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </VBox>
+   </center>
+</BorderPane>

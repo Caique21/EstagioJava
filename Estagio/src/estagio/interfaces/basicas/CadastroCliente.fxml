@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <Label alignment="CENTER" prefHeight="17.0" prefWidth="1205.0" text="Gerenciamento de Clientes" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Pane prefHeight="86.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
+               <children>
+                  <Label text="Informações Básicas">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField labelFloat="true" layoutX="34.0" layoutY="39.0" prefHeight="25.0" prefWidth="296.0" promptText="Nome(*)" />
+                  <JFXTextField labelFloat="true" layoutX="402.0" layoutY="39.0" prefWidth="89.0" promptText="CPF(*)" />
+                  <JFXTextField labelFloat="true" layoutX="571.0" layoutY="39.0" prefWidth="80.0" promptText="RG" />
+                  <JFXDatePicker layoutX="838.0" layoutY="39.0" prefHeight="25.0" prefWidth="109.0" />
+                  <Label layoutX="723.0" layoutY="43.0" text="Data de Nascimento" />
+                  <Label layoutX="34.0" layoutY="64.0" text="ErroNome" textFill="RED" />
+                  <Label layoutX="402.0" layoutY="64.0" text="ErroCPF" textFill="RED" />
+                  <Label layoutX="571.0" layoutY="64.0" text="ErroRG" textFill="RED" />
+                  <Label layoutX="838.0" layoutY="64.0" text="ErroDataNascimento" textFill="RED" />
+               </children>
+            </Pane>
+            <Pane prefHeight="125.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;;">
+               <children>
+                  <Label text="Endereço">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField labelFloat="true" layoutX="34.0" layoutY="30.0" prefWidth="65.0" promptText="CEP" />
+                  <FontAwesomeIconView glyphName="SEARCH" layoutX="113.0" layoutY="48.0" size="18" />
+                  <HBox layoutX="34.0" layoutY="80.0" prefHeight="29.0" prefWidth="1119.0" spacing="35.0">
+                     <children>
+                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="213.0" promptText="Rua" />
+                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="66.0" promptText="Número" />
+                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="207.0" promptText="Bairro" />
+                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="180.0" promptText="Complemento" />
+                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="186.0" promptText="Cidade" />
+                        <JFXComboBox labelFloat="true" prefHeight="25.0" prefWidth="68.0" promptText="Estado" />
+                     </children>
+                  </HBox>
+                  <Label layoutX="34.0" layoutY="109.0" text="ErroRua" textFill="RED" />
+                  <Label layoutX="34.0" layoutY="55.0" text="ErroCEP" textFill="RED" />
+                  <Label alignment="CENTER" layoutX="261.0" layoutY="109.0" prefHeight="17.0" prefWidth="106.0" text="ErroNúmero" textFill="RED" />
+                  <Label layoutX="383.0" layoutY="109.0" text="ErroBairro" textFill="RED" />
+                  <Label layoutX="842.0" layoutY="109.0" text="ErroCidade" textFill="RED" />
+                  <Label layoutX="1062.0" layoutY="109.0" text="ErroEstado" textFill="RED" />
+               </children>
+            </Pane>
+            <Pane prefHeight="136.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;;">
+               <children>
+                  <Label text="Informações de Contato">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField labelFloat="true" layoutX="34.0" layoutY="66.0" prefHeight="25.0" prefWidth="226.0" promptText="Email" />
+                  <JFXListView layoutX="344.0" layoutY="24.0" prefHeight="109.0" prefWidth="300.0" />
+                  <Label layoutX="34.0" layoutY="94.0" text="ErroEmail" textFill="RED" />
+                  <Label layoutX="344.0" layoutY="6.0" text="Telefones/Celulares">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField labelFloat="true" layoutX="676.0" layoutY="66.0" prefHeight="25.0" prefWidth="197.0" promptText="Telefone/Celular" />
+                  <JFXButton buttonType="RAISED" layoutX="668.0" layoutY="25.0" text="Adicionar Telefone" />
+                  <JFXButton buttonType="RAISED" layoutX="795.0" layoutY="25.0" text="Remover Telefone" />
+                  <Label layoutX="676.0" layoutY="94.0" text="ErroTelefone" textFill="RED" />
+               </children>
+            </Pane>
+            <Pane prefHeight="230.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;;">
+               <children>
+                  <Label text="Pesquisa">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <JFXTextField labelFloat="true" layoutX="69.0" layoutY="21.0" prefHeight="25.0" prefWidth="236.0" promptText="Digite Nome para Pesquisar" />
+                  <JFXTextField labelFloat="true" layoutX="69.0" layoutY="21.0" prefHeight="25.0" prefWidth="236.0" promptText="Digite CPF para Pesquisar" visible="false" />
+                  <HBox alignment="CENTER_LEFT" layoutX="315.0" layoutY="19.0" prefHeight="29.0" prefWidth="137.0" spacing="15.0">
+                     <children>
+                        <JFXRadioButton text="Nome" />
+                        <JFXRadioButton text="CPF" />
+                     </children>
+                  </HBox>
+                  <JFXButton buttonType="RAISED" layoutX="459.0" layoutY="21.0" text="Pesquisar">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="SEARCH" size="15" />
+                     </graphic>
+                  </JFXButton>
+                  <TableView layoutX="69.0" layoutY="50.0" prefHeight="179.0" prefWidth="1031.0">
+                    <columns>
+                      <TableColumn prefWidth="284.0" text="Nome" />
+                      <TableColumn prefWidth="86.0" text="CPF" />
+                        <TableColumn prefWidth="76.0" text="RG" />
+                        <TableColumn prefWidth="110.0" text="Data de Nasci." />
+                        <TableColumn prefWidth="295.0" text="Endereço" />
+                        <TableColumn prefWidth="179.0" text="Email" />
+                    </columns>
+                  </TableView>
+               </children>
+            </Pane>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </VBox>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="47.0" prefWidth="1200.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <JFXButton buttonType="RAISED" text="NOVO">
+               <graphic>
+                  <FontAwesomeIconView glyphName="PLUS" />
+               </graphic>
+            </JFXButton>
+            <JFXButton buttonType="RAISED" text="CONFIRMAR">
+               <graphic>
+                  <FontAwesomeIconView glyphName="CHECK" />
+               </graphic>
+            </JFXButton>
+            <JFXButton buttonType="RAISED" text="ALTERAR">
+               <graphic>
+                  <FontAwesomeIconView glyphName="EDIT" />
+               </graphic>
+            </JFXButton>
+            <JFXButton buttonType="RAISED" text="REMOVER">
+               <graphic>
+                  <FontAwesomeIconView glyphName="TRASH" />
+               </graphic>
+            </JFXButton>
+            <JFXButton buttonType="RAISED" text="CANCELAR">
+               <graphic>
+                  <FontAwesomeIconView glyphName="CLOSE" />
+               </graphic>
+            </JFXButton>
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>
