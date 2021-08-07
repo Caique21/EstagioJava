@@ -35,12 +35,19 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField labelFloat="true" layoutX="296.0" layoutY="34.0" prefHeight="25.0" prefWidth="134.0" promptText="Cegonha(*)" />
-                  <JFXDatePicker layoutX="479.0" layoutY="34.0" prefHeight="25.0" prefWidth="138.0" />
-                  <Label layoutX="479.0" layoutY="13.0" text="Data de Saída(*)" />
-                  <JFXDatePicker layoutX="654.0" layoutY="34.0" prefHeight="25.0" prefWidth="138.0" />
-                  <Label layoutX="659.0" layoutY="13.0" text="Data de Chegada" />
-                  <JFXComboBox labelFloat="true" layoutX="831.0" layoutY="34.0" promptText="Status do Transporte" />
+                  <JFXTextField labelFloat="true" layoutX="286.0" layoutY="34.0" prefHeight="25.0" prefWidth="101.0" promptText="Placa Cegonha(*)" />
+                  <JFXDatePicker layoutX="414.0" layoutY="34.0" prefHeight="25.0" prefWidth="109.0" />
+                  <Label layoutX="414.0" layoutY="13.0" text="Data de Saída(*)" />
+                  <JFXDatePicker layoutX="546.0" layoutY="34.0" prefHeight="25.0" prefWidth="109.0" />
+                  <Label layoutX="551.0" layoutY="13.0" text="Data de Chegada" />
+                  <JFXComboBox labelFloat="true" layoutX="688.0" layoutY="34.0" prefHeight="25.0" prefWidth="150.0" promptText="Status do Transporte(*)" />
+                  <JFXComboBox labelFloat="true" layoutX="865.0" layoutY="34.0" prefHeight="25.0" prefWidth="139.0" promptText="Tipo de Transporte(*)" />
+                  <Label layoutX="31.0" layoutY="60.0" text="Erro" textFill="RED" />
+                  <Label layoutX="286.0" layoutY="60.0" text="Erro" textFill="RED" />
+                  <Label layoutX="414.0" layoutY="60.0" text="Erro" textFill="RED" />
+                  <Label layoutX="546.0" layoutY="60.0" text="Erro" textFill="RED" />
+                  <Label layoutX="688.0" layoutY="60.0" text="Erro" textFill="RED" />
+                  <Label layoutX="865.0" layoutY="60.0" text="Erro" textFill="RED" />
                </children>
             </Pane>
             <Pane prefHeight="115.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
@@ -75,6 +82,12 @@
                         <FontAwesomeIconView glyphName="MINUS" />
                      </graphic>
                   </JFXButton>
+                  <Label layoutX="30.0" layoutY="99.0" text="Erro" textFill="RED" />
+                  <Label layoutX="268.0" layoutY="99.0" text="Erro" textFill="RED" />
+                  <Label layoutX="465.0" layoutY="99.0" text="Erro" textFill="RED" />
+                  <Label layoutX="635.0" layoutY="99.0" text="Erro" textFill="RED" />
+                  <Label layoutX="804.0" layoutY="99.0" text="Erro" textFill="RED" />
+                  <Label layoutX="887.0" layoutY="99.0" text="Erro" textFill="RED" />
                </children>
             </Pane>
             <VBox prefHeight="372.0" prefWidth="1033.0">
@@ -84,7 +97,7 @@
                         <Font name="System Italic" size="13.0" />
                      </font>
                   </Label>
-                  <TableView prefHeight="340.0" prefWidth="1013.0">
+                  <TableView prefHeight="313.0" prefWidth="1003.0">
                     <columns>
                       <TableColumn prefWidth="231.0" text="Marca" />
                       <TableColumn prefWidth="215.0" text="Modelo" />
@@ -94,6 +107,11 @@
                         <TableColumn prefWidth="155.0" text="Cor" />
                     </columns>
                   </TableView>
+                  <Label alignment="CENTER" prefHeight="21.0" prefWidth="1003.0" text="Data da Última Alteração:">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
                </children>
                <padding>
                   <Insets left="10.0" right="10.0" />

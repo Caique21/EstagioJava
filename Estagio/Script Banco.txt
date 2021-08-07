@@ -8,42 +8,8 @@ CREATE TABLE endereco
 	ender_estado VARCHAR(45) NOT NULL,
 	ender_cep VARCHAR(13) NULL,
 	ender_complemento VARCHAR(45) NULL,
-	CONSTRAINT pk_ender_codigo
+	CONSTRAINT pk_endereco
 		PRIMARY KEY (ender_codigo)
-);
-
-CREATE TABLE cliente
-(
-	cli_codigo serial NOT NULL,
-	cli_nome VARCHAR(45) NOT NULL,
-	cli_cpf VARCHAR(15) NOT NULL UNIQUE,
-	cli_rg varchar(15) not null,
-	cli_email VARCHAR(45) NULL ,
-	cli_datacadastro DATE NOT NULL,
-	cli_ativo BOOLEAN NOT NULL,
-	cli_alteracao TIMESTAMP NOT NULL,
-	ender_codigo INTEGER NOT NULL,
-	CONSTRAINT pk_cli_codigo
-		PRIMARY KEY (cli_codigo) ,
-	CONSTRAINT fk_cli_endereco
-		FOREIGN KEY (ender_codigo)
-		REFERENCES endereco on delete cascade
-);
-
-CREATE TABLE fornecedor
-(
-	forn_codigo serial NOT NULL,
-	forn_nome VARCHAR(45) NOT NULL,
-	forn_cnpj VARCHAR(18) NOT NULL,
-	forn_email VARCHAR(45) NULL,
-	forn_ativo BOOLEAN NOT NULL,
-	forn_alteracao TIMESTAMP NOT NULL,
-	ender_codigo INTEGER NOT NULL,
-	CONSTRAINT pk_forn_codigo
-		PRIMARY KEY (forn_codigo) ,
-	CONSTRAINT fk_forn_endereco
-		FOREIGN KEY (ender_codigo)
-		REFERENCES endereco on delete cascade
 );
 
 CREATE TABLE telefone
@@ -51,14 +17,18 @@ CREATE TABLE telefone
 	tel_codigo serial NOT NULL,
 	tel_numero VARCHAR(11) NULL,
 	cli_codigo INTEGER NULL,
+	func_codigo INTEGER NULL,
 	forn_codigo INTEGER NULL,
 	para_nome VARCHAR(50) NULL,
-	CONSTRAINT pk_tel_codigo
+	CONSTRAINT pk_telefone
 		PRIMARY KEY (tel_codigo) ,
-	CONSTRAINT fk_cli_codigo
+	CONSTRAINT fk_telefone_cliente
 		FOREIGN KEY (cli_codigo)
 		REFERENCES cliente on delete cascade,
-	CONSTRAINT fk_forn_codigo
+	CONSTRAINT fk_telefone_funcionario
+		FOREIGN KEY (func_codigo)
+		REFERENCES funcionario on delete cascade,
+	CONSTRAINT fk_telefone_fornecedor
 		FOREIGN KEY (forn_codigo)
 		REFERENCES fornecedor on delete cascade,
 	CONSTRAINT fk_telefone_parametrizacao
@@ -68,242 +38,24 @@ CREATE TABLE telefone
 
 create table parametrizacao
 (
-	para_nome varchar(50) not null,
-	para_fantasia varchar(50) not null,
+	para_nome VARCHAR(50) NOT NULL,
+	para_fantasia VARCHAR(50) NOT NULL,
 	para_logoGrande bytea,
 	para_logoPequeno bytea,
-	para_email varchar(50) not null,
-	para_razaoSocial varchar(50) not null,
-	constraint pk_parametriza primary key (para_nome)
+	para_email VARCHAR(50) NOT NULL,
+	para_razaoSocial varchar(50) NOT NULL,
+	CONSTRAINT pk_parametrizacao PRIMARY KEY (para_nome)
 );
 
 
 create table endereco_parametrizacao
 (
-	para_nome varchar(50) not null,
-	ender_codigo integer not null,
+	para_nome varchar(50) NOT NULL,
+	ender_codigo integer NOT NULL,
 	constraint fk_enderPara_parametrizacao foreign key (para_nome)
 		references parametrizacao on update cascade,
 	constraint fk_enderPara_endereco foreign key (ender_codigo)
 		references endereco
-);
-
-
-CREATE TABLE MARCA
-(
-	marca_codigo INTEGER NOT NULL,
-	marca_nome VARCHAR(45) NOT NULL UNIQUE,
-	CONSTRAINT pk_marca_codigo
-		PRIMARY KEY (marca_codigo)
-);
-
-CREATE TABLE MODELO
-(
-	modelo_codigo serial NOT NULL,
-	modelo_nome VARCHAR(45) NOT NULL,
-	marca_codigo INTEGER NOT NULL,
-	CONSTRAINT pk_modelo_codigo
-		PRIMARY KEY (modelo_codigo),
-	CONSTRAINT fk_marca_codigo
-		FOREIGN KEY (marca_codigo)
-		REFERENCES marca on delete cascade
-);
-
-CREATE  TABLE Veiculo
-(
-  vei_codigo serial NOT NULL,
-  vei_chassi VARCHAR(45) NULL,
-  vei_placa VARCHAR(8) NOT NULL UNIQUE,
-  vei_modelo VARCHAR(45) NOT NULL ,
-  vei_marca VARCHAR(45) NOT NULL ,
-  vei_ano INTEGER NOT NULL ,
-  vei_cor VARCHAR(45) NOT NULL ,
-  vei_descricao VARCHAR(45) NULL ,
-  cli_codigo INTEGER NOT NULL,
-  CONSTRAINT pk_vei_placa
-	PRIMARY KEY (vei_placa),
-  CONSTRAINT fk_cli_codigo
-		FOREIGN KEY (cli_codigo)
-		REFERENCES cliente on delete cascade
- );
-
-
-CREATE TABLE Usuario
-(
-	user_codigo serial NOT NULL,
-	user_nome VARCHAR(45) NOT NULL UNIQUE,
-	user_senha VARCHAR(45) NOT NULL,
-	user_nivel INTEGER NOT NULL,
-	user_ativo BOOLEAN NOT NULL,
-	CONSTRAINT pk_user_codigo
-		PRIMARY KEY (user_codigo)
-);
-
-CREATE TABLE Acessos
-(
-	acess_codigo serial NOT NULL,
-	acess_data_login TIMESTAMP NOT NULL UNIQUE,
-	acess_data_logout TIMESTAMP NOT NULL UNIQUE,
-	user_codigo INTEGER NOT NULL,
-	CONSTRAINT pk_acess_codigo
-		PRIMARY KEY (acess_codigo),
-	CONSTRAINT fk_user_codigo
-		FOREIGN KEY (user_codigo)
-		REFERENCES usuario on delete cascade
-);
-
-CREATE TABLE produto
-(
-	prod_codigo serial NOT NULL,
-	prod_nome VARCHAR(45) NOT NULL,
-	prod_preco DECIMAL(10,2) NOT NULL,
-	prod_quantidade INTEGER NOT NULL,
-	prod_consumivel BOOLEAN NOT NULL,
-	prod_descricao VARCHAR(90) NULL,
-	CONSTRAINT pk_prod_codigo
-		PRIMARY KEY (prod_codigo)
-);
-
-CREATE TABLE servico
-(
-	serv_codigo serial NOT NULL,
-	serv_nome VARCHAR(45) NOT NULL,
-	serv_preco DECIMAL(10,2) NOT NULL,
-	serv_descricao VARCHAR(45) NOT NULL,
-	CONSTRAINT pk_serv_codigo
-		PRIMARY KEY (serv_codigo)
-);
-
-CREATE TABLE despesa
-(
-	desp_codigo serial NOT NULL,
-	desp_nome VARCHAR(45) NOT NULL,
-	desp_fixo BOOLEAN NOT NULL,
-	desp_preco DECIMAL (10,2) NOT NULL,
-	desp_data_vencimento DATE NOT NULL,
-	desp_descricao VARCHAR(45),
-	CONSTRAINT pk_desp_codigo
-		PRIMARY KEY (desp_codigo)
-);
-
-CREATE TABLE orcamento
-(
-	orc_codigo serial NOT NULL,
-	vei_codigo INTEGER NOT NULL,
-	orc_status VARCHAR(45) NOT NULL,
-	CONSTRAINT pk_orc_codigo
-		PRIMARY KEY (orc_codigo)
-);
-
-CREATE TABLE produtos_orcamento
-(
-	orc_codigo INTEGER NOT NULL,
-	prod_codigo INTEGER NOT NULL,
-	prod_orc_preco DECIMAL(10,2) NOT NULL,
-	prod_orc_quantidade INTEGER NOT NULL,
-	CONSTRAINT pk_prod_orc
-		PRIMARY KEY (orc_codigo,prod_codigo,prod_orc_preco),
-	CONSTRAINT fk_orc_codigo
-		FOREIGN KEY (orc_codigo)
-		REFERENCES orcamento on delete cascade,
-	CONSTRAINT fk_prod_codigo
-		FOREIGN KEY (prod_codigo)
-		REFERENCES produto on delete cascade
-);
-
-CREATE TABLE servicos_orcamento
-(
-	orc_codigo INTEGER NOT NULL,
-	serv_codigo INTEGER NOT NULL,
-	serv_orc_preco DECIMAL (10,2) NOT NULL,
-	CONSTRAINT pk_serv_orc
-		PRIMARY KEY (orc_codigo,serv_codigo),
-	CONSTRAINT fk_orc_codigo
-		FOREIGN KEY (orc_codigo)
-		REFERENCES orcamento on delete cascade,
-	CONSTRAINT fk_serv_codigo
-		FOREIGN KEY (serv_codigo)
-		REFERENCES servico on delete cascade
-);
-
-CREATE TABLE Compra
-(
-  	comp_codigo serial NOT NULL ,
-  	forn_codigo INTEGER NOT NULL ,
-  	comp_qtd_parcelas INTEGER NOT NULL ,
-  	comp_valor_total DECIMAL(10,2) NOT NULL ,
-  	comp_ajuste DECIMAL(10,2) NOT NULL ,
-  	comp_data_compra DATE NOT NULL,
-	comp_nota_fiscal VARCHAR(45) NOT NULL,
-	comp_data_emissao DATE NOT NULL,
-  	CONSTRAINT pk_comp_codigo
-		PRIMARY KEY (comp_codigo) ,
-  	CONSTRAINT fk_Compra_Fornecedor
-		FOREIGN KEY (forn_codigo)
-		REFERENCES fornecedor (forn_codigo)
-);
-
-
-CREATE TABLE parcela_compra
-(
-	parc_compra_codigo serial NOT NULL,
-	parc_compra_status INTEGER NULL,
-	parc_compra_dataVencimento DATE NOT NULL,
-	parc_compra_numero INTEGER NOT NULL,
-	parc_compra_dataPagamento DATE,
-	parc_compra_valorPago DECIMAL(6,2),
-	parc_compra_compra_cod INTEGER NOT NULL,
-	parc_compra_valorParcela DECIMAL(10,2) NOT NULL,
-	CONSTRAINT pk_parc_compra 
-		PRIMARY KEY(parc_compra_codigo),
-	CONSTRAINT fk_parc_compra 
-		FOREIGN KEY(parc_compra_compra_cod) 
-		REFERENCES Compra(comp_codigo) on delete cascade
-);
-
-CREATE TABLE produto_compra
-(
-	comp_codigo INTEGER NOT NULL,
-	prod_codigo INTEGER NOT NULL,
-	prod_comp_valor DECIMAL(10,2) NOT NULL,
-	prod_comp_quantidade INTEGER NOT NULL,
-	CONSTRAINT pk_prod_compra
-		PRIMARY KEY(comp_codigo,prod_codigo,prod_comp_valor),
-	CONSTRAINT fk_prod_compra_compra
-		FOREIGN KEY(comp_codigo)
-		REFERENCES compra(comp_codigo) on delete cascade,
-	CONSTRAINT fk_prdo_compra_produto
-		FOREIGN KEY(prod_codigo)
-		REFERENCES produto(prod_codigo) on delete cascade
-);
-
-CREATE TABLE Pagamento
-(
-  	pag_codigo serial NOT NULL,
-  	pag_data Date NOT NULL ,
-  	pag_valor DECIMAL(10,2) NOT NULL,
-	parc_codigo INTEGER NULL,
-	pag_forma_pagamento VARCHAR(12) not null,
-	pag_ativo boolean NOT NULL,--TRUE == PAGAMENTO | FALSE == ESTORNO
-	desp_codigo INTEGER NULL,
-  	CONSTRAINT pk_pagamento
-		PRIMARY KEY (pag_codigo) ,
-	CONSTRAINT fk_Pagamento_parcela 
-		FOREIGN KEY ( parc_codigo) 
-		REFERENCES parcela_compra (parc_compra_codigo),
-	CONSTRAINT fk_pagamento_despesa
-		FOREIGN KEY(desp_codigo)
-		REFERENCES despesa
-);
-
-CREATE TABLE registro_pagamento
-(
-	reg_pag_codigo serial NOT NULL,
-	reg_pag_relatorio VARCHAR(200) NOT NULL,
-	reg_pag_data DATE NOT NULL,
-	user_codigo INTEGER NOT NULL,
-	CONSTRAINT pk_reg_pagamento
-		PRIMARY KEY(reg_pag_codigo)
 );
 
 CREATE TABLE design
@@ -320,109 +72,317 @@ CREATE TABLE design
 	desi_tamanho_entrada integer NOT NULL
 );
 
-CREATE TABLE ordem_de_servico
+CREATE TABLE cliente
 (
-	os_codigo serial NOT NULL,
-	orc_codigo INTEGER NOT NULL,
-	os_status VARCHAR(45) NOT NULL,
-	CONSTRAINT pk_os_codigo
-		PRIMARY KEY (os_codigo),
-	CONSTRAINT fk_os_orcamento
-		FOREIGN KEY (orc_codigo) REFERENCES orcamento
-			on delete cascade on update cascade
+	cli_codigo serial NOT NULL,
+	cli_nome VARCHAR(45) NOT NULL,
+	cli_cpf VARCHAR(15) NOT NULL UNIQUE,
+	cli_rg varchar(15) not null,
+	cli_email VARCHAR(45) NULL ,
+	cli_datacadastro DATE NOT NULL,
+	cli_ativo BOOLEAN NOT NULL,
+	cli_alteracao TIMESTAMP NOT NULL,
+	ender_codigo INTEGER NOT NULL,
+	CONSTRAINT pk_cliente
+		PRIMARY KEY (cli_codigo) ,
+	CONSTRAINT fk_cliente_endereco
+		FOREIGN KEY (ender_codigo)
+		REFERENCES endereco on delete cascade
 );
 
-CREATE TABLE produtos_os
+CREATE TABLE fornecedor
 (
-	prod_os_codigo serial NOT NULL,
-	os_codigo INTEGER NOT NULL,
-	prod_codigo INTEGER NOT NULL,
-	prod_os_preco DECIMAL(10,2) NOT NULL,
-	prod_os_quantidade INTEGER NOT NULL,
-	CONSTRAINT pk_prod_os_codigo
-		PRIMARY KEY (os_codigo,prod_codigo,prod_os_codigo),
-	CONSTRAINT fk_prod_os_ordem_de_servico
-		FOREIGN KEY (os_codigo) REFERENCES ordem_de_servico
-			on delete cascade on update cascade,
-	CONSTRAINT fk_prod_os_produtos
-		FOREIGN KEY (prod_codigo) REFERENCES produto
-			on delete cascade on update cascade
+	forn_codigo serial NOT NULL,
+	forn_nome VARCHAR(45) NOT NULL,
+	forn_cnpj VARCHAR(18) NOT NULL,
+	forn_email VARCHAR(45) NULL,
+	forn_ativo BOOLEAN NOT NULL,
+	forn_alteracao TIMESTAMP NOT NULL,
+	ender_codigo INTEGER NOT NULL,
+	CONSTRAINT pk_fornecedor
+		PRIMARY KEY (forn_codigo) ,
+	CONSTRAINT fk_fornecedor_endereco
+		FOREIGN KEY (ender_codigo)
+		REFERENCES endereco on delete cascade
 );
 
-CREATE TABLE servicos_os
+
+CREATE TABLE MARCA
 (
-	serv_os_codigo serial NOT NULL,
-	os_codigo INTEGER NOT NULL,
-	serv_codigo INTEGER NOT NULL,
-	serv_os_preco DECIMAL(10,2) NOT NULL,
-	CONSTRAINT pk_serv_os_codigo
-		PRIMARY KEY (os_codigo,serv_codigo,serv_os_codigo),
-	CONSTRAINT fk_serv_os_ordem_de_servico
-		FOREIGN KEY (os_codigo) REFERENCES ordem_de_servico
-			on delete cascade on update cascade,
-	CONSTRAINT fk_serv_os_servicos
-		FOREIGN KEY (serv_codigo) REFERENCES servico
-			on delete cascade on update cascade
+	marca_codigo INTEGER NOT NULL,
+	marca_nome VARCHAR(45) NOT NULL UNIQUE,
+	CONSTRAINT pk_marca
+		PRIMARY KEY (marca_codigo)
 );
 
-CREATE TABLE usuario_os
+CREATE TABLE MODELO
 (
-	user_os_codigo serial NOT NULL,
-	os_codigo INTEGER NOT NULL,
+	modelo_codigo serial NOT NULL,
+	modelo_nome VARCHAR(45) NOT NULL,
+	marca_codigo INTEGER NOT NULL,
+	CONSTRAINT pk_modelo
+		PRIMARY KEY (modelo_codigo),
+	CONSTRAINT fk_modelo_marca
+		FOREIGN KEY (marca_codigo)
+		REFERENCES marca on delete cascade
+);
+
+CREATE TABLE Veiculo
+(
+ 	vei_codigo serial NOT NULL,
+ 	vei_chassi VARCHAR(45) NULL,
+	vei_placa VARCHAR(8) NULL,
+	vei_modelo VARCHAR(45) NOT NULL ,
+	vei_marca VARCHAR(45) NOT NULL ,
+	vei_ano INTEGER NOT NULL ,
+	vei_cor VARCHAR(45) NOT NULL ,
+	vei_descricao VARCHAR(45) NULL ,
+  	CONSTRAINT pk_veiculo
+		PRIMARY KEY (vei_placa)
+ );
+
+CREATE TABLE funcionario
+(
+	func_codigo serial NOT NULL,
+	func_nome VARCHAR(45) NOT NULL,
+	func_cpf VARCHAR(15) NOT NULL UNIQUE,
+	func_rg varchar(15) not null,
+	func_email VARCHAR(45) NULL ,
+	func_datacadastro DATE NOT NULL,
+	func_ativo BOOLEAN NOT NULL,
+	func_alteracao TIMESTAMP NOT NULL,
+	ender_codigo INTEGER NOT NULL,
+	func_vencimento_cnh DATE,
+	func_cnh_frente bytea,
+	func_cnh_verso bytea,
+	CONSTRAINT pk_funcionario
+		PRIMARY KEY (func_codigo) ,
+	CONSTRAINT fk_funcionario_endereco
+		FOREIGN KEY (ender_codigo)
+		REFERENCES endereco on delete cascade
+);
+
+CREATE TABLE Usuario
+(
+	user_codigo serial NOT NULL,
+	user_nome VARCHAR(45) NOT NULL UNIQUE,
+	user_senha VARCHAR(45) NOT NULL,
+	user_nivel INTEGER NOT NULL,
+	user_ativo BOOLEAN NOT NULL,
+	func_codigo INTEGER NULL,
+	CONSTRAINT pk_user_codigo
+		PRIMARY KEY (user_codigo),
+	CONSTRAINT fk_usuario_funcionario
+		FOREIGN KEY(func_codigo)
+		REFERENCES funcionario on delete cascade
+);
+
+CREATE TABLE Acessos
+(
+	acess_codigo serial NOT NULL,
+	acess_data_login TIMESTAMP NOT NULL UNIQUE,
+	acess_data_logout TIMESTAMP NOT NULL UNIQUE,
 	user_codigo INTEGER NOT NULL,
-	user_os_data_alteracao DATE NOT NULL,
-	CONSTRAINT pk_user_os_codigo
-		PRIMARY KEY (os_codigo,user_codigo,user_os_codigo),
-	CONSTRAINT fk_user_os_ordem_de_servico
-		FOREIGN KEY (os_codigo) REFERENCES ordem_de_servico
-			on delete cascade on update cascade,
-	CONSTRAINT fk_user_os_usuario
-		FOREIGN KEY (user_codigo) REFERENCES usuario
-			on delete cascade on update cascade
+	CONSTRAINT pk_acesso
+		PRIMARY KEY (acess_codigo),
+	CONSTRAINT fk_user_codigo
+		FOREIGN KEY (user_codigo)
+		REFERENCES usuario on delete cascade
 );
 
-CREATE OR REPLACE FUNCTION incrementa_estoque() RETURNS TRIGGER AS
-$BODY$
-BEGIN
-    UPDATE produto 
-		SET prod_quantidade = prod_quantidade + old.prod_orc_quantidade
-		WHERE prod_codigo = old.prod_codigo AND prod_consumivel = 'true';
+CREATE TABLE despesa
+(
+	desp_codigo serial NOT NULL,
+	desp_nome VARCHAR(45) NOT NULL,
+	desp_fixo BOOLEAN NOT NULL,
+	desp_preco DECIMAL (10,2) NOT NULL,
+	desp_data_vencimento DATE NOT NULL,
+	desp_descricao VARCHAR(45),
+	CONSTRAINT pk_despesa
+		PRIMARY KEY (desp_codigo)
+);
 
-           RETURN new;
-END;
-$BODY$
-language plpgsql;
+CREATE TABLE Compra
+(
+  	comp_codigo serial NOT NULL ,
+  	forn_codigo INTEGER NOT NULL ,
+  	comp_qtd_parcelas INTEGER NOT NULL ,
+  	comp_valor_total DECIMAL(10,2) NOT NULL ,
+  	comp_ajuste DECIMAL(10,2) NOT NULL ,
+  	comp_data_compra DATE NOT NULL,
+	comp_nota_fiscal VARCHAR(45) NOT NULL,
+	comp_data_emissao DATE NOT NULL,
+	comp_vendedor VARCHAR(45) NULL,
+  	CONSTRAINT pk_compra
+		PRIMARY KEY (comp_codigo) ,
+  	CONSTRAINT fk_Compra_Fornecedor
+		FOREIGN KEY (forn_codigo)
+		REFERENCES fornecedor (forn_codigo)
+);
 
-create trigger incrementa_estoque
-	before delete on produtos_orcamento
-	for each row
-	execute procedure incrementa_estoque();
 
-CREATE OR REPLACE FUNCTION decrementa_estoque() RETURNS TRIGGER AS
-$BODY$
-BEGIN
-    UPDATE produto 
-		SET prod_quantidade = prod_quantidade - new.prod_orc_quantidade
-		WHERE prod_codigo = new.prod_codigo AND prod_consumivel = 'true';
+CREATE TABLE parcela_compra
+(
+	parc_comp_codigo serial NOT NULL,
+	parc_comp_status INTEGER NULL,
+	parc_comp_dataVencimento DATE NOT NULL,
+	parc_comp_numero INTEGER NOT NULL,
+	parc_comp_dataPagamento DATE,
+	parc_comp_valorPago DECIMAL(6,2),
+	comp_codigo INTEGER NOT NULL,
+	parc_compra_valorParcela DECIMAL(10,2) NOT NULL,
+	CONSTRAINT pk_parcela_compra 
+		PRIMARY KEY(parc_comp_codigo),
+	CONSTRAINT fk_parc_compra 
+		FOREIGN KEY(comp_codigo) 
+		REFERENCES Compra(comp_codigo) on delete cascade
+);
 
-           RETURN new;
-END;
-$BODY$
-language plpgsql;
+CREATE TABLE veiculo_compra
+(
+	comp_codigo INTEGER NOT NULL,
+	vei_codigo INTEGER NOT NULL,
+	vei_comp_valor DECIMAL(10,2) NOT NULL,
+	CONSTRAINT pk_veiculo_compra
+		PRIMARY KEY(comp_codigo,vei_codigo),
+	CONSTRAINT fk_veiculo_compra_compra
+		FOREIGN KEY(comp_codigo)
+		REFERENCES compra(comp_codigo) on delete cascade,
+	CONSTRAINT fk_veiculo_compra_veiculo
+		FOREIGN KEY(vei_codigo)
+		REFERENCES veiculo(vei_codigo) on delete cascade
+);
 
-create trigger decrementa_estoque
-	after insert on produtos_orcamento
-	for each row
-	execute procedure decrementa_estoque();
+CREATE TABLE Pagamento
+(
+  	pag_codigo serial NOT NULL,
+  	pag_data Date NOT NULL ,
+  	pag_valor DECIMAL(10,2) NOT NULL,
+	parc_codigo INTEGER NULL,
+	pag_forma_pagamento VARCHAR(12) not null,
+	pag_ativo boolean NOT NULL,--TRUE == PAGAMENTO | FALSE == ESTORNO
+	desp_codigo INTEGER NULL,
+  	CONSTRAINT pk_pagamento
+		PRIMARY KEY (pag_codigo) ,
+	CONSTRAINT fk_pagamento_parcela 
+		FOREIGN KEY (parc_codigo) 
+		REFERENCES parcela_compra (parc_compra_codigo),
+	CONSTRAINT fk_pagamento_despesa
+		FOREIGN KEY(desp_codigo)
+		REFERENCES despesa
+);
+
+CREATE TABLE registro_pagamento
+(
+	reg_pag_codigo serial NOT NULL,
+	reg_pag_relatorio VARCHAR(200) NOT NULL,
+	reg_pag_data DATE NOT NULL,
+	user_codigo INTEGER NOT NULL,
+	CONSTRAINT pk_reg_pagamento
+		PRIMARY KEY(reg_pag_codigo)
+);
+
+CREATE TABLE venda
+(
+  	ven_codigo serial NOT NULL ,
+  	cli_codigo INTEGER NOT NULL ,
+  	ven_qtd_parcelas INTEGER NOT NULL ,
+  	ven_valor_total DECIMAL(10,2) NOT NULL ,
+  	ven_ajuste DECIMAL(10,2) NOT NULL ,
+  	ven_data_compra DATE NOT NULL,
+	ven_nota_fiscal VARCHAR(45) NOT NULL,
+	ven_data_emissao DATE NOT NULL,
+  	CONSTRAINT pk_ven_codigo
+		PRIMARY KEY (ven_codigo) ,
+  	CONSTRAINT fk_venda_cliente
+		FOREIGN KEY (cli_codigo)
+		REFERENCES cliente
+);
+
+CREATE TABLE parcela_venda
+(
+	parc_ven_codigo serial NOT NULL,
+	parc_ven_status INTEGER NULL,
+	parc_ven_dataVencimento DATE NOT NULL,
+	parc_ven_numero INTEGER NOT NULL,
+	parc_ven_dataPagamento DATE,
+	parc_ven_valorPago DECIMAL(6,2),
+	parc_ven_venda_cod INTEGER NOT NULL,
+	parc_ven_valorParcela DECIMAL(10,2) NOT NULL,
+	CONSTRAINT pk_parcela_venda
+		PRIMARY KEY(parc_ven_codigo),
+	CONSTRAINT fk_parc_compra 
+		FOREIGN KEY(parc_ven_venda_cod) 
+		REFERENCES venda(ven_codigo) on delete cascade
+);
+
+CREATE TABLE veiculo_venda
+(
+	ven_codigo INTEGER NOT NULL,
+	vei_codigo INTEGER NOT NULL,
+	vei_ven_valor DECIMAL(10,2) NOT NULL,
+	CONSTRAINT pk_veiculo_venda
+		PRIMARY KEY(ven_codigo,vei_codigo),
+	CONSTRAINT fk_venda_veiculo_venda
+		FOREIGN KEY(ven_codigo)
+		REFERENCES venda on delete cascade,
+	CONSTRAINT fk_veiculo_venda_veiculo
+		FOREIGN KEY(vei_codigo)
+		REFERENCES veiculo on delete cascade
+);
+
+CREATE TABLE recebimento
+(
+  	rec_codigo serial NOT NULL,
+  	rec_data Date NOT NULL ,
+  	rec_valor DECIMAL(10,2) NOT NULL,
+	parc_ven_codigo INTEGER NULL,
+	rec_forma_pagamento VARCHAR(12) not null,
+	rec_ativo boolean NOT NULL,--TRUE == PAGAMENTO | FALSE == ESTORNO
+  	CONSTRAINT pk_recebimento
+		PRIMARY KEY (rec_codigo) ,
+	CONSTRAINT fk_recebimento_parcela 
+		FOREIGN KEY (parc_ven_codigo) 
+		REFERENCES parcela_venda
+);
+
+CREATE TABLE transporte
+(
+	trans_codigo serial NOT NULL,
+	func_codigo INTEGER NOT NULL,
+	vei_codigo INTEGER NOT NULL,
+	trans_data_saida DATE NOT NULL,
+	trans_data_chegada DATE,
+	trans_status VARCHAR(45) NOT NULL,
+	trans_tipo VARCHAR(45) NOT NULL,
+	trans_data_alteracao DATE NOT NULL,
+	CONSTRAINT pk_transporte
+		PRIMARY KEY(trans_codigo),
+	CONSTRAINT fk_transporte_funcionario
+		FOREIGN KEY(func_codigo)
+		REFERENCES funcinario,
+	CONSTRAINT fk_transporte_veiculo
+		FOREIGN KEY(vei_codigo)
+		REFERENCES veiculo
+);
+
+CREATE TABLE veiculos_transportados
+(
+	trans_codigo INTEGER NOT NULL,
+	vei_codigo INTEGER NOT NULL,
+	CONSTRAINS pk_veiculos_transportados
+		PRIMARY KEY(trans_codigo,vei_codigo),
+	CONSTRAINT fk_vei_transportados_transporte
+		FOREIGN KEY(trans_codigo)
+		REFERENCES transporte,
+	CONSTRAINT fk_vei_transportados_veiculos
+		FOREIGN KEY(vei_codigo)
+		REFERENCES veiculo
+);
 
 insert into usuario(user_nome, user_senha, user_nivel,user_ativo) values ('admin','admin',3,true)
 insert into design(desi_fundo_interface,desi_fundo2_interface,desi_fonte_interface,desi_fonte_botao,
-desi_fundo_botao,desi_preenchimento_botao,desi_fonte_botao,desi_tamanho_botao,desi_fonte_entrada,
-desi_foco_entrada,desi_tamanho_entrada,desi_opacidade) values('#010410','#002259','#FAFAFA','transparent',
-'#1E88E5','#607D8B',15,'#FFFFFF','#FFA726',12,50)
---alter table telefone add column para_nome varchar(50)
---alter table telefone add constraint fk_telefone_parametrizacao 
---foreign key (para_nome) references parametrizacao
---alter table produtos_orcamento drop constraint pk_pord_orc
---alter table produtos_orcamento add constraint pk_prod_orc 
-	--primary key(orc_codigo,prod_codigo,prod_orc_preco)
+	desi_fundo_botao,desi_preenchimento_botao,desi_fonte_botao,desi_tamanho_botao,desi_fonte_entrada,
+	desi_foco_entrada,desi_tamanho_entrada,desi_opacidade) values('#010410','#002259','#FAFAFA','transparent',
+	'#1E88E5','#607D8B',15,'#FFFFFF','#FFA726',12,50)
+
