@@ -1,14 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml/1" fx:controller="TelaPrincipalController">
-    <children>
-        <Button layoutX="126" layoutY="90" text="Click Me!" onAction="#handleButtonAction" fx:id="button" />
-        <Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="label" />
-    </children>
-</AnchorPane>
+<BorderPane fx:id="painelPrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.TelaPrincipalController">
+   <center>
+      <VBox fx:id="painelCentral" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
+   </center>
+   <left>
+      <VBox fx:id="painelLateral" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: lightgray;" BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="TOP_CENTER" prefHeight="180.0" prefWidth="100.0" spacing="10.0">
+               <children>
+                  <ImageView fitHeight="90.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@utilidades/Recursos/teste-logo.jpg" />
+                     </image>
+                  </ImageView>
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="200.0" text="Nome Fantasia" />
+                  <JFXButton buttonType="RAISED" text="Configurações">
+                     <graphic>
+                        <FontAwesomeIconView glyphName="COG" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="405.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Pane fx:id="btHome" onMouseClicked="#clickHome" onMouseEntered="#enterHome" onMouseExited="#exitHome" prefHeight="35.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="60.0" layoutY="8.0" text="HOME">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <FontAwesomeIconView glyphName="HOME" layoutX="35.0" layoutY="24.0" size="20" />
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="35.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="60.0" layoutY="8.0" text="GERENCIAMENTO">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <FontAwesomeIconView glyphName="COGS" layoutX="35.0" layoutY="24.0" size="20" />
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="35.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="60.0" layoutY="8.0" text="TRANSPORTE">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <FontAwesomeIconView glyphName="TRUCK" layoutX="35.0" layoutY="24.0" size="20" />
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="35.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="60.0" layoutY="8.0" text="FINANÇAS">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <FontAwesomeIconView glyphName="MONEY" layoutX="35.0" layoutY="24.0" size="20" />
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="35.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="60.0" layoutY="8.0" text="RELATÓRIOS">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <FontAwesomeIconView glyphName="CLIPBOARD" layoutX="35.0" layoutY="24.0" size="20" />
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="35.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="60.0" layoutY="8.0" text="LOGOUT">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <FontAwesomeIconView glyphName="SIGN_OUT" layoutX="35.0" layoutY="24.0" size="20" />
+                     </children>
+                  </Pane>
+               </children>
+            </VBox>
+            <VBox alignment="CENTER" prefHeight="125.0" prefWidth="200.0" spacing="5.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Usuário:" />
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Data:" />
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Hora:" />
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </left>
+</BorderPane>

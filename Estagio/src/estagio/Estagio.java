@@ -6,6 +6,7 @@ package estagio;
  * and open the template in the editor.
  */
 
+import com.jfoenix.controls.JFXDecorator;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,10 +23,19 @@ public class Estagio extends Application
     @Override
     public void start(Stage stage) throws Exception
     {
-        Parent root = FXMLLoader.load(getClass().getResource("TelaPrincipal.fxml"));
-        
-        Scene scene = new Scene(root);
-        
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/TelaPrincipal.fxml"));     
+        Parent root = (Parent) fxmlLoader.load();
+        stage.setTitle("Parametrização");
+        JFXDecorator decorator = new JFXDecorator(stage , root);
+        decorator.setStyle("-fx-decorator-color: #040921;");
+        decorator.setMaximized(true);
+        decorator.setCustomMaximize(true);  
+
+        Scene scene = new Scene(decorator);
+
+        stage.setMaximized(true);
+        stage.setTitle("Oficina");
+        stage.setAlwaysOnTop(false);
         stage.setScene(scene);
         stage.show();
     }

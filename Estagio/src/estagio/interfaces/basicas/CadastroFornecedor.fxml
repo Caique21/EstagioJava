@@ -16,9 +16,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastroFornecedorController">
    <top>
-      <Label alignment="CENTER" prefHeight="17.0" prefWidth="1208.0" text="Gerenciamento de Fornecedores" BorderPane.alignment="CENTER">
+      <Label fx:id="lbTitulo" alignment="CENTER" prefHeight="17.0" prefWidth="1208.0" text="Gerenciamento de Fornecedores" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -27,29 +27,29 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="56.0" prefWidth="1200.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-            <JFXButton buttonType="RAISED" text="NOVO">
+            <JFXButton fx:id="btNovo" buttonType="RAISED" onAction="#clickNovo" onMouseEntered="#novoEnter" onMouseExited="#novoExit" text="NOVO">
                <graphic>
-                  <FontAwesomeIconView glyphName="PLUS" />
+                  <FontAwesomeIconView fx:id="faPlus" glyphName="PLUS" />
                </graphic>
             </JFXButton>
-            <JFXButton buttonType="RAISED" text="CONFIRMAR">
+            <JFXButton fx:id="btConfirmar" buttonType="RAISED" onAction="#clickConfirmar" onMouseEntered="#confirmarEnter" onMouseExited="#confirmarExit" text="CONFIRMAR">
                <graphic>
-                  <FontAwesomeIconView glyphName="CHECK" />
+                  <FontAwesomeIconView fx:id="faCheck" glyphName="CHECK" />
                </graphic>
             </JFXButton>
-            <JFXButton buttonType="RAISED" text="ALTERAR">
+            <JFXButton fx:id="btAlterar" buttonType="RAISED" onAction="#clickAlterar" onMouseEntered="#alterarEnter" onMouseExited="#alterarExit" text="ALTERAR">
                <graphic>
-                  <FontAwesomeIconView glyphName="EDIT" />
+                  <FontAwesomeIconView fx:id="faEdit" glyphName="EDIT" />
                </graphic>
             </JFXButton>
-            <JFXButton buttonType="RAISED" text="REMOVER">
+            <JFXButton fx:id="btRemover" buttonType="RAISED" onAction="#clickRemover" onMouseEntered="#removerEnter" onMouseExited="#removerExit" text="REMOVER">
                <graphic>
-                  <FontAwesomeIconView glyphName="TRASH" />
+                  <FontAwesomeIconView fx:id="faTrash" glyphName="TRASH" />
                </graphic>
             </JFXButton>
-            <JFXButton buttonType="RAISED" text="CANCELAR">
+            <JFXButton fx:id="btCancelar" buttonType="RAISED" onAction="#clickCancelar" onMouseEntered="#cancelarEnter" onMouseExited="#cancelarExit" text="CANCELAR">
                <graphic>
-                  <FontAwesomeIconView glyphName="CLOSE" />
+                  <FontAwesomeIconView fx:id="faClose" glyphName="CLOSE" />
                </graphic>
             </JFXButton>
          </children>
@@ -61,88 +61,88 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
          <children>
-            <Pane prefHeight="129.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
+            <Pane fx:id="paneInfoBasica" prefHeight="129.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                <children>
-                  <Label text="Informações Básicas">
+                  <Label fx:id="lbInfo" text="Informações Básicas">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField labelFloat="true" layoutX="41.0" layoutY="55.0" prefHeight="25.0" prefWidth="246.0" promptText="Nome do Fornecedor(*)" />
-                  <JFXTextField labelFloat="true" layoutX="329.0" layoutY="55.0" promptText="CNPJ(*)" />
-                  <JFXTextField labelFloat="true" layoutX="505.0" layoutY="55.0" prefHeight="25.0" prefWidth="223.0" promptText="Email" />
+                  <JFXTextField fx:id="tfNome" labelFloat="true" layoutX="41.0" layoutY="55.0" prefHeight="25.0" prefWidth="246.0" promptText="Nome do Fornecedor(*)" />
+                  <JFXTextField fx:id="tfCNPJ" labelFloat="true" layoutX="329.0" layoutY="55.0" promptText="CNPJ(*)" />
+                  <JFXTextField fx:id="tfEmail" labelFloat="true" layoutX="505.0" layoutY="55.0" prefHeight="25.0" prefWidth="223.0" promptText="Email" />
                   <JFXListView layoutX="932.0" layoutY="15.0" prefHeight="111.0" prefWidth="200.0" />
-                  <Label layoutX="932.0" layoutY="2.0" text="Telefones/Celulares">
+                  <Label fx:id="lbTelefones" layoutX="932.0" layoutY="2.0" text="Telefones/Celulares">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Label>
-                  <JFXButton buttonType="RAISED" layoutX="850.0" layoutY="19.0" text="Remover" />
-                  <JFXButton buttonType="RAISED" layoutX="774.0" layoutY="19.0" text="Adicionar" />
-                  <JFXTextField labelFloat="true" layoutX="774.0" layoutY="55.0" prefHeight="25.0" prefWidth="139.0" promptText="Telefone/Celular" />
-                  <Label layoutX="41.0" layoutY="83.0" text="Erro" textFill="RED" />
-                  <Label layoutX="329.0" layoutY="83.0" text="Erro" textFill="RED" />
-                  <Label layoutX="505.0" layoutY="83.0" text="Erro" textFill="RED" />
-                  <Label layoutX="774.0" layoutY="83.0" text="Erro" textFill="RED" />
+                  <JFXButton fx:id="btDelTelefone" buttonType="RAISED" layoutX="850.0" layoutY="19.0" onAction="#clickDel" onMouseEntered="#delEnter" onMouseExited="#delExit" text="REMOVER" />
+                  <JFXButton fx:id="btAddTelefone" buttonType="RAISED" layoutX="765.0" layoutY="19.0" onAction="#clickAdd" onMouseEntered="#addEnter" onMouseExited="#addExit" text="ADICIONAR" />
+                  <JFXTextField fx:id="tfTelefone" labelFloat="true" layoutX="774.0" layoutY="55.0" prefHeight="25.0" prefWidth="139.0" promptText="Telefone/Celular" />
+                  <Label fx:id="lbErroNome" layoutX="41.0" layoutY="83.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroCNPJ" layoutX="329.0" layoutY="83.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroEMail" layoutX="505.0" layoutY="83.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroTelefone" layoutX="774.0" layoutY="83.0" text="Erro" textFill="RED" />
                </children>
             </Pane>
-            <Pane prefHeight="146.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;;">
+            <Pane fx:id="paneEndereco" prefHeight="146.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;;">
                <children>
-                  <Label text="Endereço">
+                  <Label fx:id="lbEndereco" text="Endereço">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField labelFloat="true" layoutX="41.0" layoutY="45.0" prefWidth="65.0" promptText="CEP" />
+                  <JFXTextField fx:id="tfCEP" labelFloat="true" layoutX="41.0" layoutY="45.0" prefWidth="65.0" promptText="CEP" />
                   <JFXButton buttonType="RAISED" layoutX="126.0" layoutY="45.0" text=" ">
                      <graphic>
-                        <FontAwesomeIconView glyphName="SEARCH" size="18" />
+                        <FontAwesomeIconView fx:id="faSearchCEP" glyphName="SEARCH" onMouseClicked="#clickPesquisarCEP" onMouseEntered="#cepEnter" onMouseExited="#cepExit" size="18" />
                      </graphic>
                   </JFXButton>
                   <HBox alignment="CENTER_LEFT" layoutX="41.0" layoutY="100.0" prefHeight="25.0" prefWidth="1091.0" spacing="20.0">
                      <children>
-                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="221.0" promptText="Rua" />
-                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="62.0" promptText="Número" />
-                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="202.0" promptText="Bairro" />
-                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="200.0" promptText="Complemento" />
-                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="205.0" promptText="Cidade" />
-                        <JFXComboBox labelFloat="true" prefHeight="25.0" prefWidth="62.0" promptText="Estado" />
+                        <JFXTextField fx:id="tfRua" labelFloat="true" prefHeight="25.0" prefWidth="221.0" promptText="Rua" />
+                        <JFXTextField fx:id="tfNumero" labelFloat="true" prefHeight="25.0" prefWidth="62.0" promptText="Número" />
+                        <JFXTextField fx:id="tfBairro" labelFloat="true" prefHeight="25.0" prefWidth="202.0" promptText="Bairro" />
+                        <JFXTextField fx:id="tfComplemento" labelFloat="true" prefHeight="25.0" prefWidth="200.0" promptText="Complemento" />
+                        <JFXTextField fx:id="tfCidade" labelFloat="true" prefHeight="25.0" prefWidth="205.0" promptText="Cidade" />
+                        <JFXComboBox fx:id="cbEstado" labelFloat="true" prefHeight="25.0" prefWidth="62.0" promptText="Estado" />
                      </children>
                   </HBox>
-                  <Label layoutX="42.0" layoutY="70.0" text="Erro" textFill="RED" />
-                  <Label layoutX="42.0" layoutY="125.0" text="Erro" textFill="RED" />
-                  <Label layoutX="281.0" layoutY="125.0" prefHeight="17.0" prefWidth="77.0" text="Erro" textFill="RED" />
-                  <Label layoutX="365.0" layoutY="125.0" text="Erro" textFill="RED" />
-                  <Label layoutX="805.0" layoutY="125.0" text="Erro" textFill="RED" />
-                  <Label layoutX="1030.0" layoutY="125.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroCep" layoutX="42.0" layoutY="70.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroRua" layoutX="42.0" layoutY="125.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroNumero" layoutX="281.0" layoutY="125.0" prefHeight="17.0" prefWidth="77.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroBairro" layoutX="365.0" layoutY="125.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroCidade" layoutX="805.0" layoutY="125.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroEstado" layoutX="1030.0" layoutY="125.0" text="Erro" textFill="RED" />
                </children>
             </Pane>
-            <Pane prefHeight="303.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
+            <Pane fx:id="panePesquisa" prefHeight="303.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                <children>
-                  <Label text="Pesquisa">
+                  <Label fx:id="lbPesquisa" text="Pesquisa">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField labelFloat="true" layoutX="41.0" layoutY="35.0" prefHeight="25.0" prefWidth="210.0" promptText="Pesquisar por Nome" />
-                  <JFXTextField labelFloat="true" layoutX="41.0" layoutY="35.0" prefHeight="25.0" prefWidth="210.0" promptText="Pesquisar por CNPJ" visible="false" />
-                  <JFXButton buttonType="RAISED" layoutX="271.0" layoutY="35.0" text="Pesquisar">
+                  <JFXTextField fx:id="tfNomePesquisa" labelFloat="true" layoutX="41.0" layoutY="35.0" prefHeight="25.0" prefWidth="210.0" promptText="Pesquisar por Nome" />
+                  <JFXTextField fx:id="tfCnpjPesquisa" labelFloat="true" layoutX="41.0" layoutY="35.0" prefHeight="25.0" prefWidth="210.0" promptText="Pesquisar por CNPJ" visible="false" />
+                  <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="271.0" layoutY="35.0" onAction="#clickPesquisar" onMouseEntered="#pesquisarEnter" onMouseExited="#pesquisarExit" text="PESQUISAR">
                      <graphic>
-                        <FontAwesomeIconView glyphName="SEARCH" size="15" />
+                        <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
                      </graphic>
                   </JFXButton>
-                  <TableView layoutX="41.0" layoutY="94.0" prefHeight="198.0" prefWidth="1099.0">
+                  <TableView fx:id="tvFornecedores" layoutX="41.0" layoutY="94.0" prefHeight="198.0" prefWidth="1099.0">
                     <columns>
-                      <TableColumn prefWidth="366.0" text="Nome" />
-                      <TableColumn prefWidth="124.0" text="CNPJ" />
-                        <TableColumn prefWidth="222.0" text="Email" />
-                        <TableColumn prefWidth="386.0" text="Endereço" />
+                      <TableColumn fx:id="tcNome" prefWidth="366.0" text="Nome" />
+                      <TableColumn fx:id="tcCNPJ" prefWidth="124.0" text="CNPJ" />
+                        <TableColumn fx:id="tcEmail" prefWidth="222.0" text="Email" />
+                        <TableColumn fx:id="tcEndereco" prefWidth="386.0" text="Endereço" />
                     </columns>
                   </TableView>
                   <HBox alignment="CENTER_LEFT" layoutX="41.0" layoutY="70.0" prefHeight="17.0" prefWidth="212.0" spacing="30.0">
                      <children>
-                        <JFXRadioButton text="Nome" />
-                        <JFXRadioButton text="CNPJ" />
+                        <JFXRadioButton fx:id="rbNome" text="Nome" />
+                        <JFXRadioButton fx:id="rbCNPJ" text="CNPJ" />
                      </children>
                   </HBox>
                </children>

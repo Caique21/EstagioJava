@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXRadioButton?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
@@ -16,10 +17,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastrosInativosController">
    <top>
-      <Label alignment="CENTER" prefHeight="17.0" prefWidth="1240.0" text="Gerenciamento de Dados Inativos" BorderPane.alignment="CENTER">
+      <Label fx:id="lbTitulo" alignment="CENTER" prefHeight="17.0" prefWidth="1240.0" text="Gerenciamento de Dados Inativos" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -28,14 +28,14 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="67.0" prefWidth="1200.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-            <JFXButton buttonType="RAISED" text="RESTAURAR">
+            <JFXButton fx:id="btRestaurar" buttonType="RAISED" onAction="#clickRestaurar" text="RESTAURAR">
                <graphic>
-                  <FontAwesomeIconView glyphName="REPLY" size="12" />
+                  <FontAwesomeIconView fx:id="faRestore" glyphName="REPLY" size="12" />
                </graphic>
             </JFXButton>
-            <JFXButton buttonType="RAISED" text="APAGAR">
+            <JFXButton fx:id="btApagar" buttonType="RAISED" onAction="#clickApagar" text="APAGAR">
                <graphic>
-                  <FontAwesomeIconView glyphName="TRASH" size="12" />
+                  <FontAwesomeIconView fx:id="faTrash" glyphName="TRASH" size="12" />
                </graphic>
             </JFXButton>
          </children>
@@ -48,32 +48,32 @@
               <tabs>
                 <Tab text="CLIENTES">
                      <content>
-                        <Pane prefHeight="200.0" prefWidth="200.0">
+                        <Pane fx:id="paneClientes" prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <JFXTextField labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar por Nome" />
-                              <JFXTextField labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar por CPF" visible="false" />
+                              <JFXTextField fx:id="tfNomeCliente" labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar por Nome" />
+                              <JFXTextField fx:id="tfCPFCliente" labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar por CPF" visible="false" />
                               <HBox alignment="CENTER_LEFT" layoutX="56.0" layoutY="84.0" prefHeight="17.0" prefWidth="281.0" spacing="20.0">
                                  <children>
-                                    <JFXRadioButton text="Listar Todos" />
-                                    <JFXRadioButton text="Nome" />
-                                    <JFXRadioButton text="CPF" />
+                                    <JFXRadioButton fx:id="rbTodosCliente" text="Listar Todos" />
+                                    <JFXRadioButton fx:id="rbNomeCliente" text="Nome" />
+                                    <JFXRadioButton fx:id="rbCPFCliente" text="CPF" />
                                  </children>
                               </HBox>
-                              <JFXButton buttonType="RAISED" layoutX="267.0" layoutY="46.0" text="Pesquisar">
+                              <JFXButton fx:id="btPesquisarCliente" buttonType="RAISED" layoutX="267.0" layoutY="46.0" onAction="#clickPesquisarCliente" onMouseEntered="#btClienteEnter" onMouseExited="#btClienteExit" text="PESQUISAR">
                                  <graphic>
-                                    <FontAwesomeIconView glyphName="SEARCH" size="15" />
+                                    <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
                                  </graphic>
                               </JFXButton>
-                              <TableView layoutX="56.0" layoutY="131.0" prefHeight="355.0" prefWidth="1040.0">
+                              <TableView fx:id="tvClientes" layoutX="56.0" layoutY="131.0" onMouseClicked="#selecionaCliente" prefHeight="355.0" prefWidth="1040.0">
                                 <columns>
-                                  <TableColumn prefWidth="299.0" text="Nome" />
-                                  <TableColumn prefWidth="109.0" text="CPF" />
-                                    <TableColumn prefWidth="117.0" text="RG" />
-                                    <TableColumn prefWidth="170.0" text="Email" />
-                                    <TableColumn prefWidth="344.0" text="Endereço" />
+                                  <TableColumn fx:id="tcNomeCliente" prefWidth="299.0" text="Nome" />
+                                  <TableColumn fx:id="tcCPFCliente" prefWidth="109.0" text="CPF" />
+                                    <TableColumn fx:id="tcRGCliente" prefWidth="117.0" text="RG" />
+                                    <TableColumn fx:id="tcEmailCliente" prefWidth="170.0" text="Email" />
+                                    <TableColumn fx:id="tcEnderecoCliente" prefWidth="344.0" text="Endereço" />
                                 </columns>
                               </TableView>
-                              <Label alignment="CENTER" layoutX="56.0" layoutY="114.0" prefHeight="17.0" prefWidth="1040.0" text="CLIENTES">
+                              <Label fx:id="lbClientes" alignment="CENTER" layoutX="56.0" layoutY="114.0" prefHeight="17.0" prefWidth="1040.0" text="CLIENTES">
                                  <font>
                                     <Font name="System Bold Italic" size="12.0" />
                                  </font>
@@ -84,33 +84,32 @@
                 </Tab>
                 <Tab text="FUNCIONÁRIOS">
                      <content>
-                        <Pane prefHeight="200.0" prefWidth="200.0">
+                        <Pane fx:id="paneFuncionarios" prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <JFXTextField labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar por Nome" />
-                              <JFXTextField labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar pelo CPF" visible="false" />
+                              <JFXTextField fx:id="tfNomeFuncionario" labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar por Nome" />
+                              <JFXTextField fx:id="tfCpfFuncionario" labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar pelo CPF" visible="false" />
                               <HBox alignment="CENTER_LEFT" layoutX="56.0" layoutY="84.0" prefHeight="17.0" prefWidth="250.0" spacing="20.0">
                                  <children>
-                                    <JFXRadioButton text="Listar Todos" />
-                                    <JFXRadioButton text="Nome" />
-                                    <JFXRadioButton text="CPF" />
+                                    <JFXRadioButton fx:id="rbTodosFuncionario" text="Listar Todos" />
+                                    <JFXRadioButton fx:id="rbNomeFuncionario" text="Nome" />
+                                    <JFXRadioButton fx:id="rbCpfFuncionario" text="CPF" />
                                  </children>
                               </HBox>
-                              <JFXButton buttonType="RAISED" layoutX="267.0" layoutY="46.0" text="Pesquisar">
+                              <JFXButton fx:id="btPesquisarFuncionario" buttonType="RAISED" layoutX="267.0" layoutY="46.0" onAction="#clickPesquisarFuncionario" onMouseEntered="#btFuncionarioEnter" onMouseExited="#btFuncionarioExit" text="PESQUISAR">
                                  <graphic>
-                                    <FontAwesomeIconView glyphName="SEARCH" size="15" />
+                                    <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
                                  </graphic>
                               </JFXButton>
-                              <TableView layoutX="56.0" layoutY="131.0" prefHeight="355.0" prefWidth="1040.0">
+                              <TableView fx:id="tvFuncionarios" layoutX="56.0" layoutY="131.0" onMouseClicked="#selecionaFuncionario" prefHeight="355.0" prefWidth="1040.0">
                                 <columns>
-                                  <TableColumn prefWidth="207.0" text="Nome" />
-                                  <TableColumn prefWidth="141.0" text="Usuário" />
-                                    <TableColumn prefWidth="95.0" text="CPF" />
-                                    <TableColumn prefWidth="85.0" text="RG" />
-                                    <TableColumn prefWidth="177.0" text="Email" />
-                                    <TableColumn prefWidth="334.0" text="Endereço" />
+                                  <TableColumn fx:id="tcNomeFuncionario" prefWidth="333.0" text="Nome" />
+                                    <TableColumn fx:id="tcCPFFuncionario" prefWidth="108.0" text="CPF" />
+                                    <TableColumn fx:id="tcRGFuncionario" prefWidth="101.0" text="RG" />
+                                    <TableColumn fx:id="tcEmailFuncionario" prefWidth="196.0" text="Email" />
+                                    <TableColumn fx:id="tcEnderecoFuncionario" prefWidth="301.0" text="Endereço" />
                                 </columns>
                               </TableView>
-                              <Label alignment="CENTER" layoutX="56.0" layoutY="114.0" prefWidth="1040.0" text="FUNCIONÁRIOS">
+                              <Label fx:id="lbFuncionarios" alignment="CENTER" layoutX="56.0" layoutY="114.0" prefWidth="1040.0" text="FUNCIONÁRIOS">
                                  <font>
                                     <Font name="System Bold Italic" size="12.0" />
                                  </font>
@@ -119,32 +118,71 @@
                         </Pane>
                      </content>
                 </Tab>
+                  <Tab text="USUÁRIOS">
+                     <content>
+                        <Pane fx:id="paneUsuarios" prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <JFXTextField fx:id="tfNomeUsuario" labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Pesquisar por Nome" />
+                              <JFXComboBox fx:id="cbNivel" labelFloat="true" layoutX="56.0" layoutY="46.0" prefHeight="25.0" prefWidth="188.0" promptText="Nível" visible="false" />
+                              <HBox alignment="CENTER_LEFT" layoutX="56.0" layoutY="84.0" prefHeight="17.0" prefWidth="250.0" spacing="20.0">
+                                 <children>
+                                    <JFXRadioButton fx:id="rbTodosUsuario" text="Listar Todos" />
+                                    <JFXRadioButton fx:id="rbNomeUsuario" text="Nome" />
+                                    <JFXRadioButton fx:id="rbNivel" text="Nível" />
+                                 </children>
+                              </HBox>
+                              <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="267.0" layoutY="46.0" onAction="#clickPesquisarUsuario" onMouseEntered="#btUsuarioEnter" onMouseExited="#btUsuarioExit" text="PESQUISAR">
+                                 <graphic>
+                                    <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
+                                 </graphic>
+                              </JFXButton>
+                              <TableView fx:id="tvUsuarios" layoutX="56.0" layoutY="131.0" onMouseClicked="#selecionaUsuario" prefHeight="355.0" prefWidth="1040.0">
+                                 <columns>
+                                    <TableColumn fx:id="tcFuncionario" prefWidth="567.0" text="Funcionário" />
+                                    <TableColumn fx:id="tcUsuario" prefWidth="273.0" text="Usuário" />
+                                    <TableColumn fx:id="tcNivel" prefWidth="199.0" text="Nível" />
+                                 </columns>
+                              </TableView>
+                              <Label fx:id="lbUsuarios" alignment="CENTER" layoutX="56.0" layoutY="114.0" prefWidth="1040.0" text="USUÁRIOS">
+                                 <font>
+                                    <Font name="System Bold Italic" size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </Pane>
+                     </content>
+                  </Tab>
                   <Tab text="FORNECEDORES">
                      <content>
-                        <Pane prefHeight="200.0" prefWidth="200.0">
+                        <Pane fx:id="paneFornecedores" prefHeight="200.0" prefWidth="200.0">
                            <children>
-                              <JFXTextField labelFloat="true" layoutX="56.0" layoutY="46.0" prefWidth="188.0" promptText="Pesquisar por Nome" />
-                              <JFXTextField labelFloat="true" layoutX="56.0" layoutY="46.0" prefWidth="188.0" promptText="Pesquisar por CNPJ" visible="false" />
-                              <JFXButton buttonType="RAISED" layoutX="267.0" layoutY="46.0" text="Pesquisar">
+                              <JFXTextField fx:id="tfNomeFornecedor" labelFloat="true" layoutX="56.0" layoutY="46.0" prefWidth="188.0" promptText="Pesquisar por Nome" />
+                              <JFXTextField fx:id="tfCNPJ" labelFloat="true" layoutX="56.0" layoutY="46.0" prefWidth="188.0" promptText="Pesquisar por CNPJ" visible="false" />
+                              <JFXButton fx:id="btPesquisarFornecedor" buttonType="RAISED" layoutX="267.0" layoutY="46.0" onAction="#clickPesquisarFornecedor" onMouseEntered="#btForncedorEnter" onMouseExited="#btFornecedorExit" text="PESQUISAR">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="SEARCH" size="15" />
                                  </graphic>
                               </JFXButton>
                               <HBox layoutX="56.0" layoutY="84.0" prefHeight="18.0" prefWidth="248.0" spacing="20.0">
                                  <children>
-                                    <JFXRadioButton text="Listar Todos" />
-                                    <JFXRadioButton text="Nome" />
-                                    <JFXRadioButton text="CNPJ" />
+                                    <JFXRadioButton fx:id="rbTodosFornecedores" text="Listar Todos" />
+                                    <JFXRadioButton fx:id="rbNomeFornecedor" text="Nome" />
+                                    <JFXRadioButton fx:id="rbCNPJ" text="CNPJ" />
                                  </children>
                               </HBox>
-                              <TableView layoutX="56.0" layoutY="131.0" prefHeight="355.0" prefWidth="1040.0">
+                              <TableView fx:id="tvFornecedores" layoutX="56.0" layoutY="131.0" onMouseClicked="#selecionaFornecedor" prefHeight="355.0" prefWidth="1040.0">
                                 <columns>
-                                  <TableColumn prefWidth="336.0" text="Nome" />
-                                  <TableColumn prefWidth="108.0" text="CNPJ" />
-                                    <TableColumn prefWidth="214.0" text="Email" />
-                                    <TableColumn prefWidth="381.0" text="Endereço" />
+                                  <TableColumn fx:id="tcNomeFornecedor" prefWidth="336.0" text="Nome" />
+                                  <TableColumn fx:id="tcCNPJ" prefWidth="108.0" text="CNPJ" />
+                                    <TableColumn fx:id="tcEmailFornecedor" prefWidth="214.0" text="Email" />
+                                    <TableColumn fx:id="tcEnderecoFornecedor" prefWidth="381.0" text="Endereço" />
                                 </columns>
                               </TableView>
+                              <Label fx:id="lbFornecedores" alignment="CENTER" layoutX="56.0" layoutY="114.0" prefWidth="1040.0" text="FORNECEDORES">
+                                 <font>
+                                    <Font name="System Bold Italic" size="12.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </Pane>
                      </content>

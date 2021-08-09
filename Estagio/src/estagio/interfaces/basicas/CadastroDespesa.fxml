@@ -16,10 +16,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastroDespesaController">
    <top>
-      <Label text="Gerenciamento de Despesas" BorderPane.alignment="CENTER">
+      <Label fx:id="lbTitulo" text="Gerenciamento de Despesas" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
@@ -28,44 +27,44 @@
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-            <Pane prefHeight="218.0" prefWidth="860.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
+            <Pane fx:id="paneInfo" prefHeight="218.0" prefWidth="860.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                <children>
-                  <Label text="Informações de Despesa">
+                  <Label fx:id="lbInfo" text="Informações de Despesa">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField labelFloat="true" layoutX="36.0" layoutY="43.0" prefHeight="25.0" prefWidth="249.0" promptText="Despesa(*)" />
-                  <JFXRadioButton layoutX="314.0" layoutY="47.0" text="Despesa Fixa" />
-                  <JFXTextField labelFloat="true" layoutX="448.0" layoutY="43.0" prefHeight="25.0" prefWidth="186.0" promptText="Valor(*)" />
-                  <JFXDatePicker layoutX="684.0" layoutY="43.0" prefHeight="25.0" prefWidth="137.0" />
-                  <Label layoutX="684.0" layoutY="26.0" text="Data de Vencimento" />
-                  <JFXTextArea labelFloat="true" layoutX="36.0" layoutY="95.0" prefHeight="111.0" prefWidth="775.0" promptText="Descrição" />
-                  <Label layoutX="36.0" layoutY="68.0" text="Erro" textFill="RED" />
-                  <Label layoutX="448.0" layoutY="68.0" text="Erro" textFill="RED" />
-                  <Label layoutX="684.0" layoutY="68.0" text="Erro" textFill="RED" />
+                  <JFXTextField fx:id="tfNome" labelFloat="true" layoutX="36.0" layoutY="43.0" prefHeight="25.0" prefWidth="249.0" promptText="Despesa(*)" />
+                  <JFXRadioButton fx:id="rbFixo" layoutX="314.0" layoutY="47.0" text="Despesa Fixa" />
+                  <JFXTextField fx:id="tfValor" labelFloat="true" layoutX="448.0" layoutY="43.0" prefHeight="25.0" prefWidth="186.0" promptText="Valor(*)" />
+                  <JFXDatePicker fx:id="dpData" layoutX="684.0" layoutY="43.0" prefHeight="25.0" prefWidth="137.0" />
+                  <Label fx:id="lbData" layoutX="684.0" layoutY="26.0" text="Data de Vencimento" />
+                  <JFXTextArea fx:id="taDescricao" labelFloat="true" layoutX="36.0" layoutY="95.0" prefHeight="111.0" prefWidth="775.0" promptText="Descrição" />
+                  <Label fx:id="lbErroDespesa" layoutX="36.0" layoutY="68.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroValor" layoutX="448.0" layoutY="68.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroData" layoutX="684.0" layoutY="68.0" text="Erro" textFill="RED" />
                </children>
             </Pane>
-            <Pane prefHeight="321.0" prefWidth="860.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
+            <Pane fx:id="panePesquisa" prefHeight="321.0" prefWidth="860.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                <children>
-                  <JFXTextField labelFloat="true" layoutX="36.0" layoutY="37.0" prefHeight="25.0" prefWidth="180.0" promptText="Digite aqui para pesquisar" />
-                  <Label text="Pesquisa">
+                  <JFXTextField fx:id="tfPesquisa" labelFloat="true" layoutX="36.0" layoutY="37.0" prefHeight="25.0" prefWidth="180.0" promptText="Digite aqui para pesquisar" />
+                  <Label fx:id="lbPesquisa" text="Pesquisa">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXButton buttonType="RAISED" layoutX="236.0" layoutY="37.0" text="Pesquisar">
+                  <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="236.0" layoutY="37.0" onAction="#clickPesquisar" onMouseEntered="#pesquisarEnter" onMouseExited="#pesquisarExit" text="PESQUISAR">
                      <graphic>
-                        <FontAwesomeIconView glyphName="SEARCH" />
+                        <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" />
                      </graphic>
                   </JFXButton>
-                  <TableView layoutX="36.0" layoutY="74.0" prefHeight="236.0" prefWidth="774.0">
+                  <TableView fx:id="tvDespesa" layoutX="36.0" layoutY="74.0" prefHeight="236.0" prefWidth="774.0">
                     <columns>
-                      <TableColumn prefWidth="274.0" text="Despesa" />
-                      <TableColumn prefWidth="67.0" text="Fixa" />
-                        <TableColumn prefWidth="91.0" text="Valor" />
-                        <TableColumn prefWidth="104.0" text="Vencimento" />
-                        <TableColumn prefWidth="237.0" text="Descrição" />
+                      <TableColumn fx:id="tcDespesa" prefWidth="265.0" text="Despesa" />
+                      <TableColumn fx:id="tcFixo" prefWidth="76.0" text="Fixa" />
+                        <TableColumn fx:id="tcValor" prefWidth="91.0" text="Valor" />
+                        <TableColumn fx:id="tcVencimento" prefWidth="104.0" text="Vencimento" />
+                        <TableColumn fx:id="tcDescricao" prefWidth="237.0" text="Descrição" />
                     </columns>
                   </TableView>
                </children>
@@ -82,29 +81,29 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="71.0" prefWidth="900.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-            <JFXButton buttonType="RAISED" text="NOVO">
+            <JFXButton fx:id="btNovo" buttonType="RAISED" onAction="#clickNovo" onMouseEntered="#novoEnter" onMouseExited="#novoExit" text="NOVO">
                <graphic>
-                  <FontAwesomeIconView glyphName="PLUS" />
+                  <FontAwesomeIconView fx:id="faPlus" glyphName="PLUS" />
                </graphic>
             </JFXButton>
-            <JFXButton buttonType="RAISED" text="CONFIRMAR">
+            <JFXButton fx:id="btConfirmar" buttonType="RAISED" onAction="#clickConfimar" onMouseEntered="#confirmarEnter" onMouseExited="#confirmarExit" text="CONFIRMAR">
                <graphic>
-                  <FontAwesomeIconView glyphName="CHECK" />
+                  <FontAwesomeIconView fx:id="faCheck" glyphName="CHECK" />
                </graphic>
             </JFXButton>
-            <JFXButton buttonType="RAISED" text="ALTERAR">
+            <JFXButton fx:id="btAlterar" buttonType="RAISED" onAction="#clickAlterar" onMouseEntered="#alterarEnter" onMouseExited="#alterarExit" text="ALTERAR">
                <graphic>
-                  <FontAwesomeIconView glyphName="EDIT" />
+                  <FontAwesomeIconView fx:id="faEdit" glyphName="EDIT" />
                </graphic>
             </JFXButton>
-            <JFXButton buttonType="RAISED" text="REMOVER">
+            <JFXButton fx:id="btRemover" buttonType="RAISED" onAction="#clickRemover" onMouseEntered="#removerEnter" onMouseExited="#removerExit" text="REMOVER">
                <graphic>
-                  <FontAwesomeIconView glyphName="TRASH" />
+                  <FontAwesomeIconView fx:id="faTrash" glyphName="TRASH" />
                </graphic>
             </JFXButton>
-            <JFXButton buttonType="RAISED" text="CANCELAR">
+            <JFXButton fx:id="btCancelar" buttonType="RAISED" onAction="#clickCancelar" onMouseEntered="#cancelarEnter" onMouseExited="#cancelarExit" text="CANCELAR">
                <graphic>
-                  <FontAwesomeIconView glyphName="CLOSE" />
+                  <FontAwesomeIconView fx:id="faClose" glyphName="CLOSE" />
                </graphic>
             </JFXButton>
          </children>
