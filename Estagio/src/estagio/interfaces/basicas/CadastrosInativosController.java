@@ -8,6 +8,7 @@ package estagio.interfaces.basicas;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXRadioButton;
+import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
@@ -31,18 +32,6 @@ public class CadastrosInativosController implements Initializable
 {
 
     @FXML
-    private BorderPane panePrincipal;
-    @FXML
-    private Pane paneClientes;
-    @FXML
-    private Pane paneFuncionarios;
-    @FXML
-    private Pane paneUsuarios;
-    @FXML
-    private Pane paneFornecedores;
-    @FXML
-    private Label lbTitulo;
-    @FXML
     private JFXButton btRestaurar;
     @FXML
     private JFXButton btApagar;
@@ -51,19 +40,21 @@ public class CadastrosInativosController implements Initializable
     @FXML
     private FontAwesomeIconView faTrash;
     @FXML
+    private JFXTabPane tabPane;
+    @FXML
     private JFXTextField tfNomeCliente;
     @FXML
-    private JFXTextField tfCPFCliente;
-    @FXML
-    private JFXRadioButton rbTodosCliente;
-    @FXML
-    private JFXRadioButton rbNomeCliente;
-    @FXML
-    private JFXRadioButton rbCPFCliente;
+    private JFXTextField tfCpfCliente;
     @FXML
     private JFXButton btPesquisarCliente;
     @FXML
     private FontAwesomeIconView faSearch;
+    @FXML
+    private JFXRadioButton rbTodosClientes;
+    @FXML
+    private JFXRadioButton rbNomeCliente;
+    @FXML
+    private JFXRadioButton rbCpfCliente;
     @FXML
     private Label lbClientes;
     @FXML
@@ -71,53 +62,57 @@ public class CadastrosInativosController implements Initializable
     @FXML
     private TableColumn<?, ?> tcNomeCliente;
     @FXML
-    private TableColumn<?, ?> tcCPFCliente;
+    private TableColumn<?, ?> tcCpfCliente;
     @FXML
-    private TableColumn<?, ?> tcRGCliente;
+    private TableColumn<?, ?> tcRgCliente;
     @FXML
     private TableColumn<?, ?> tcEmailCliente;
     @FXML
     private TableColumn<?, ?> tcEnderecoCliente;
     @FXML
-    private Label lbFuncionarios;
+    private BorderPane panePrincipal;
+    
     @FXML
     private JFXTextField tfNomeFuncionario;
     @FXML
     private JFXTextField tfCpfFuncionario;
     @FXML
-    private JFXRadioButton rbTodosFuncionario;
+    private JFXButton btPesquisarFuncionario;
+    @FXML
+    private JFXRadioButton rbTodosFuncionarios;
     @FXML
     private JFXRadioButton rbNomeFuncionario;
     @FXML
     private JFXRadioButton rbCpfFuncionario;
     @FXML
-    private JFXButton btPesquisarFuncionario;
+    private Label lbFuncionarios;
     @FXML
     private TableView<?> tvFuncionarios;
     @FXML
     private TableColumn<?, ?> tcNomeFuncionario;
     @FXML
-    private TableColumn<?, ?> tcCPFFuncionario;
+    private TableColumn<?, ?> tcCpfFuncionario;
     @FXML
-    private TableColumn<?, ?> tcRGFuncionario;
+    private TableColumn<?, ?> tcRgFuncionario;
     @FXML
     private TableColumn<?, ?> tcEmailFuncionario;
     @FXML
     private TableColumn<?, ?> tcEnderecoFuncionario;
+    
     @FXML
     private JFXTextField tfNomeUsuario;
     @FXML
     private JFXComboBox<?> cbNivel;
     @FXML
-    private Label lbUsuarios;
+    private JFXButton btPesquisarUsuario;
     @FXML
-    private JFXRadioButton rbTodosUsuario;
+    private JFXRadioButton rbTodosUsuarios;
     @FXML
     private JFXRadioButton rbNomeUsuario;
     @FXML
     private JFXRadioButton rbNivel;
     @FXML
-    private JFXButton btPesquisar;
+    private Label lbUsuarios;
     @FXML
     private TableView<?> tvUsuarios;
     @FXML
@@ -126,12 +121,11 @@ public class CadastrosInativosController implements Initializable
     private TableColumn<?, ?> tcUsuario;
     @FXML
     private TableColumn<?, ?> tcNivel;
-    @FXML
-    private Label lbFornecedores;
+    
     @FXML
     private JFXTextField tfNomeFornecedor;
     @FXML
-    private JFXTextField tfCNPJ;
+    private JFXButton btPesquisarFornecedor;
     @FXML
     private JFXRadioButton rbTodosFornecedores;
     @FXML
@@ -139,11 +133,13 @@ public class CadastrosInativosController implements Initializable
     @FXML
     private JFXRadioButton rbCNPJ;
     @FXML
-    private JFXButton btPesquisarFornecedor;
+    private JFXTextField tfCNPJ;
     @FXML
-    private TableView<?> tvFornecedores;
+    private Label lbFornecedores;
     @FXML
-    private TableColumn<?, ?> tcNomeFornecedor;
+    private TableView<?> tvFornecedor;
+    @FXML
+    private TableColumn<?, ?> tcNome;
     @FXML
     private TableColumn<?, ?> tcCNPJ;
     @FXML
@@ -181,16 +177,6 @@ public class CadastrosInativosController implements Initializable
     }
 
     @FXML
-    private void btClienteExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void btClienteEnter(MouseEvent event)
-    {
-    }
-
-    @FXML
     private void clickPesquisarFuncionario(ActionEvent event)
     {
     }
@@ -201,32 +187,12 @@ public class CadastrosInativosController implements Initializable
     }
 
     @FXML
-    private void btFuncionarioExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void btFuncionarioEnter(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void selecionaUsuario(MouseEvent event)
-    {
-    }
-
-    @FXML
     private void clickPesquisarUsuario(ActionEvent event)
     {
     }
 
     @FXML
-    private void btUsuarioExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void btUsuarioEnter(MouseEvent event)
+    private void selecionaUsuario(MouseEvent event)
     {
     }
 
@@ -241,13 +207,64 @@ public class CadastrosInativosController implements Initializable
     }
 
     @FXML
-    private void btFornecedorExit(MouseEvent event)
+    private void restaurarExit(MouseEvent event)
     {
     }
 
     @FXML
-    private void btForncedorEnter(MouseEvent event)
+    private void restaurarEnter(MouseEvent event)
     {
     }
+
+    @FXML
+    private void apagarExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void apagarEnter(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void pesquisarClienteExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void pesquisarClienteEnter(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void pesquisarFuncionarioExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void pesquisarFuncionarioEnter(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void pesquisarUsuarioExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void pesquisarUsuarioEnter(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void pesquisarFornecedorExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void pesquisarFornecedorEnter(MouseEvent event)
+    {
+    }
+
     
 }

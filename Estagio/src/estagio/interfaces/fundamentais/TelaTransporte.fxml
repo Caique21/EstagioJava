@@ -16,9 +16,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.fundamentais.TelaTransporteController">
    <top>
-      <Label alignment="CENTER" prefHeight="30.0" prefWidth="1226.0" text="Controle de Transporte" BorderPane.alignment="CENTER">
+      <Label fx:id="lbTitulo" alignment="CENTER" prefHeight="30.0" prefWidth="1226.0" text="Controle de Transporte" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>
@@ -27,87 +27,87 @@
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <Pane prefHeight="82.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
+            <Pane fx:id="paneDados" prefHeight="82.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                <children>
-                  <JFXTextField labelFloat="true" layoutX="31.0" layoutY="34.0" prefHeight="25.0" prefWidth="237.0" promptText="Motorista(*)" />
-                  <Label text="Dados do Transporte">
+                  <JFXTextField fx:id="tfMotorista" labelFloat="true" layoutX="31.0" layoutY="34.0" prefHeight="25.0" prefWidth="201.0" promptText="Motorista(*)" />
+                  <Label fx:id="lbDados" text="Dados do Transporte">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField labelFloat="true" layoutX="286.0" layoutY="34.0" prefHeight="25.0" prefWidth="101.0" promptText="Placa Cegonha(*)" />
-                  <JFXDatePicker layoutX="414.0" layoutY="34.0" prefHeight="25.0" prefWidth="109.0" />
-                  <Label layoutX="414.0" layoutY="13.0" text="Data de Saída(*)" />
-                  <JFXDatePicker layoutX="546.0" layoutY="34.0" prefHeight="25.0" prefWidth="109.0" />
-                  <Label layoutX="551.0" layoutY="13.0" text="Data de Chegada" />
-                  <JFXComboBox labelFloat="true" layoutX="688.0" layoutY="34.0" prefHeight="25.0" prefWidth="150.0" promptText="Status do Transporte(*)" />
-                  <JFXComboBox labelFloat="true" layoutX="865.0" layoutY="34.0" prefHeight="25.0" prefWidth="139.0" promptText="Tipo de Transporte(*)" />
-                  <Label layoutX="31.0" layoutY="60.0" text="Erro" textFill="RED" />
-                  <Label layoutX="286.0" layoutY="60.0" text="Erro" textFill="RED" />
-                  <Label layoutX="414.0" layoutY="60.0" text="Erro" textFill="RED" />
-                  <Label layoutX="546.0" layoutY="60.0" text="Erro" textFill="RED" />
-                  <Label layoutX="688.0" layoutY="60.0" text="Erro" textFill="RED" />
-                  <Label layoutX="865.0" layoutY="60.0" text="Erro" textFill="RED" />
+                  <JFXTextField fx:id="tfPlacaCegonha" labelFloat="true" layoutX="252.0" layoutY="34.0" prefHeight="25.0" prefWidth="101.0" promptText="Placa Cegonha(*)" />
+                  <JFXDatePicker fx:id="dpSaida" layoutX="380.0" layoutY="34.0" prefHeight="25.0" prefWidth="109.0" />
+                  <Label fx:id="lbSaida" layoutX="380.0" layoutY="13.0" text="Data de Saída(*)" />
+                  <JFXDatePicker fx:id="dpChegada" layoutX="509.0" layoutY="34.0" prefHeight="25.0" prefWidth="109.0" />
+                  <Label fx:id="lbChegada" layoutX="514.0" layoutY="13.0" text="Data de Chegada" />
+                  <JFXComboBox fx:id="cbStatus" labelFloat="true" layoutX="643.0" layoutY="34.0" prefHeight="25.0" prefWidth="140.0" promptText="Status do Transporte" />
+                  <JFXComboBox fx:id="cbTipo" labelFloat="true" layoutX="813.0" layoutY="34.0" prefHeight="25.0" prefWidth="139.0" promptText="Tipo de Transporte" />
+                  <Label fx:id="lbErroMotorista" layoutX="31.0" layoutY="60.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroPlacaCegonha" layoutX="252.0" layoutY="60.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroSaida" layoutX="380.0" layoutY="60.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroChegada" layoutX="509.0" layoutY="60.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroStatus" layoutX="643.0" layoutY="60.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroTipo" layoutX="813.0" layoutY="60.0" text="Erro" textFill="RED" />
                </children>
             </Pane>
-            <Pane prefHeight="115.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
+            <Pane fx:id="paneVeiculos" prefHeight="115.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                <children>
-                  <JFXButton buttonType="RAISED" layoutX="31.0" layoutY="36.0" text="Pesquisar Veículo">
+                  <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="31.0" layoutY="36.0" onAction="#clickPesquisar" onMouseEntered="#pesquisarEnter" onMouseExited="#pesquisarExit" text="PESQUISAR VEÍCULO">
                      <graphic>
-                        <FontAwesomeIconView glyphName="SEARCH" size="15" />
+                        <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
                      </graphic>
                   </JFXButton>
-                  <Label text="Veículos Transportados">
+                  <Label fx:id="lbVeiculos" text="Veículos Transportados">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <HBox layoutX="31.0" layoutY="73.0" prefHeight="25.0" prefWidth="987.0" spacing="35.0">
+                  <HBox layoutX="31.0" layoutY="73.0" prefHeight="25.0" prefWidth="930.0" spacing="25.0">
                      <children>
-                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="202.0" promptText="Marca" />
-                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="162.0" promptText="Modelo" />
-                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="134.0" promptText="Placa" />
-                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="134.0" promptText="Chassi" />
-                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="49.0" promptText="Ano" />
-                        <JFXTextField labelFloat="true" prefHeight="25.0" prefWidth="119.0" promptText="Cor" />
+                        <JFXTextField fx:id="tfMarca" labelFloat="true" prefHeight="25.0" prefWidth="202.0" promptText="Marca" />
+                        <JFXTextField fx:id="tfModelo" labelFloat="true" prefHeight="25.0" prefWidth="162.0" promptText="Modelo" />
+                        <JFXTextField fx:id="tfPlaca" labelFloat="true" prefHeight="25.0" prefWidth="134.0" promptText="Placa" />
+                        <JFXTextField fx:id="tfChassi" labelFloat="true" prefHeight="25.0" prefWidth="134.0" promptText="Chassi" />
+                        <JFXTextField fx:id="tfAno" labelFloat="true" prefHeight="25.0" prefWidth="49.0" promptText="Ano" />
+                        <JFXTextField fx:id="tfCor" labelFloat="true" prefHeight="25.0" prefWidth="119.0" promptText="Cor" />
                      </children>
                   </HBox>
-                  <JFXButton buttonType="RAISED" layoutX="177.0" layoutY="36.0" text="Adicionar Veículo">
+                  <JFXButton fx:id="btAdicionarVeiculo" buttonType="RAISED" layoutX="186.0" layoutY="36.0" onAction="#clickAdd" onMouseEntered="#addVeiculoEnter" onMouseExited="#addVeiculoExit" text="ADICIONAR VEÍCULO">
                      <graphic>
-                        <FontAwesomeIconView glyphName="PLUS" />
+                        <FontAwesomeIconView fx:id="faPlus" glyphName="PLUS" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton buttonType="RAISED" layoutX="300.0" layoutY="36.0" text="Remover Veículo">
+                  <JFXButton fx:id="btRemoverVeiculo" buttonType="RAISED" layoutX="344.0" layoutY="36.0" onAction="#clickDel" onMouseEntered="#delVeiculoEnter" onMouseExited="#delVeiculoExit" text="REMOVER VEÍCULO">
                      <graphic>
-                        <FontAwesomeIconView glyphName="MINUS" />
+                        <FontAwesomeIconView fx:id="faMinus" glyphName="MINUS" />
                      </graphic>
                   </JFXButton>
-                  <Label layoutX="30.0" layoutY="99.0" text="Erro" textFill="RED" />
-                  <Label layoutX="268.0" layoutY="99.0" text="Erro" textFill="RED" />
-                  <Label layoutX="465.0" layoutY="99.0" text="Erro" textFill="RED" />
-                  <Label layoutX="635.0" layoutY="99.0" text="Erro" textFill="RED" />
-                  <Label layoutX="804.0" layoutY="99.0" text="Erro" textFill="RED" />
-                  <Label layoutX="887.0" layoutY="99.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroMarca" layoutX="30.0" layoutY="99.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroModelo" layoutX="257.0" layoutY="99.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroPlaca" layoutX="447.0" layoutY="99.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroChassi" layoutX="606.0" layoutY="99.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroAno" layoutX="762.0" layoutY="99.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroCor" layoutX="838.0" layoutY="99.0" text="Erro" textFill="RED" />
                </children>
             </Pane>
             <VBox prefHeight="372.0" prefWidth="1033.0">
                <children>
-                  <Label alignment="CENTER" prefHeight="19.0" prefWidth="1188.0" text="Veículos">
+                  <Label fx:id="lbVeiculos" alignment="CENTER" prefHeight="19.0" prefWidth="1188.0" text="Veículos">
                      <font>
-                        <Font name="System Italic" size="13.0" />
+                        <Font name="System Bold Italic" size="12.0" />
                      </font>
                   </Label>
-                  <TableView prefHeight="313.0" prefWidth="1003.0">
+                  <TableView fx:id="tvVeiculos" prefHeight="313.0" prefWidth="1003.0">
                     <columns>
-                      <TableColumn prefWidth="231.0" text="Marca" />
-                      <TableColumn prefWidth="215.0" text="Modelo" />
-                        <TableColumn prefWidth="135.0" text="Placa" />
-                        <TableColumn prefWidth="169.0" text="Chassi" />
-                        <TableColumn prefWidth="107.0" text="Ano" />
-                        <TableColumn prefWidth="155.0" text="Cor" />
+                      <TableColumn fx:id="tcMarca" prefWidth="252.99996948242188" text="Marca" />
+                      <TableColumn fx:id="tcModelo" prefWidth="173.0" text="Modelo" />
+                        <TableColumn fx:id="tcPlaca" prefWidth="139.0" text="Placa" />
+                        <TableColumn fx:id="tcChassi" prefWidth="148.0" text="Chassi" />
+                        <TableColumn fx:id="tcAno" prefWidth="95.0" text="Ano" />
+                        <TableColumn fx:id="tcCor" prefWidth="144.0" text="Cor" />
                     </columns>
                   </TableView>
-                  <Label alignment="CENTER" prefHeight="21.0" prefWidth="1003.0" text="Data da Última Alteração:">
+                  <Label fx:id="lbUltimaAlteracao" alignment="CENTER" prefHeight="21.0" prefWidth="1003.0" text="Data da Última Alteração:">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
@@ -119,29 +119,29 @@
             </VBox>
             <HBox alignment="CENTER" prefHeight="72.0" prefWidth="1200.0" spacing="10.0">
                <children>
-                  <JFXButton buttonType="RAISED" text="NOVO">
+                  <JFXButton fx:id="btNovo" buttonType="RAISED" onAction="#clickNovo" onMouseEntered="#novoEnter" onMouseExited="#novoExit" text="NOVO">
                      <graphic>
-                        <FontAwesomeIconView glyphName="PLUS" />
+                        <FontAwesomeIconView fx:id="faPlus" glyphName="PLUS" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton buttonType="RAISED" text="CONFIRMAR">
+                  <JFXButton fx:id="btConfirmar" buttonType="RAISED" onAction="#clickConfirmar" onMouseEntered="#confirmarEnter" onMouseExited="#confirmarExit" text="CONFIRMAR">
                      <graphic>
-                        <FontAwesomeIconView glyphName="CHECK" />
+                        <FontAwesomeIconView fx:id="faCheck" glyphName="CHECK" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton buttonType="RAISED" text="ALTERAR">
+                  <JFXButton fx:id="btAlterar" buttonType="RAISED" onAction="#clickAlterar" onMouseEntered="#alterarEnter" onMouseExited="#alterarExit" text="ALTERAR">
                      <graphic>
-                        <FontAwesomeIconView glyphName="EDIT" />
+                        <FontAwesomeIconView fx:id="faEdit" glyphName="EDIT" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton buttonType="RAISED" text="REMOVER">
+                  <JFXButton fx:id="btRemover" buttonType="RAISED" onAction="#clickRemover" onMouseEntered="#removerEnter" onMouseExited="#removerExit" text="REMOVER">
                      <graphic>
-                        <FontAwesomeIconView glyphName="TRASH" />
+                        <FontAwesomeIconView fx:id="faTrash" glyphName="TRASH" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton buttonType="RAISED" text="CANCELAR">
+                  <JFXButton fx:id="btCancelar" buttonType="RAISED" onAction="#clickCancelar" onMouseEntered="#cancelarEnter" onMouseExited="#cancelarExit" text="CANCELAR">
                      <graphic>
-                        <FontAwesomeIconView glyphName="CLOSE" />
+                        <FontAwesomeIconView fx:id="faClose" glyphName="CLOSE" />
                      </graphic>
                   </JFXButton>
                </children>
@@ -153,10 +153,10 @@
       </VBox>
    </center>
    <left>
-      <VBox prefHeight="670.0" prefWidth="157.0" spacing="10.0" BorderPane.alignment="CENTER">
+      <VBox fx:id="paneLateral" prefHeight="670.0" prefWidth="157.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="149.0" text="Transporte em andamento" />
-            <ListView prefHeight="620.0" prefWidth="147.0" />
+            <Label fx:id="lbTransporte" alignment="CENTER" prefHeight="17.0" prefWidth="149.0" text="Transporte em andamento" />
+            <ListView fx:id="lvTransportes" onMouseClicked="#selecionaTransporte" onMouseEntered="#transporteEnter" onMouseExited="#transporteExit" prefHeight="620.0" prefWidth="147.0" />
          </children>
          <padding>
             <Insets bottom="10.0" left="5.0" right="5.0" />

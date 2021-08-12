@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastroVeiculoController">
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastroVeiculoController">
    <top>
       <Label fx:id="lbTitulo" alignment="CENTER" prefHeight="17.0" prefWidth="1218.0" text="Gerenciamento de Veículos" BorderPane.alignment="CENTER">
          <font>
@@ -66,17 +66,17 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <HBox alignment="CENTER_LEFT" layoutX="40.0" layoutY="37.0" prefHeight="25.0" prefWidth="901.0" spacing="50.0">
+                  <HBox alignment="CENTER_LEFT" layoutX="40.0" layoutY="37.0" prefHeight="25.0" prefWidth="1075.0" spacing="50.0">
                      <children>
                         <JFXTextField fx:id="tfPlaca" labelFloat="true" promptText="Placa(*)" />
                         <JFXRadioButton fx:id="rbMercosul" text="Mercosul" />
                         <JFXTextField fx:id="tfMarca" labelFloat="true" prefHeight="25.0" prefWidth="195.0" promptText="Marca" />
                         <JFXTextField fx:id="tfModelo" labelFloat="true" prefHeight="25.0" prefWidth="195.0" promptText="Modelo" />
+                        <JFXTextField fx:id="tfChassi" labelFloat="true" prefHeight="25.0" prefWidth="186.0" promptText="Chassi" />
                      </children>
                   </HBox>
                   <HBox layoutX="40.0" layoutY="100.0" prefHeight="25.0" prefWidth="901.0" spacing="50.0">
                      <children>
-                        <JFXTextField fx:id="tfChassi" labelFloat="true" promptText="Chassi" />
                         <JFXTextField fx:id="tfAno" labelFloat="true" prefHeight="25.0" prefWidth="57.0" promptText="Ano" />
                         <JFXTextField fx:id="tfCor" labelFloat="true" promptText="Cor" />
                      </children>
@@ -84,9 +84,9 @@
                   <Label fx:id="lbErroPlaca" layoutX="40.0" layoutY="62.0" text="Label" textFill="RED" />
                   <Label fx:id="lbErroMarca" layoutX="350.0" layoutY="62.0" text="Label" textFill="RED" />
                   <Label fx:id="lbErroModelo" layoutX="594.0" layoutY="62.0" text="Label" textFill="RED" />
-                  <Label fx:id="lbErroChassi" layoutX="40.0" layoutY="125.0" text="Label" textFill="RED" />
-                  <Label fx:id="lbErroAno" layoutX="224.0" layoutY="125.0" text="Label" textFill="RED" />
-                  <Label fx:id="lbErroCor" layoutX="330.0" layoutY="125.0" text="Label" textFill="RED" />
+                  <Label fx:id="lbErroChassi" layoutX="842.0" layoutY="62.0" text="Label" textFill="RED" />
+                  <Label fx:id="lbErroAno" layoutX="40.0" layoutY="125.0" text="Label" textFill="RED" />
+                  <Label fx:id="lbErroCor" layoutX="148.0" layoutY="125.0" text="Label" textFill="RED" />
                </children>
             </Pane>
             <Pane fx:id="panePesquisa" prefHeight="382.0" prefWidth="980.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
@@ -111,14 +111,14 @@
                         <JFXRadioButton fx:id="rbModelo" text="Modelo" />
                      </children>
                   </HBox>
-                  <TableView fx:id="tvVeiculos" layoutX="40.0" layoutY="117.0" prefHeight="244.0" prefWidth="900.0">
+                  <TableView fx:id="tvVeiculos" layoutX="40.0" layoutY="117.0" prefHeight="244.0" prefWidth="1060.0">
                     <columns>
                       <TableColumn fx:id="tcPlaca" prefWidth="171.0" text="Placa" />
-                      <TableColumn fx:id="tcMarca" prefWidth="155.0" text="Marca" />
-                        <TableColumn fx:id="tcModelo" prefWidth="188.0" text="Modelo" />
-                        <TableColumn fx:id="tcChassi" prefWidth="137.0" text="Chassi" />
-                        <TableColumn fx:id="tcAno" prefWidth="82.0" text="Ano" />
-                        <TableColumn fx:id="tcCor" prefWidth="166.0" text="Cor" />
+                      <TableColumn fx:id="tcMarca" prefWidth="232.0" text="Marca" />
+                        <TableColumn fx:id="tcModelo" prefWidth="230.0" text="Modelo" />
+                        <TableColumn fx:id="tcChassi" prefWidth="206.0" text="Chassi" />
+                        <TableColumn fx:id="tcAno" prefWidth="70.0" text="Ano" />
+                        <TableColumn fx:id="tcCor" prefWidth="150.0" text="Cor" />
                     </columns>
                   </TableView>
                </children>

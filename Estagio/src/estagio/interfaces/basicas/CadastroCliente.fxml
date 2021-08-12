@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastroClienteController">
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastroClienteController">
    <top>
       <Label fx:id="lbTitulo" alignment="CENTER" prefHeight="17.0" prefWidth="1205.0" text="Gerenciamento de Clientes" BorderPane.alignment="CENTER">
          <font>
@@ -55,7 +55,7 @@
                   </Label>
                   <JFXTextField fx:id="tfCEP" labelFloat="true" layoutX="34.0" layoutY="30.0" prefWidth="65.0" promptText="CEP" />
                   <FontAwesomeIconView fx:id="faSearchCEP" glyphName="SEARCH" layoutX="113.0" layoutY="48.0" onMouseClicked="#clickPesquisarCEP" onMouseEntered="#cepEnter" onMouseExited="#cepExit" size="18" />
-                  <HBox layoutX="34.0" layoutY="80.0" prefHeight="29.0" prefWidth="1119.0" spacing="35.0">
+                  <HBox layoutX="34.0" layoutY="80.0" prefHeight="29.0" prefWidth="1092.0" spacing="35.0">
                      <children>
                         <JFXTextField fx:id="tfRua" labelFloat="true" prefHeight="25.0" prefWidth="213.0" promptText="Rua" />
                         <JFXTextField fx:id="tfNumero" labelFloat="true" prefHeight="25.0" prefWidth="66.0" promptText="Número" />
@@ -114,14 +114,14 @@
                         <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
                      </graphic>
                   </JFXButton>
-                  <TableView fx:id="tvClientes" layoutX="69.0" layoutY="50.0" prefHeight="179.0" prefWidth="1031.0">
+                  <TableView fx:id="tvClientes" layoutX="29.0" layoutY="50.0" prefHeight="179.0" prefWidth="1072.0">
                     <columns>
-                      <TableColumn fx:id="tcNome" prefWidth="284.0" text="Nome" />
-                      <TableColumn fx:id="tcCPF" prefWidth="86.0" text="CPF" />
-                        <TableColumn fx:id="tcRG" prefWidth="76.0" text="RG" />
-                        <TableColumn fx:id="tcData" prefWidth="110.0" text="Data de Nasci." />
-                        <TableColumn fx:id="tcEndereco" prefWidth="295.0" text="Endereço" />
-                        <TableColumn fx:id="tcEmail" prefWidth="179.0" text="Email" />
+                      <TableColumn fx:id="tcNome" prefWidth="347.0" text="Nome" />
+                      <TableColumn fx:id="tcCPF" prefWidth="101.0" text="CPF" />
+                        <TableColumn fx:id="tcRG" prefWidth="105.0" text="RG" />
+                        <TableColumn fx:id="tcData" prefWidth="121.0" text="Data de Nasci." />
+                        <TableColumn fx:id="tcEndereco" prefWidth="244.0" text="Endereço" />
+                        <TableColumn fx:id="tcEmail" prefWidth="153.0" text="Email" />
                     </columns>
                   </TableView>
                </children>

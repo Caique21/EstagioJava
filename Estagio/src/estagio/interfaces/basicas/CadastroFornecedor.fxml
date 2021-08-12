@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastroFornecedorController">
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastroFornecedorController">
    <top>
       <Label fx:id="lbTitulo" alignment="CENTER" prefHeight="17.0" prefWidth="1208.0" text="Gerenciamento de Fornecedores" BorderPane.alignment="CENTER">
          <font>
@@ -70,20 +70,20 @@
                   </Label>
                   <JFXTextField fx:id="tfNome" labelFloat="true" layoutX="41.0" layoutY="55.0" prefHeight="25.0" prefWidth="246.0" promptText="Nome do Fornecedor(*)" />
                   <JFXTextField fx:id="tfCNPJ" labelFloat="true" layoutX="329.0" layoutY="55.0" promptText="CNPJ(*)" />
-                  <JFXTextField fx:id="tfEmail" labelFloat="true" layoutX="505.0" layoutY="55.0" prefHeight="25.0" prefWidth="223.0" promptText="Email" />
-                  <JFXListView layoutX="932.0" layoutY="15.0" prefHeight="111.0" prefWidth="200.0" />
-                  <Label fx:id="lbTelefones" layoutX="932.0" layoutY="2.0" text="Telefones/Celulares">
+                  <JFXTextField fx:id="tfEmail" labelFloat="true" layoutX="505.0" layoutY="55.0" prefHeight="25.0" prefWidth="167.0" promptText="Email" />
+                  <JFXListView layoutX="877.0" layoutY="15.0" prefHeight="111.0" prefWidth="200.0" />
+                  <Label fx:id="lbTelefones" layoutX="877.0" layoutY="2.0" text="Telefones/Celulares">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Label>
-                  <JFXButton fx:id="btDelTelefone" buttonType="RAISED" layoutX="850.0" layoutY="19.0" onAction="#clickDel" onMouseEntered="#delEnter" onMouseExited="#delExit" text="REMOVER" />
-                  <JFXButton fx:id="btAddTelefone" buttonType="RAISED" layoutX="765.0" layoutY="19.0" onAction="#clickAdd" onMouseEntered="#addEnter" onMouseExited="#addExit" text="ADICIONAR" />
-                  <JFXTextField fx:id="tfTelefone" labelFloat="true" layoutX="774.0" layoutY="55.0" prefHeight="25.0" prefWidth="139.0" promptText="Telefone/Celular" />
+                  <JFXButton fx:id="btDelTelefone" buttonType="RAISED" layoutX="788.0" layoutY="19.0" onAction="#clickDel" onMouseEntered="#delEnter" onMouseExited="#delExit" text="REMOVER" />
+                  <JFXButton fx:id="btAddTelefone" buttonType="RAISED" layoutX="703.0" layoutY="19.0" onAction="#clickAdd" onMouseEntered="#addEnter" onMouseExited="#addExit" text="ADICIONAR" />
+                  <JFXTextField fx:id="tfTelefone" labelFloat="true" layoutX="712.0" layoutY="55.0" prefHeight="25.0" prefWidth="139.0" promptText="Telefone/Celular" />
                   <Label fx:id="lbErroNome" layoutX="41.0" layoutY="83.0" text="Erro" textFill="RED" />
                   <Label fx:id="lbErroCNPJ" layoutX="329.0" layoutY="83.0" text="Erro" textFill="RED" />
                   <Label fx:id="lbErroEMail" layoutX="505.0" layoutY="83.0" text="Erro" textFill="RED" />
-                  <Label fx:id="lbErroTelefone" layoutX="774.0" layoutY="83.0" text="Erro" textFill="RED" />
+                  <Label fx:id="lbErroTelefone" layoutX="712.0" layoutY="83.0" text="Erro" textFill="RED" />
                </children>
             </Pane>
             <Pane fx:id="paneEndereco" prefHeight="146.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;;">
@@ -99,7 +99,7 @@
                         <FontAwesomeIconView fx:id="faSearchCEP" glyphName="SEARCH" onMouseClicked="#clickPesquisarCEP" onMouseEntered="#cepEnter" onMouseExited="#cepExit" size="18" />
                      </graphic>
                   </JFXButton>
-                  <HBox alignment="CENTER_LEFT" layoutX="41.0" layoutY="100.0" prefHeight="25.0" prefWidth="1091.0" spacing="20.0">
+                  <HBox alignment="CENTER_LEFT" layoutX="41.0" layoutY="100.0" prefHeight="25.0" prefWidth="1076.0" spacing="20.0">
                      <children>
                         <JFXTextField fx:id="tfRua" labelFloat="true" prefHeight="25.0" prefWidth="221.0" promptText="Rua" />
                         <JFXTextField fx:id="tfNumero" labelFloat="true" prefHeight="25.0" prefWidth="62.0" promptText="Número" />
@@ -131,12 +131,12 @@
                         <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
                      </graphic>
                   </JFXButton>
-                  <TableView fx:id="tvFornecedores" layoutX="41.0" layoutY="94.0" prefHeight="198.0" prefWidth="1099.0">
+                  <TableView fx:id="tvFornecedores" layoutX="41.0" layoutY="94.0" prefHeight="198.0" prefWidth="1046.0">
                     <columns>
                       <TableColumn fx:id="tcNome" prefWidth="366.0" text="Nome" />
                       <TableColumn fx:id="tcCNPJ" prefWidth="124.0" text="CNPJ" />
                         <TableColumn fx:id="tcEmail" prefWidth="222.0" text="Email" />
-                        <TableColumn fx:id="tcEndereco" prefWidth="386.0" text="Endereço" />
+                        <TableColumn fx:id="tcEndereco" prefWidth="333.0" text="Endereço" />
                     </columns>
                   </TableView>
                   <HBox alignment="CENTER_LEFT" layoutX="41.0" layoutY="70.0" prefHeight="17.0" prefWidth="212.0" spacing="30.0">
