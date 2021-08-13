@@ -53,14 +53,14 @@
                   <Label fx:id="lbAte" layoutX="157.0" layoutY="19.0" text="Até" visible="false" />
                </children>
             </Pane>
-            <Pane prefHeight="264.0" prefWidth="1180.0">
+            <Pane prefHeight="280.0" prefWidth="1130.0">
                <children>
                   <Label fx:id="lbRecebimentos" alignment="CENTER" prefHeight="19.0" prefWidth="1180.0" text="Recebimentos">
                      <font>
                         <Font name="System Bold Italic" size="12.0" />
                      </font>
                   </Label>
-                  <TableView fx:id="tvRecebimentos" layoutX="20.0" layoutY="19.0" prefHeight="243.0" prefWidth="1072.0">
+                  <TableView fx:id="tvRecebimentos" layoutX="20.0" layoutY="19.0" prefHeight="262.0" prefWidth="1072.0">
                     <columns>
                       <TableColumn fx:id="tcCliente" prefWidth="313.0" text="Cliente" />
                       <TableColumn fx:id="tcPlaca" prefWidth="145.0" text="Placa" />
@@ -108,7 +108,7 @@
       </VBox>
    </center>
    <bottom>
-      <HBox alignment="CENTER" prefHeight="57.0" prefWidth="1200.0" spacing="20.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="47.0" prefWidth="1200.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
             <JFXButton fx:id="btConfirmar" buttonType="RAISED" onAction="#clickConfirmar" onMouseEntered="#confirmarEnter" onMouseExited="#confirmarExit" text="CONFIRMAR RECEBIMENTO">
                <graphic>

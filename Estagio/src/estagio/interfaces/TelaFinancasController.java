@@ -5,13 +5,19 @@
  */
 package estagio.interfaces;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -43,6 +49,8 @@ public class TelaFinancasController implements Initializable
     private Pane folderBalanco;
     @FXML
     private Pane paneBalanco;
+    @FXML
+    private Pane panePrincipal;
 
     /**
      * Initializes the controller class.
@@ -56,26 +64,101 @@ public class TelaFinancasController implements Initializable
     @FXML
     private void clickCompra(MouseEvent event)
     {
+        try
+        {
+            Stage stage = (Stage) panePrincipal.getScene().getWindow();
+            stage.setResizable(false);
+
+            Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/fundamentais/TelaCompra.fxml"));
+            panePrincipal.getChildren().clear();
+            panePrincipal.getChildren().add(root);
+        }
+        catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Dashboard!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
+            a.showAndWait();
+            System.out.println(er.getMessage());
+        }
     }
 
     @FXML
     private void clickVenda(MouseEvent event)
     {
+        try
+        {
+            Stage stage = (Stage) panePrincipal.getScene().getWindow();
+            stage.setResizable(false);
+
+            Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/fundamentais/TelaVenda.fxml"));
+            panePrincipal.getChildren().clear();
+            panePrincipal.getChildren().add(root);
+        }
+        catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Dashboard!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
+            a.showAndWait();
+            System.out.println(er.getMessage());
+        }
     }
 
     @FXML
     private void clickPagamento(MouseEvent event)
     {
+        try
+        {
+            Stage stage = (Stage) panePrincipal.getScene().getWindow();
+            stage.setResizable(false);
+
+            Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/fundamentais/TelaPagamento.fxml"));
+            panePrincipal.getChildren().clear();
+            panePrincipal.getChildren().add(root);
+        }
+        catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Dashboard!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
+            a.showAndWait();
+            System.out.println(er.getMessage());
+        }
     }
 
     @FXML
     private void clickRecebimento(MouseEvent event)
     {
+        try
+        {
+            Stage stage = (Stage) panePrincipal.getScene().getWindow();
+            stage.setResizable(false);
+
+            Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/fundamentais/TelaRecebimento.fxml"));
+            panePrincipal.getChildren().clear();
+            panePrincipal.getChildren().add(root);
+        }
+        catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Dashboard!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
+            a.showAndWait();
+            System.out.println(er.getMessage());
+        }
     }
 
     @FXML
     private void clickBalanco(MouseEvent event)
     {
+        try
+        {
+            Stage stage = (Stage) panePrincipal.getScene().getWindow();
+            stage.setResizable(false);
+
+            Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/fundamentais/TelaBalanco.fxml"));
+            panePrincipal.getChildren().clear();
+            panePrincipal.getChildren().add(root);
+        }
+        catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Dashboard!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
+            a.showAndWait();
+            System.out.println(er.getMessage());
+        }
     }
 
     @FXML

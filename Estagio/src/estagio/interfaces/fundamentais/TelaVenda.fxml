@@ -25,7 +25,7 @@
       </Label>
    </top>
    <bottom>
-      <HBox alignment="CENTER" prefHeight="81.0" prefWidth="1200.0" spacing="20.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="47.0" prefWidth="1200.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
             <JFXButton fx:id="btNovo" buttonType="RAISED" onAction="#clickNovo" onMouseEntered="#novoEnter" onMouseExited="#novoExit" text="NOVO">
                <graphic>
@@ -98,7 +98,7 @@
                   <Label fx:id="lbErroValor" layoutX="30.0" layoutY="111.0" text="Label" textFill="RED" />
                </children>
             </Pane>
-            <VBox alignment="TOP_CENTER" prefHeight="278.0" prefWidth="1180.0">
+            <VBox alignment="TOP_CENTER" prefHeight="301.0" prefWidth="1130.0">
                <children>
                   <Label fx:id="lbVeiculos" alignment="CENTER" prefHeight="17.0" prefWidth="1194.0" text="Veículos">
                      <font>

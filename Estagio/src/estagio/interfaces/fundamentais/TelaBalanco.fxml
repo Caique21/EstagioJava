@@ -16,17 +16,21 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import java.net.URL?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
-   <center>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.fundamentais.TelaBalancoController">
+   <stylesheets>
+        <URL value="@/estagio/utilidades/CSS/ListCell.css" />
+    </stylesheets>
+    
+    <center>
       <JFXTabPane BorderPane.alignment="CENTER">
          <tabs>
             <Tab text="Sumário">
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Pane prefHeight="220.0" prefWidth="1160.0">
+                        <Pane prefHeight="220.0" prefWidth="1150.0">
                            <children>
                               <FontAwesomeIconView glyphName="BALANCE_SCALE" layoutX="20.0" layoutY="31.0" size="20" />
                               <Label layoutX="56.0" layoutY="11.0" text="Saldo Global">
@@ -50,7 +54,7 @@
                            </children>
                         </Pane>
                         <Separator prefWidth="200.0" />
-                        <Pane prefHeight="220.0" prefWidth="1160.0">
+                        <Pane prefHeight="220.0" prefWidth="1150.0">
                            <children>
                               <FontAwesomeIconView glyphName="ARROW_UP" layoutX="14.0" layoutY="24.0" size="15" />
                               <Label layoutX="56.0" layoutY="11.0" text="Lucro/(Prejuízo) este mês">
@@ -75,7 +79,7 @@
                            </children>
                         </Pane>
                         <Separator prefWidth="200.0" />
-                        <HBox prefHeight="210.0" prefWidth="200.0" spacing="10.0">
+                        <HBox prefHeight="210.0" prefWidth="1150.0" spacing="10.0">
                            <children>
                               <Pane prefHeight="210.0" prefWidth="580.0">
                                  <children>
@@ -140,44 +144,44 @@
                                     <Font name="System Bold" size="15.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="356.0" layoutY="11.0" text="Este Mês">
+                              <Label layoutX="337.0" layoutY="11.0" text="Este Mês">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="337.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="356.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label layoutX="540.0" layoutY="11.0" text="Último Mês">
                                  <font>
-                                    <Font name="System Bold" size="15.0" />
+                                    <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="559.0" layoutY="11.0" text="Último Mês">
+                              <Label layoutX="540.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="559.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label layoutX="752.0" layoutY="11.0" text="Este Ano">
                                  <font>
-                                    <Font name="System Bold" size="15.0" />
+                                    <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="771.0" layoutY="11.0" text="Este Ano">
+                              <Label layoutX="752.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="771.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label layoutX="959.0" layoutY="11.0" text="Último Ano">
                                  <font>
-                                    <Font name="System Bold" size="15.0" />
+                                    <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="978.0" layoutY="11.0" text="Último Ano">
+                              <Label layoutX="959.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="978.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
-                                 <font>
-                                    <Font name="System Bold" size="15.0" />
                                  </font>
                               </Label>
                            </children>
@@ -210,51 +214,51 @@
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                      <children>
-                        <Pane prefHeight="59.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
+                        <Pane prefHeight="59.0" prefWidth="1150.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                            <children>
                               <Label layoutX="20.0" layoutY="20.0" text="Gasto Total">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="356.0" layoutY="11.0" text="Este Mês">
+                              <Label layoutX="337.0" layoutY="11.0" text="Este Mês">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="337.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="356.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label layoutX="540.0" layoutY="11.0" text="Último Mês">
                                  <font>
-                                    <Font name="System Bold" size="15.0" />
+                                    <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="559.0" layoutY="11.0" text="Último Mês">
+                              <Label layoutX="540.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="559.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label layoutX="752.0" layoutY="11.0" text="Este Ano">
                                  <font>
-                                    <Font name="System Bold" size="15.0" />
+                                    <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="771.0" layoutY="11.0" text="Este Ano">
+                              <Label layoutX="752.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="771.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label layoutX="959.0" layoutY="11.0" text="Último Ano">
                                  <font>
-                                    <Font name="System Bold" size="15.0" />
+                                    <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="978.0" layoutY="11.0" text="Último Ano">
+                              <Label layoutX="959.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
-                                 </font>
-                              </Label>
-                              <Label layoutX="978.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
-                                 <font>
-                                    <Font name="System Bold" size="15.0" />
                                  </font>
                               </Label>
                            </children>
