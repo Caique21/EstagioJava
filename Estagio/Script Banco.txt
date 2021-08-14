@@ -78,8 +78,8 @@ CREATE TABLE cliente
 	cli_nome VARCHAR(45) NOT NULL,
 	cli_cpf VARCHAR(15) NOT NULL UNIQUE,
 	cli_rg varchar(15) not null,
-	cli_email VARCHAR(45) NULL ,
 	cli_datacadastro DATE NOT NULL,
+	cli_email VARCHAR(45) NULL ,
 	cli_ativo BOOLEAN NOT NULL,
 	cli_alteracao TIMESTAMP NOT NULL,
 	ender_codigo INTEGER NOT NULL,
@@ -167,7 +167,7 @@ CREATE TABLE Usuario
 	user_codigo serial NOT NULL,
 	user_nome VARCHAR(45) NOT NULL UNIQUE,
 	user_senha VARCHAR(45) NOT NULL,
-	user_nivel INTEGER NOT NULL,
+	user_nivel VARCHAR(5) NOT NULL,
 	user_ativo BOOLEAN NOT NULL,
 	func_codigo INTEGER NULL,
 	CONSTRAINT pk_user_codigo
@@ -190,16 +190,13 @@ CREATE TABLE Acessos
 		REFERENCES usuario on delete cascade
 );
 
-CREATE TABLE despesa
+CREATE TABLE forma_pagamento
 (
-	desp_codigo serial NOT NULL,
-	desp_nome VARCHAR(45) NOT NULL,
-	desp_fixo BOOLEAN NOT NULL,
-	desp_preco DECIMAL (10,2) NOT NULL,
-	desp_data_vencimento DATE NOT NULL,
-	desp_descricao VARCHAR(45),
-	CONSTRAINT pk_despesa
-		PRIMARY KEY (desp_codigo)
+	form_pagamento_codigo SERIAL NOT NULL;
+	form_pagamento_nome VARCHAR(45) NOT NULL,
+	form_pagamento_descricao VARCGAR(90) NULL,
+	CONSTRANT pk_forma_pagamento
+		PRIMARY KEY(form_pagamento_codigo)
 );
 
 CREATE TABLE Compra
@@ -220,24 +217,6 @@ CREATE TABLE Compra
 		REFERENCES fornecedor (forn_codigo)
 );
 
-
-CREATE TABLE parcela_compra
-(
-	parc_comp_codigo serial NOT NULL,
-	parc_comp_status INTEGER NULL,
-	parc_comp_dataVencimento DATE NOT NULL,
-	parc_comp_numero INTEGER NOT NULL,
-	parc_comp_dataPagamento DATE,
-	parc_comp_valorPago DECIMAL(6,2),
-	comp_codigo INTEGER NOT NULL,
-	parc_compra_valorParcela DECIMAL(10,2) NOT NULL,
-	CONSTRAINT pk_parcela_compra 
-		PRIMARY KEY(parc_comp_codigo),
-	CONSTRAINT fk_parc_compra 
-		FOREIGN KEY(comp_codigo) 
-		REFERENCES Compra(comp_codigo) on delete cascade
-);
-
 CREATE TABLE veiculo_compra
 (
 	comp_codigo INTEGER NOT NULL,
@@ -251,35 +230,6 @@ CREATE TABLE veiculo_compra
 	CONSTRAINT fk_veiculo_compra_veiculo
 		FOREIGN KEY(vei_codigo)
 		REFERENCES veiculo(vei_codigo) on delete cascade
-);
-
-CREATE TABLE Pagamento
-(
-  	pag_codigo serial NOT NULL,
-  	pag_data Date NOT NULL ,
-  	pag_valor DECIMAL(10,2) NOT NULL,
-	parc_codigo INTEGER NULL,
-	pag_forma_pagamento VARCHAR(12) not null,
-	pag_ativo boolean NOT NULL,--TRUE == PAGAMENTO | FALSE == ESTORNO
-	desp_codigo INTEGER NULL,
-  	CONSTRAINT pk_pagamento
-		PRIMARY KEY (pag_codigo) ,
-	CONSTRAINT fk_pagamento_parcela 
-		FOREIGN KEY (parc_codigo) 
-		REFERENCES parcela_compra (parc_compra_codigo),
-	CONSTRAINT fk_pagamento_despesa
-		FOREIGN KEY(desp_codigo)
-		REFERENCES despesa
-);
-
-CREATE TABLE registro_pagamento
-(
-	reg_pag_codigo serial NOT NULL,
-	reg_pag_relatorio VARCHAR(200) NOT NULL,
-	reg_pag_data DATE NOT NULL,
-	user_codigo INTEGER NOT NULL,
-	CONSTRAINT pk_reg_pagamento
-		PRIMARY KEY(reg_pag_codigo)
 );
 
 CREATE TABLE venda
@@ -299,21 +249,25 @@ CREATE TABLE venda
 		REFERENCES cliente
 );
 
-CREATE TABLE parcela_venda
+CREATE TABLE parcela
 (
-	parc_ven_codigo serial NOT NULL,
-	parc_ven_status INTEGER NULL,
-	parc_ven_dataVencimento DATE NOT NULL,
-	parc_ven_numero INTEGER NOT NULL,
-	parc_ven_dataPagamento DATE,
-	parc_ven_valorPago DECIMAL(6,2),
-	parc_ven_venda_cod INTEGER NOT NULL,
-	parc_ven_valorParcela DECIMAL(10,2) NOT NULL,
+	parc_codigo serial NOT NULL,
+	parc_status INTEGER NULL,
+	parc_dataVencimento DATE NOT NULL,
+	parc_numero INTEGER NOT NULL,
+	parc_dataPagamento DATE,
+	parc_valorPago DECIMAL(6,2),
+	parc_valorParcela DECIMAL(10,2) NOT NULL,
+	ven_codigo INTEGER NULL,
+	comp_codigo INTEGER NULL,
 	CONSTRAINT pk_parcela_venda
 		PRIMARY KEY(parc_ven_codigo),
+	CONSTRAINT fk_parcela_venda 
+		FOREIGN KEY(ven_codigo) 
+		REFERENCES venda(ven_codigo) on delete cascade,
 	CONSTRAINT fk_parc_compra 
-		FOREIGN KEY(parc_ven_venda_cod) 
-		REFERENCES venda(ven_codigo) on delete cascade
+		FOREIGN KEY(comp_codigo) 
+		REFERENCES compra(comp_codigo) on delete cascade
 );
 
 CREATE TABLE veiculo_venda
@@ -344,6 +298,20 @@ CREATE TABLE recebimento
 	CONSTRAINT fk_recebimento_parcela 
 		FOREIGN KEY (parc_ven_codigo) 
 		REFERENCES parcela_venda
+);
+
+CREATE TABLE registro_recebimento
+(
+	reg_rec_codigo serial NOT NULL,
+	rec_codigo INTEGRE NOT NULL,
+	reg_rec_relatorio VARCHAR(200) NOT NULL,
+	reg_rec_data DATE NOT NULL,
+	user_codigo INTEGER NOT NULL,
+	CONSTRAINT pk_registro_recebimento
+		PRIMARY KEY(reg_rec_codigo),
+	CONSTRAINT fk_registro_rec_recebimento
+		FOREIGN KEY(rec_codigo)
+		REFERENCES recebimento
 );
 
 CREATE TABLE transporte
@@ -378,6 +346,57 @@ CREATE TABLE veiculos_transportados
 	CONSTRAINT fk_vei_transportados_veiculos
 		FOREIGN KEY(vei_codigo)
 		REFERENCES veiculo
+);
+
+CREATE TABLE despesa
+(
+	desp_codigo serial NOT NULL,
+	desp_nome VARCHAR(45) NOT NULL,
+	desp_fixo BOOLEAN NOT NULL,
+	desp_preco DECIMAL (10,2) NOT NULL,
+	desp_data_vencimento DATE NOT NULL,
+	desp_descricao VARCHAR(45),
+	trans_codigo INTEGER NULL,
+	CONSTRAINT pk_despesa
+		PRIMARY KEY (desp_codigo),
+	CONSTRAINT fk_despesa_transporte
+		FOREIGN KEY (trans_codigo)
+		REFENCES transporte
+);
+
+
+
+CREATE TABLE Pagamento
+(
+  	pag_codigo serial NOT NULL,
+  	pag_data Date NOT NULL ,
+  	pag_valor DECIMAL(10,2) NOT NULL,
+	parc_codigo INTEGER NULL,
+	pag_forma_pagamento VARCHAR(12) not null,
+	pag_ativo boolean NOT NULL,--TRUE == PAGAMENTO | FALSE == ESTORNO
+	desp_codigo INTEGER NULL,
+  	CONSTRAINT pk_pagamento
+		PRIMARY KEY (pag_codigo) ,
+	CONSTRAINT fk_pagamento_parcela 
+		FOREIGN KEY (parc_codigo) 
+		REFERENCES parcela_compra (parc_compra_codigo),
+	CONSTRAINT fk_pagamento_despesa
+		FOREIGN KEY(desp_codigo)
+		REFERENCES despesa
+);
+
+CREATE TABLE registro_pagamento
+(
+	reg_pag_codigo serial NOT NULL,
+	pag_codigo INTEGRE NOT NULL,
+	reg_pag_relatorio VARCHAR(200) NOT NULL,
+	reg_pag_data DATE NOT NULL,
+	user_codigo INTEGER NOT NULL,
+	CONSTRAINT pk_registro_pagamento
+		PRIMARY KEY(reg_pag_codigo),
+	CONSTRAINT fk_registro_pag_pagamento
+		FOREIGN KEY(pag_codigo)
+		REFERENCES pagamento
 );
 
 insert into usuario(user_nome, user_senha, user_nivel,user_ativo) values ('admin','admin',3,true)
