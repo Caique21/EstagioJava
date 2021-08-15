@@ -17,5 +17,5 @@ public class RegistroRecebimento
     private Recebimento recebimento;
     private String relatorio;
     private Date data;
-    private Usuario usuario;
+    private Funcionario funcionario;
 }

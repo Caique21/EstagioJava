@@ -18,5 +18,5 @@ public class RegistroPagamento
     private Pagamento pagamento;
     private String relatorio;
     private Date data;
-    private Usuario usuario;
+    private Funcionario funcionario;
 }
