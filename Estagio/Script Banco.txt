@@ -306,12 +306,15 @@ CREATE TABLE registro_recebimento
 	rec_codigo INTEGRE NOT NULL,
 	reg_rec_relatorio VARCHAR(200) NOT NULL,
 	reg_rec_data DATE NOT NULL,
-	user_codigo INTEGER NOT NULL,
+	func_codigo INTEGER NOT NULL,
 	CONSTRAINT pk_registro_recebimento
 		PRIMARY KEY(reg_rec_codigo),
 	CONSTRAINT fk_registro_rec_recebimento
 		FOREIGN KEY(rec_codigo)
-		REFERENCES recebimento
+		REFERENCES recebimento,
+	CONSTRAINT fk_reg_pagamento_funcionario
+		FOREIGN KEY (func_codigo)
+		REFERENCES funcionario
 );
 
 CREATE TABLE transporte
@@ -391,12 +394,15 @@ CREATE TABLE registro_pagamento
 	pag_codigo INTEGRE NOT NULL,
 	reg_pag_relatorio VARCHAR(200) NOT NULL,
 	reg_pag_data DATE NOT NULL,
-	user_codigo INTEGER NOT NULL,
+	func_codigo INTEGER NOT NULL,
 	CONSTRAINT pk_registro_pagamento
 		PRIMARY KEY(reg_pag_codigo),
 	CONSTRAINT fk_registro_pag_pagamento
 		FOREIGN KEY(pag_codigo)
-		REFERENCES pagamento
+		REFERENCES pagamento,
+	CONSTRAINT fk_reg_pagamento_funcionario
+		FOREIGN KEY (func_codigo)
+		REFERENCES funcionario
 );
 
 insert into usuario(user_nome, user_senha, user_nivel,user_ativo) values ('admin','admin',3,true)

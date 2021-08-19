@@ -5,6 +5,7 @@
  */
 package estagio.interfaces;
 
+import com.jfoenix.controls.JFXDecorator;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -12,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.ImageView;
@@ -68,6 +70,10 @@ public class TelaGerenciamentoController implements Initializable
     private Pane paneVeiculos;
     @FXML
     private BorderPane panePrincipal;
+    @FXML
+    private Pane folderFabricante;
+    @FXML
+    private Pane paneFabricante;
 
     /**
      * Initializes the controller class.
@@ -159,6 +165,34 @@ public class TelaGerenciamentoController implements Initializable
             Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Dashboard!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
             a.showAndWait();
             System.out.println(er.getMessage());
+        }
+    }
+
+    @FXML
+    private void clickFabricante(MouseEvent event)
+    {
+        try
+        {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/basicas/CadastroFabricante.fxml"));     
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            JFXDecorator decorator = new JFXDecorator(stage, root);
+
+            decorator.setStyle("-fx-decorator-color: #040921;");
+
+            Scene scene = new Scene(decorator);
+            
+            
+            stage.setTitle("Cadastro de Veículo");
+            stage.setScene(scene);
+            stage.setAlwaysOnTop(true);
+            stage.showAndWait();
+
+        } catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Veículos! \nErro: " + er.getMessage(), ButtonType.OK);
+            System.out.println(er.getMessage());
+            a.showAndWait();
         }
     }
 
@@ -372,6 +406,28 @@ public class TelaGerenciamentoController implements Initializable
     private void veiculosEnter(MouseEvent event)
     {
         folderVeiculos.setStyle("-fx-cursor: hand; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
+    }
+
+    @FXML
+    private void fabricanteExit(MouseEvent event)
+    {
+        folderFabricante.setStyle("-fx-cursor: default; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
+    }
+
+    @FXML
+    private void fabricanteEnter(MouseEvent event)
+    {
+        folderFabricante.setStyle("-fx-cursor: hand; "
                 + "-fx-background-color: white;"
                 + "-fx-background-radius: 7px;"
                 + "-fx-border-color:  D1D1D1;"

@@ -7,20 +7,28 @@ package estagio.interfaces.fundamentais;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -122,6 +130,28 @@ public class TelaRecebimentoController implements Initializable
     @FXML
     private void clickConfirmar(ActionEvent event)
     {
+        try
+        {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/fundamentais/GerarNotaPromissoria.fxml"));     
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            JFXDecorator decorator = new JFXDecorator(stage, root);
+
+            decorator.setStyle("-fx-decorator-color: #040921;");
+
+            Scene scene = new Scene(decorator);
+            
+            
+            stage.setTitle("Cadastro de Veículo");
+            stage.setScene(scene);
+            stage.showAndWait();
+
+        } catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Veículos! \nErro: " + er.getMessage(), ButtonType.OK);
+            System.out.println(er.getMessage());
+            a.showAndWait();
+        }
     }
 
     @FXML
