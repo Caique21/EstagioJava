@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXColorPicker?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="392.0" prefWidth="883.0" style="-fx-background-color: #010410;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.configuracao.TelaDesignController">
+   <children>
+      <Pane fx:id="PaneInterface" layoutX="24.0" layoutY="65.0" prefHeight="175.0" prefWidth="396.0" style="-fx-background-color: #040921;">
+         <children>
+            <JFXColorPicker fx:id="cpFundo1" editable="true" layoutX="230.0" layoutY="29.0" prefWidth="140.0" />
+            <JFXColorPicker fx:id="cpFundo2" editable="true" layoutX="230.0" layoutY="67.0" prefWidth="140.0" />
+            <JFXColorPicker fx:id="cpFonte" editable="true" layoutX="230.0" layoutY="139.0" prefWidth="140.0" />
+            <Label fx:id="lb1" layoutX="60.0" layoutY="32.0" text="Cor de Fundo Primária:" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb2" layoutX="60.0" layoutY="70.0" text="Cor de Fundo Secundária:" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb3" layoutX="60.0" layoutY="142.0" text="Cor da Fonte:" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="lbInterface" alignment="CENTER" prefHeight="17.0" prefWidth="396.0" text="Interface" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <JFXButton fx:id="btResetInterface" buttonType="RAISED" layoutX="308.0" text="Resetar Interface" textFill="#f8f8f8">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </JFXButton>
+            <Label fx:id="lbOpacidade" layoutX="60.0" layoutY="105.0" text="Opacidade: do Fundo: " textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <JFXSlider fx:id="slOpacidade" layoutX="230.0" layoutY="105.0" prefHeight="14.0" prefWidth="140.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="100.0" />
+         </children>
+      </Pane>
+      <Label fx:id="lbTitulo" alignment="CENTER" layoutY="14.0" prefHeight="30.0" prefWidth="883.0" text="Design" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Pane fx:id="PaneBotoes" layoutX="453.0" layoutY="65.0" prefHeight="175.0" prefWidth="396.0" style="-fx-background-color: #040921;">
+         <children>
+            <JFXButton fx:id="btTeste" buttonType="RAISED" layoutX="336.0" layoutY="142.0" onMouseEntered="#testeEnter" onMouseExited="#testeExit" ripplerFill="WHITE" text="Teste" textFill="WHITE" />
+            <JFXColorPicker fx:id="cpFundoBotao" editable="true" layoutX="236.0" layoutY="30.0" />
+            <Label fx:id="lb4" layoutX="43.0" layoutY="33.0" text="Cor de Fundo:" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb5" layoutX="43.0" layoutY="66.0" text="Cor de Preenchimento:" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <JFXColorPicker fx:id="cpPreenchimento" editable="true" layoutX="236.0" layoutY="64.0" />
+            <Label fx:id="lb6" layoutX="43.0" layoutY="105.0" text="Cor de Fonte:" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="lbBotoes" alignment="CENTER" layoutY="4.0" prefHeight="17.0" prefWidth="396.0" text="Botões" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb7" layoutX="43.0" layoutY="144.0" text="Tamanho de Fonte:" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <JFXColorPicker fx:id="cpFonteBotao" editable="true" layoutX="236.0" layoutY="103.0" />
+            <JFXButton fx:id="btResetarBotoes" buttonType="RAISED" layoutX="318.0" text="Resetar Botões" textFill="#f8f8f8">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </JFXButton>
+            <JFXRadioButton fx:id="rbFundoBotao" layoutX="138.0" layoutY="34.0" text="Desabilitado" textFill="WHITE" />
+            <JFXSlider fx:id="slFonteBotao" blockIncrement="1.0" layoutX="166.0" layoutY="145.0" max="50.0" prefHeight="24.0" prefWidth="170.0" showTickLabels="true" showTickMarks="true" value="12.0" />
+         </children>
+      </Pane>
+      <Pane fx:id="paneTexto" layoutX="24.0" layoutY="251.0" prefHeight="78.0" prefWidth="827.0" style="-fx-background-color: #040921 #040921;">
+         <children>
+            <Label fx:id="lbTexto" alignment="CENTER" prefHeight="20.0" prefWidth="827.0" text="Entrada de Texto" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <JFXTextField fx:id="tfTeste" editable="false" labelFloat="true" layoutX="731.0" layoutY="27.0" prefHeight="25.0" prefWidth="82.0" promptText="Teste" text="Teste" />
+            <Label fx:id="lb8" layoutX="24.0" layoutY="34.0" text="Cor da Fonte:" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <JFXColorPicker fx:id="cpFonteTexto" editable="true" layoutX="122.0" layoutY="34.0" />
+            <Label fx:id="lb9" layoutX="241.0" layoutY="37.0" text="Cor em Foco:" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <JFXColorPicker fx:id="cpFoco" editable="true" layoutX="333.0" layoutY="34.0" />
+            <Label fx:id="lb10" layoutX="448.0" layoutY="37.0" text="Tamanho de Fonte:" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <JFXButton fx:id="btResetarTexto" buttonType="RAISED" text="Resetar Entrada de Texto" textFill="#f8f8f8">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </JFXButton>
+            <JFXSlider fx:id="slFonteTexto" blockIncrement="1.0" layoutX="567.0" layoutY="40.0" max="50.0" prefHeight="37.0" prefWidth="152.0" showTickLabels="true" showTickMarks="true" value="12.0" />
+         </children>
+      </Pane>
+      <HBox alignment="CENTER" layoutX="28.0" layoutY="340.0" prefHeight="38.0" prefWidth="827.0" spacing="15.0">
+         <children>
+            <JFXButton fx:id="btSalvar" buttonType="RAISED" onAction="#clickSalvar" onMouseEntered="#salvarEnter" onMouseExited="#salvarExit" text="Salvar" textFill="WHITE" />
+            <JFXButton fx:id="btCancelar" buttonType="RAISED" onAction="#clickCancelar" onMouseEntered="#cancelarEnter" onMouseExited="#cancelarExit" text="Cancelar" textFill="WHITE" />
+         </children>
+      </HBox>
+      <JFXButton fx:id="btReset" buttonType="RAISED" layoutY="3.0" text="Resetar Tudo" textFill="WHITE">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </JFXButton>
+   </children>
+</Pane>

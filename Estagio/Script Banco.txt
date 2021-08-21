@@ -405,7 +405,7 @@ CREATE TABLE registro_pagamento
 		REFERENCES funcionario
 );
 
-insert into usuario(user_nome, user_senha, user_nivel,user_ativo) values ('admin','admin',3,true)
+insert into usuario(user_nome, user_senha, user_nivel,user_ativo) values ('admin','admin','alto',true)
 insert into design(desi_fundo_interface,desi_fundo2_interface,desi_fonte_interface,desi_fonte_botao,
 	desi_fundo_botao,desi_preenchimento_botao,desi_fonte_botao,desi_tamanho_botao,desi_fonte_entrada,
 	desi_foco_entrada,desi_tamanho_entrada,desi_opacidade) values('#010410','#002259','#FAFAFA','transparent',

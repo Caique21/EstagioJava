@@ -9,8 +9,10 @@ package estagio;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDecorator;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import estagio.utilidades.Objeto;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +37,9 @@ import javafx.stage.Stage;
  */
 public class TelaPrincipalController implements Initializable
 {
+    public static Objeto usuario_logado;
+    public static Timestamp data_login;
+    public static boolean alteracoes = false;
     
     @FXML
     private BorderPane painelPrincipal;
@@ -94,6 +99,22 @@ public class TelaPrincipalController implements Initializable
     @FXML
     private void clickConfig(ActionEvent event)
     {
+        try
+        {
+            Stage stage = (Stage) painelCentral.getScene().getWindow();
+            stage.setResizable(false);
+
+            Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/configuracao/TelaConfiguracoes.fxml"));
+            root.getStylesheets().add(("/oficina/utilidades/CadastroCliente.css"));
+            painelCentral.getChildren().clear();
+            painelCentral.getChildren().add(root);
+        }
+        catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Dashboard!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
+            a.showAndWait();
+            System.out.println(er.getMessage());
+        }
     }
 
     @FXML

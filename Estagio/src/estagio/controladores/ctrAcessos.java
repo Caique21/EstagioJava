@@ -5,6 +5,9 @@
  */
 package estagio.controladores;
 
+import estagio.utilidades.Objeto;
+import java.sql.Timestamp;
+
 /**
  *
  * @author Carlos
@@ -24,5 +27,10 @@ public class ctrAcessos
             con = new ctrAcessos();
         }
         return con;
+    }
+
+    public void salvar(Timestamp data_login, Timestamp timestamp, Objeto usuario_logado)
+    {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
