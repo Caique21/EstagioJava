@@ -5,15 +5,20 @@
  */
 package estagio.interfaces;
 
+import estagio.utilidades.Utils;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -51,6 +56,8 @@ public class TelaFinancasController implements Initializable
     private Pane paneBalanco;
     @FXML
     private Pane panePrincipal;
+    @FXML
+    private Label lbTitulo;
 
     /**
      * Initializes the controller class.
@@ -58,7 +65,10 @@ public class TelaFinancasController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        // TODO
+        List<Node>nodes = new ArrayList<>();
+        nodes.add(panePrincipal);
+        nodes.add(lbTitulo);
+        Utils.setDesign(1, nodes);
     }    
 
     @FXML

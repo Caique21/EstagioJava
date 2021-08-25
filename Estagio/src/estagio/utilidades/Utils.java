@@ -46,10 +46,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-//import oficina.FXMLDocumentController;
+import estagio.TelaPrincipalController;
 //import oficina.controladores.ctrCliente;
-//import oficina.controladores.ctrDesign;
-//import oficina.controladores.ctrUsuario;
+import estagio.controladores.ctrDesign;
+import estagio.controladores.ctrUsuario;
 
 /**
  *
@@ -58,7 +58,7 @@ import javafx.scene.shape.Line;
 public class Utils
 {
     public static ArrayList<String>design;
-    /*public static boolean confirmarUsuario(String titulo, String header,String txt_label)
+    public static boolean confirmarUsuario(String titulo, String header,String txt_label)
     {
         ctrUsuario ctr = ctrUsuario.instancia();
         Dialog<String> dialog = new Dialog<>();
@@ -81,7 +81,7 @@ public class Utils
 
         Optional<String> result = dialog.showAndWait();
         
-        if (result.isPresent() && ctr.matchPassword(FXMLDocumentController.usuario_logado.getParam2(), 
+        if (result.isPresent() && ctr.matchPassword(TelaPrincipalController.usuario_logado.getParam2(), 
                 pwd.getText()))
             return true;
         return false;
@@ -112,13 +112,13 @@ public class Utils
         
         if(result.isPresent())
         {
-            if(ctr.matchPassword(FXMLDocumentController.usuario_logado.getParam2(), pwd.getText()))
+            if(ctr.matchPassword(TelaPrincipalController.usuario_logado.getParam2(), pwd.getText()))
                 return true;
             else
                 new Alert(Alert.AlertType.ERROR, "Senha incorreta",ButtonType.OK).showAndWait();
         }
         return false;
-    }*/
+    }
     
     private static final int[] pesoCPF = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
     private static final int[] pesoCNPJ = {6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
@@ -423,10 +423,10 @@ public class Utils
         return cor;
     }
     
-    /*public static void carregaDesign()
+    public static void carregaDesign()
     {
         design = ctrDesign.instancia().carrega();
-    }*/
+    }
     
     public static void setDesign(int paineisPrincipais, List<Node> nodes)
     {
@@ -505,6 +505,11 @@ public class Utils
     public static String getPromptColor()
     {
         return design.get(7);
+    }
+    
+    public static String getCorBotao()
+    {
+        return design.get(5);
     }
     
     public static String getFundo2()

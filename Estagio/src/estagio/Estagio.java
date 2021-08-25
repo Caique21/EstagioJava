@@ -7,6 +7,7 @@ package estagio;
  */
 
 import com.jfoenix.controls.JFXDecorator;
+import estagio.controladores.ctrParametrizacao;
 import estagio.utilidades.Banco;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -26,32 +27,29 @@ public class Estagio extends Application
     @Override
     public void start(Stage stage) throws Exception
     {
-        /*Parent root;
+        Parent root;
         if(ctrParametrizacao.instancia().carrega() != null)
         {
-            root = FXMLLoader.load(getClass().getResource("/oficina/interfaces/TelaLogin.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/estagio/TelaLogin.fxml"));
             stage.setTitle("Login");
         }
         else
         {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/oficina/interfaces/configuracao/TelaParametrizacao.fxml"));     
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/configuracao/TelaParametrizacao.fxml"));     
             root = (Parent) fxmlLoader.load();
             stage.setTitle("Parametrização");
         }
         JFXDecorator decorator = new JFXDecorator(stage , root);
         decorator.setStyle("-fx-decorator-color: #040921;");
-        decorator.setMaximized(true);
-        decorator.setCustomMaximize(true);  
 
         Scene scene = new Scene(decorator);
 
-        stage.setMaximized(true);
         stage.setTitle("Nome");
         stage.setAlwaysOnTop(false);
         stage.setScene(scene);
-        stage.show();*/
+        stage.show();
         
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/TelaLogin.fxml"));     
+        /*FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/TelaLogin.fxml"));     
         Parent root = (Parent) fxmlLoader.load();
         stage.setTitle("Parametrização");
         JFXDecorator decorator = new JFXDecorator(stage , root);
@@ -62,7 +60,7 @@ public class Estagio extends Application
         stage.setTitle("Login");
         stage.setAlwaysOnTop(false);
         stage.setScene(scene);
-        stage.show();
+        stage.show();*/
     }
 
     /**

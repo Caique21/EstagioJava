@@ -6,14 +6,18 @@
 package estagio.interfaces.configuracao;
 
 import com.jfoenix.controls.JFXDecorator;
+import estagio.utilidades.Utils;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -56,7 +60,10 @@ public class TelaConfiguracoesController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        // TODO
+         List<Node>nodes = new ArrayList<>();
+        nodes.add(panePrincipal);
+        nodes.add(lbTitulo);
+        Utils.setDesign(1, nodes);
     }    
 
     @FXML
@@ -86,6 +93,7 @@ public class TelaConfiguracoesController implements Initializable
             Parent root = (Parent) fxmlLoader.load();
             Stage stage = new Stage();
             JFXDecorator decorator = new JFXDecorator(stage, root);
+            TelaDesignController.bt = paneDesign;
 
             decorator.setStyle("-fx-decorator-color: #040921;");
 

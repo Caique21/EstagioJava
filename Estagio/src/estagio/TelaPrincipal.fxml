@@ -23,13 +23,13 @@
          <children>
             <VBox alignment="TOP_CENTER" prefHeight="180.0" prefWidth="100.0" spacing="10.0">
                <children>
-                  <ImageView fitHeight="90.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="imgLogo" fitHeight="90.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@utilidades/Recursos/teste-logo.jpg" />
                      </image>
                   </ImageView>
                   <Label fx:id="lbFantasia" alignment="CENTER" prefHeight="17.0" prefWidth="200.0" text="Nome Fantasia" />
-                  <JFXButton fx:id="btConfig" buttonType="RAISED" onAction="#clickConfig" text="Configurações">
+                  <JFXButton fx:id="btConfig" buttonType="RAISED" onAction="#clickConfig" onMouseEntered="#configEnter" onMouseExited="#configExit" text="Configurações">
                      <graphic>
                         <FontAwesomeIconView fx:id="faCog" glyphName="COG" />
                      </graphic>
@@ -108,9 +108,9 @@
             </VBox>
             <VBox alignment="CENTER" prefHeight="125.0" prefWidth="200.0" spacing="5.0">
                <children>
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Usuário:" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Data:" />
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Hora:" />
+                  <Label fx:id="lbUsuario" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Usuário:" />
+                  <Label fx:id="lbData" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Data:" />
+                  <Label fx:id="lbHora" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Hora:" />
                </children>
             </VBox>
          </children>

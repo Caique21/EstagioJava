@@ -178,7 +178,7 @@ public class Parametrizacao
     
     public Parametrizacao carrega()
     {
-        ResultSet rs = Banco.getCon().consultar("select * from parametrizacao");
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM parametrizacao");
         Parametrizacao p = null;
         try
         {
@@ -187,21 +187,21 @@ public class Parametrizacao
                 p = new Parametrizacao(rs.getString("para_nome"), rs.getString("para_fantasia"), 
                     rs.getString("para_email"),rs.getString("para_razaoSocial"));
                 
-                rs = Banco.getCon().consultar("select * from telefone where para_nome is not null");
+                rs = Banco.getCon().consultar("SELECT * FROM telefone WHERE para_nome IS NOT NULL");
                 while(rs != null && rs.next())
                     p.addTelefone(rs.getString("tel_numero"));
                 
-                rs = Banco.getCon().consultar("select * from endereco inner join endereco_parametrizacao on "
+                rs = Banco.getCon().consultar("SELECT * FROM endereco INNER JOIN endereco_parametrizacao ON "
                     + "endereco_parametrizacao.ender_codigo = endereco.ender_codigo");
                 while(rs != null && rs.next())
-                    p.addEndereco(new Endereco(rs.getString("ender_rua"), rs.getString("ender_bairro"), 
-                        rs.getInt("ender_numero"), rs.getString("ender_cep"), rs.getString("ender_complemento"), 
-                        rs.getString("ender_estado"), rs.getString("ender_cidade")));
-                //rua, bairro,numero, cep, complemento, estado, cidade
+                    p.addEndereco(new Endereco(rs.getInt("ender_codigo"), rs.getString("ender_cep"),
+                    rs.getString("ender_rua"), rs.getInt("ender_numero"), rs.getString("ender_bairro"), 
+                    rs.getString("ender_complemento"), rs.getString("ender_cidade"), rs.getString("ender_estado")));
+                //cep, rua, numero, bairro, complemento, cidade , estado
             }
             
-            rs = Banco.getCon().consultar("select * from parametrizacao where para_logogrande is not null and "
-                + "para_logopequeno is not null");
+            rs = Banco.getCon().consultar("SELECT * FROM parametrizacao WHERE para_logogrande IS NOT NULL AND"
+                + "para_logopequeno IS NOT NULL");
             if(rs != null && rs.next())
             {
                 p.setLogoGrande(ImageIO.read(new ByteArrayInputStream(rs.getBytes("para_logoGrande"))));
@@ -230,8 +230,8 @@ public class Parametrizacao
             PreparedStatement statement = null;
             connection = Banco.getCon().getConnection();
 
-            statement = connection.prepareStatement("insert into parametrizacao (para_nome,para_fantasia,"
-                    + "para_logoGrande,para_logoPequeno,para_email,para_razaoSocial) values (?,?,?,?,?,?)");
+            statement = connection.prepareStatement("INSERT INTO parametrizacao (para_nome,para_fantasia,"
+                    + "para_logoGrande,para_logoPequeno,para_email,para_razaoSocial) VALUES (?,?,?,?,?,?)");
             statement.setString(1, nome);
             statement.setString(2, fantasia);
             statement.setBinaryStream(3, fGrande, (int) logoG.length());
@@ -253,8 +253,8 @@ public class Parametrizacao
     
     public boolean salvar()
     {
-        String sql = "insert into parametrizacao (para_nome, para_fantasia,para_email,para_razaoSocial) "
-            + "values ('$1','$2','$3','$4')";
+        String sql = "INSERT INTO parametrizacao (para_nome, para_fantasia,para_email,para_razaoSocial) "
+            + "VALUES ('$1','$2','$3','$4')";
         sql = sql.replace("$1", nome);
         sql = sql.replace("$2", fantasia);
         sql = sql.replace("$3", email);
@@ -331,7 +331,7 @@ public class Parametrizacao
 
     private boolean salvaEnderecos()
     {
-        Banco.getCon().manipular("delete from endereco_parametrizacao");
+        Banco.getCon().manipular("DELETE FROM endereco_parametrizacao");
         String sql;
         boolean flag = true;
         
@@ -343,15 +343,15 @@ public class Parametrizacao
                 e.setCodigo(Banco.getCon().getMaxPK("endereco", "ender_codigo"));
             }
             
-            flag = flag && Banco.getCon().manipular("insert into endereco_parametrizacao(para_nome,ender_codigo)"
-                + "values ('"+nome+"',"+e.getCodigo()+")");
+            flag = flag && Banco.getCon().manipular("INSERT INTO endereco_parametrizacao(para_nome,ender_codigo)"
+                + "VALUES ('"+nome+"',"+e.getCodigo()+")");
         }
         return flag;
     }
 
     private boolean salvaTelefones()
     {
-        Banco.getCon().manipular("delete from telefone where para_nome = '" + nome + "'");
+        Banco.getCon().manipular("DELETE FROM telefone WHERE para_nome = '" + nome + "'");
         boolean flag = true;
         
         for(String telefone : telefones)
@@ -363,7 +363,7 @@ public class Parametrizacao
     {
         if (nome != null)
         {
-            ResultSet rs = Banco.getCon().consultar("select * from parametrizacao");
+            ResultSet rs = Banco.getCon().consultar("SELECT * FROM parametrizacao");
             try
             {
                 if (rs != null && rs.next())
@@ -372,25 +372,26 @@ public class Parametrizacao
                     this.email = rs.getString("para_email");
                     this.razao = rs.getString("para_razaoSocial");
 
-                    rs = Banco.getCon().consultar("select * from telefone where para_nome is not null");
+                    rs = Banco.getCon().consultar("SELECT * FROM telefone WHERE para_nome IS NOT NULL");
                     while (rs != null && rs.next())
                     {
                         this.addTelefone(rs.getString("tel_numero"));
                     }
 
-                    rs = Banco.getCon().consultar("select * from endereco inner join endereco_parametrizacao on "
+                    rs = Banco.getCon().consultar("SELECT * FROM endereco INNER JOIN endereco_parametrizacao ON "
                             + "endereco_parametrizacao.ender_codigo = endereco.ender_codigo");
                     while (rs != null && rs.next())
                     {
-                        this.addEndereco(new Endereco(rs.getString("ender_rua"), rs.getString("ender_bairro"),
-                                rs.getInt("ender_numero"), rs.getString("ender_cep"), rs.getString("ender_complemento"),
-                                rs.getString("ender_estado"), rs.getString("ender_cidade")));
+                        this.addEndereco(new Endereco(rs.getInt("ender_codigo"), rs.getString("ender_cep"),
+                            rs.getString("ender_rua"), rs.getInt("ender_numero"), rs.getString("ender_bairro"), 
+                                rs.getString("ender_complemento"), rs.getString("ender_cidade"), 
+                                    rs.getString("ender_estado")));
                     }
-                    //rua, bairro,numero, cep, complemento, estado, cidade
+                    //cep,rua, nuemro,bairro,complemento, cidade,estado
                 }
 
-                rs = Banco.getCon().consultar("select * from parametrizacao where para_logogrande is not null and "
-                        + "para_logopequeno is not null");
+                rs = Banco.getCon().consultar("SELECT * FROM parametrizacao WHERE para_logogrande IS NOT NULL AND "
+                        + "para_logopequeno IS NOT NULL");
                 if (rs != null && rs.next())
                 {
                     this.logoGrande = ImageIO.read(new ByteArrayInputStream(rs.getBytes("para_logoGrande")));
@@ -406,8 +407,8 @@ public class Parametrizacao
 
     public ByteArrayInputStream carregaLogoGrande()
     {
-        ResultSet rs = Banco.getCon().consultar("select para_logogrande from parametrizacao where para_logogrande"
-             + " is not null");
+        ResultSet rs = Banco.getCon().consultar("SELECT para_logogrande FROM parametrizacao WHERE para_logogrande"
+             + " IS NOT NULL");
         try
         {
             if(rs != null && rs.next())
@@ -422,8 +423,8 @@ public class Parametrizacao
 
     public ByteArrayInputStream carregaLogoPequeno()
     {
-        ResultSet rs = Banco.getCon().consultar("select para_logopequeno from parametrizacao where para_logopequeno"
-             + " is not null");
+        ResultSet rs = Banco.getCon().consultar("SELECT para_logopequeno FROM parametrizacao WHERE para_logopequeno"
+             + " IS NOT NULL");
         try
         {
             if(rs != null && rs.next())

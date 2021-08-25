@@ -69,7 +69,8 @@ CREATE TABLE design
 	desi_tamanho_botao integer NOT NULL,
 	desi_fonte_entrada varchar(15) NOT NULL,
 	desi_foco_entrada varchar(15) NOT NULL,
-	desi_tamanho_entrada integer NOT NULL
+	desi_tamanho_entrada integer NOT NULL,
+	desi_opacidade integer NOT NULL
 );
 
 CREATE TABLE cliente

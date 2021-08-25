@@ -10,23 +10,25 @@ import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import estagio.controladores.ctrAcessos;
+import estagio.controladores.ctrAcesso;
 import estagio.controladores.ctrParametrizacao;
 import estagio.controladores.ctrUsuario;
 import estagio.utilidades.Banco;
-import estagio.utilidades.Objeto;
+import estagio.utilidades.Utils;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -51,7 +53,7 @@ public class TelaLoginController implements Initializable
 {
     private Alert alert;
     private final ctrUsuario ctr = ctrUsuario.instancia();
-    private final ctrAcessos ctr_acessos = ctrAcessos.instancia();
+    private final ctrAcesso ctr_acessos = ctrAcesso.instancia();
     private final ctrParametrizacao ctrPara = ctrParametrizacao.instancia();
     private TelaPrincipalController tela;
 
@@ -89,7 +91,7 @@ public class TelaLoginController implements Initializable
     {
         lbErroSenha.setText("");
         lbErroUsuario.setText("");
-        /*Utils.carregaDesign();
+        Utils.carregaDesign();
         
         List<Node>nodes = new ArrayList<>();
         nodes.add(panePrincipal);
@@ -105,7 +107,7 @@ public class TelaLoginController implements Initializable
         tfSenha.setStyle(tfSenha.getStyle() + ";-fx-font-size: 15;");
         faPassword.setSize("20");
         tfUsuario.setStyle(tfUsuario.getStyle() + ";-fx-font-size: 15");
-        faUsuario.setSize("20");*/
+        faUsuario.setSize("20");
     }
     
     @Override

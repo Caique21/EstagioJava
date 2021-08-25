@@ -56,9 +56,15 @@ public class Telefone
         if(cliente != null)
         {
             sql = "INSERT INTO telefone(tel_numero,cli_codigo) VALUES('$1',$2)";
-            sql = sql.replace("$1", numero);
             sql = sql.replace("$2", String.valueOf(cliente.getCodigo()));
         }
+        else if(parametrizacao != null)
+        {
+            sql = "insert into telefone (tel_numero, para_nome) values('$1','$2')";
+            sql = sql.replace("$2", parametrizacao.getNome());
+        }
+            
+        sql = sql.replace("$1", numero);
         return Banco.getCon().manipular(sql);
     }
 }

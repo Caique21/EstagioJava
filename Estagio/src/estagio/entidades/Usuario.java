@@ -91,6 +91,16 @@ public class Usuario
         this.nivel = nivel;
     }
 
+    public Usuario(int codigo, String nome, String senha, String nivel)
+    {
+        this.codigo = codigo;
+        this.nome = nome;
+        this.senha = senha;
+        this.nivel = nivel;
+        
+        getFunc();
+    }
+
     public int getCodigo()
     {
         return codigo;
@@ -104,6 +114,24 @@ public class Usuario
     public Funcionario getFuncionario()
     {
         return funcionario;
+    }
+
+    private void getFunc()
+    {
+        ResultSet rs = Banco.getCon().consultar("SELECT func_codigo FROM usuario WHERE user_codigo = " + 
+            this.codigo + " AND func_codigo IS NOT NULL");
+        
+        try
+        {
+            if(rs != null && rs.next())            
+            {
+                this.funcionario = new Funcionario(rs.getInt("func_codigo"));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void setFuncionario(Funcionario funcionario)
