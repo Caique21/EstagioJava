@@ -13,7 +13,6 @@ import estagio.TelaLoginController;
 import estagio.TelaPrincipalController;
 import estagio.controladores.ctrDesign;
 import estagio.controladores.ctrParametrizacao;
-import estagio.utilidades.AutoCompleteBox;
 import estagio.utilidades.Banco;
 import estagio.utilidades.MaskFieldUtil;
 import estagio.utilidades.Objeto;
@@ -55,9 +54,8 @@ import org.controlsfx.control.Notifications;
 import org.json.JSONObject;
 import estagio.utilidades.ToolTip;
 import java.util.List;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
+import javafx.scene.control.Separator;
 
 /**
  * FXML Controller class
@@ -161,6 +159,22 @@ public class TelaParametrizacaoController implements Initializable
     private Label lbTelefone;
     @FXML
     private Label lbEndereco;
+    @FXML
+    private Separator sepGrande1;
+    @FXML
+    private Separator sepGrande2;
+    @FXML
+    private Separator sepGrande3;
+    @FXML
+    private Separator sepGrande4;
+    @FXML
+    private Separator sepPequeno1;
+    @FXML
+    private Separator sepPequeno2;
+    @FXML
+    private Separator sepPequeno3;
+    @FXML
+    private Separator sepPequeno4;
 
     /**
      * Initializes the controller class.
@@ -270,12 +284,12 @@ public class TelaParametrizacaoController implements Initializable
     {
         cbEstado.getItems().addAll("AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", 
             "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RO", "RS", "RR", "SC", "SE", "SP", "TO");
-        //new AutoCompleteBox(cbEstado);
         inicializaLabels();
         carregaDesign();
         setListeners();
         setMascaras();
         carregarParametrizacao();
+        
         if(tfNome.getText().equals(""))
         {
             Platform.runLater(() ->
@@ -313,12 +327,12 @@ public class TelaParametrizacaoController implements Initializable
             for(int i = 0; i < para.getList1().size(); i++)
             {
                 //(rua) (numero), (bairro) - (complemento);(cidade) - (estado) - CEP (cep)
-                String endereco = para.getList1().get(0).getParam2() + " " + para.getList1().get(0).getParam3()
-                    + ", " + para.getList1().get(0).getParam4();
-                if(para.getList1().get(0).getParam5() != null && !para.getList1().get(0).getParam5().equals(""))
-                    endereco += " - " + para.getList1().get(0).getParam5();
-                endereco += ";"  + para.getList1().get(0).getParam6() + " - " + para.getList1().get(0).getParam7()
-                    + " - " + para.getList1().get(0).getParam1();
+                String endereco = para.getList1().get(i).getParam2() + " " + para.getList1().get(i).getParam3()
+                    + ", " + para.getList1().get(i).getParam4();
+                if(para.getList1().get(i).getParam5() != null && !para.getList1().get(i).getParam5().equals(""))
+                    endereco += " - " + para.getList1().get(i).getParam5();
+                endereco += ";"  + para.getList1().get(i).getParam6() + " - " + para.getList1().get(i).getParam7()
+                    + " - " + para.getList1().get(i).getParam1();
 
                 lvEnderecos.getItems().add(endereco);
                 limpaEndereco();
@@ -328,13 +342,20 @@ public class TelaParametrizacaoController implements Initializable
             {
                 imgGrande.setImage(SwingFXUtils.toFXImage(ctrPara.carregaLogoGrande(), null));
                 Utils.centerImage(imgGrande);
+                setSeparator(sepGrande1,sepGrande2,sepGrande3,sepGrande4,false);
             }
+            else
+                setSeparator(sepGrande1,sepGrande2,sepGrande3,sepGrande4,true);
             
             if(para.getParam6() != null)
             {
                 imgPequeno.setImage(SwingFXUtils.toFXImage(ctrPara.carregaLogoPequeno(), null));
                 Utils.centerImage(imgPequeno);
+                setSeparator(sepPequeno1,sepPequeno2,sepPequeno3,sepPequeno4,false);
             }
+            else
+                setSeparator(sepPequeno1,sepPequeno2,sepPequeno3,sepPequeno4,true);
+            
             Notifications.create()
                 .darkStyle()
                 //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
@@ -355,9 +376,13 @@ public class TelaParametrizacaoController implements Initializable
             Image image1 = new Image(file.toURI().toString());
             imgGrande.setImage(image1);
             Utils.centerImage(imgGrande);
+            setSeparator(sepGrande1, sepGrande2, sepGrande3, sepGrande4, false);
         }
         else
+        {
             caminhoGrande = "";
+            setSeparator(sepGrande1, sepGrande2, sepGrande3, sepGrande4, false);
+        }
     }
 
     @FXML
@@ -371,9 +396,13 @@ public class TelaParametrizacaoController implements Initializable
             Image image1 = new Image(file.toURI().toString());
             imgPequeno.setImage(image1);
             Utils.centerImage(imgPequeno);
+            setSeparator(sepPequeno1,sepPequeno2,sepPequeno3,sepPequeno4,false);
         }
         else
+        {
             caminhoPequeno = "";
+            setSeparator(sepPequeno1,sepPequeno2,sepPequeno3,sepPequeno4,true);
+        }
     }
 
     @FXML
@@ -711,24 +740,29 @@ public class TelaParametrizacaoController implements Initializable
     {
         //(rua) (numero), (bairro) - (complemento); (cidade) - (estado) - CEP (cep)
         String aux[] = endereco.split(";");
-        //(rua) (numero), (bairro) - (complemento)
-        //(cidade) - (estado) - CEP (cep)
-        String aux2[] = aux[0].split(",");
-        //(rua) (numero)
-        //(bairro) - (complemento)
+        //aux[0] == (rua) (numero), (bairro) - (complemento)
+        //aux[1] == (cidade) - (estado) - CEP (cep)
+        String aux2[] = aux[0].split(", ");
+        //aux2[0] == (rua) (numero)
+        //aux2[1] == (bairro) - (complemento)
         
-        tfRua.setText(aux2[0].substring(0,aux2[0].indexOf(" ")));
-        tfNumero.setText(aux2[0].substring(aux2[0].indexOf(" ") + 1).replace(" ", ""));
-        tfBairro.setText(aux[1].substring(0, aux[1].indexOf("-") - 1));
-        tfComplemento.setText(aux[1].substring(aux[1].indexOf("-") + 1));
+        tfRua.setText(aux2[0].substring(0,aux2[0].lastIndexOf(" ")).trim());
+        tfNumero.setText(aux2[0].substring(aux2[0].lastIndexOf(" ") + 1).replace(" ", "").trim());
+        if(aux2[1].contains("-"))
+        {
+            tfBairro.setText(aux2[1].substring(0, aux[1].indexOf("-") - 1).trim());
+            tfComplemento.setText(aux2[1].substring(aux[1].indexOf("-") + 1).trim());
+        }
+        else
+            tfBairro.setText(aux2[1].trim());
         
         String aux3[] = aux[1].split(" - ");
         //(cidade) 
         //(estado) 
         //CEP (cep)
         tfCidade.setText(aux3[0]);
-        tfCEP.setText(aux3[1].replace("CEP ", ""));
-        cbEstado.getSelectionModel().select(aux[2]);
+        tfCEP.setText(aux3[2].replace("CEP ", ""));
+        cbEstado.getSelectionModel().select(aux3[1]);
     }
 
     @FXML
@@ -815,13 +849,13 @@ public class TelaParametrizacaoController implements Initializable
     @FXML
     private void salvarExit(MouseEvent event)
     {
-        btSalvar.setStyle("-fx-cursor: default;");
+        btSalvar.setStyle(btSalvar.getStyle() + ";-fx-cursor: default;");
     }
 
     @FXML
     private void salvarEnter(MouseEvent event)
     {
-        btSalvar.setStyle("-fx-cursor: hand;");
+        btSalvar.setStyle(btSalvar.getStyle() + ";-fx-cursor: hand;-fx-font-weight: bold;");
         tooltip.setText("Salvar Alterações da Parametrização");
         ToolTip.bindTooltip(btSalvar, tooltip);
     }
@@ -829,14 +863,50 @@ public class TelaParametrizacaoController implements Initializable
     @FXML
     private void cancelarExit(MouseEvent event)
     {
-        btCancelar.setStyle("-fx-cursor: default;");
+        btCancelar.setStyle(btCancelar.getStyle() + ";-fx-cursor: default;");
     }
 
     @FXML
     private void cancelarEnter(MouseEvent event)
     {
-        btCancelar.setStyle("-fx-cursor: hand;");
+        btCancelar.setStyle(btCancelar.getStyle() + ";-fx-cursor: hand;-fx-font-weight: bold;");
         tooltip.setText("Cancelar Alterações da Parametrização");
         ToolTip.bindTooltip(btCancelar, tooltip);
+    }
+
+    @FXML
+    private void carregarGrandeExit(MouseEvent event)
+    {
+        btCarregarGrande.setStyle(btCarregarGrande.getStyle() + ";-fx-cursor: default;");
+    }
+
+    @FXML
+    private void carregarGrandeEnter(MouseEvent event)
+    {
+        btCarregarGrande.setStyle(btCarregarGrande.getStyle() + ";-fx-cursor: hand;");
+        tooltip.setText("Carregar Logo Grande");
+        ToolTip.bindTooltip(btCarregarGrande, tooltip);
+    }
+
+    @FXML
+    private void carregarPesquenoExit(MouseEvent event)
+    {
+        btCarregarPequeno.setStyle(btCarregarPequeno.getStyle() + ";-fx-cursor: default;");
+    }
+
+    @FXML
+    private void carregarPequenoEnter(MouseEvent event)
+    {
+        btCarregarPequeno.setStyle(btCarregarPequeno.getStyle() + ";-fx-cursor: hand;");
+        tooltip.setText("Carregar Logo Pequeno");
+        ToolTip.bindTooltip(btCarregarPequeno, tooltip);
+    }
+
+    private void setSeparator(Separator sep1, Separator sep2, Separator sep3, Separator sep4, boolean b)
+    {
+        sep1.setVisible(b);
+        sep2.setVisible(b);
+        sep3.setVisible(b);
+        sep4.setVisible(b);
     }
 }

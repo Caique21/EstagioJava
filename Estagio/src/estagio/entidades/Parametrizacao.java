@@ -201,7 +201,7 @@ public class Parametrizacao
             }
             
             rs = Banco.getCon().consultar("SELECT * FROM parametrizacao WHERE para_logogrande IS NOT NULL AND"
-                + "para_logopequeno IS NOT NULL");
+                + " para_logopequeno IS NOT NULL");
             if(rs != null && rs.next())
             {
                 p.setLogoGrande(ImageIO.read(new ByteArrayInputStream(rs.getBytes("para_logoGrande"))));
@@ -429,6 +429,21 @@ public class Parametrizacao
         {
             if(rs != null && rs.next())
                 return new ByteArrayInputStream(rs.getBytes("para_logopequeno"));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Parametrizacao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public String carregaFantasia()
+    {
+        ResultSet rs = Banco.getCon().consultar("SELECT para_fantasia FROM parametrizacao");
+        try
+        {
+            if(rs != null && rs.next())
+                return rs.getString("para_fantasia");
         }
         catch (SQLException ex)
         {

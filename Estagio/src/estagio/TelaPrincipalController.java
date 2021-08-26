@@ -36,7 +36,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -172,7 +171,7 @@ public class TelaPrincipalController implements Initializable
         alteracoes = false;
         if(ctr_para.carregaLogoPequeno() != null)
             atualizaLogo(SwingFXUtils.toFXImage(ctr_para.carregaLogoPequeno(),null));
-        lbFantasia.setText(ctr_para.carrega().getParam2());
+        lbFantasia.setText(ctr_para.carregaFantasia());
     }    
 
     private void inicializaHora()

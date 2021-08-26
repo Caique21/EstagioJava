@@ -54,7 +54,6 @@ public class TelaLoginController implements Initializable
     private Alert alert;
     private final ctrUsuario ctr = ctrUsuario.instancia();
     private final ctrAcesso ctr_acessos = ctrAcesso.instancia();
-    private final ctrParametrizacao ctrPara = ctrParametrizacao.instancia();
     private TelaPrincipalController tela;
 
     @FXML

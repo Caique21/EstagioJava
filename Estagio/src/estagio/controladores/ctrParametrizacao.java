@@ -123,23 +123,23 @@ public class ctrParametrizacao
         estado = aux[1].replace(" ", "").replace("-", "")
         cidade = aux[0].substring(aux[0].indexOf("; ") + 2).replace("; ", "").replace(" -","")
         */
-        String rua = aux2[0].substring(0,aux2[0].lastIndexOf(" "));
+        String rua = aux2[0].substring(0,aux2[0].lastIndexOf(" ")).trim();
         int numero = Integer.parseInt(aux2[0].substring(aux2[0].lastIndexOf(" ") + 1));
         String bairro;
         String complemento;
         if(aux2[1].contains("-"))
         {
-            complemento = aux2[1].substring(aux2[1].indexOf(" - ") + 2);
-            bairro = aux2[1].substring(0, aux2[1].indexOf(" - "));
+            complemento = aux2[1].substring(aux2[1].indexOf(" - ") + 2).trim();
+            bairro = aux2[1].substring(0, aux2[1].indexOf(" - ")).trim();
         }
         else
         {
             complemento = "";
-            bairro = aux2[1];
+            bairro = aux2[1].trim();
         }
         
-        Endereco endereco = new Endereco(aux3[2].replace("-", ""), rua, numero, bairro, complemento, 
-            aux3[0], aux3[1]);
+        Endereco endereco = new Endereco(aux3[2].replace("-", "").trim(), rua, numero, bairro, complemento, 
+            aux3[0].trim(), aux3[1].trim());
         
         endereco.existe();
         return endereco;
@@ -175,5 +175,11 @@ public class ctrParametrizacao
             Logger.getLogger(ctrParametrizacao.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public String carregaFantasia()
+    {
+        String fant = new Parametrizacao().carregaFantasia();
+        return fant != null? fant : "Nome Fantasia";
     }
 }
