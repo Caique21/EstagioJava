@@ -6,6 +6,11 @@
 package estagio.entidades;
 
 import estagio.utilidades.Banco;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -22,6 +27,11 @@ public class Telefone
 
     public Telefone()
     {
+    }
+
+    public Telefone(Cliente cliente)
+    {
+        this.cliente = cliente;
     }
 
     public Telefone(String numero, Cliente cliente)
@@ -66,5 +76,26 @@ public class Telefone
             
         sql = sql.replace("$1", numero);
         return Banco.getCon().manipular(sql);
+    }
+
+    public ArrayList<String> getAllByCliente(Cliente cliente)
+    {
+        ArrayList<String> telefones = new ArrayList<>();
+        
+        ResultSet rs = Banco.getCon().consultar("SELECT tel_numero FROM telefone WHERE cli_codigo" + 
+                cliente.getCodigo());
+        
+        try
+        {
+            while(rs != null && rs.next())            
+            {
+                telefones.add(rs.getString("tel_numero"));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Telefone.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return telefones;
     }
 }

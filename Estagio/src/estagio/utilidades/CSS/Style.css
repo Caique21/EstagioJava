@@ -1,0 +1,42 @@
+.list-cell 
+{
+    -fx-control-inner-background:#EF6C00;
+    -fx-text-fill:#212121;
+}
+.jfx-tab-pane .tab-header-background 
+{
+
+    -fx-background-color:#EF6C00; 
+}
+.jfx-date-picker .text-field
+{
+    -jfx-unfocus-color: #EF5350;
+    -fx-prompt-text-fill: #1A237E;
+    -fx-text-fill:#1A237E;
+}
+
+.text-field, .text-area
+{
+    -jfx-unfocus-color: #EF5350;
+    -jfx-focus-color: #EF5350;
+    -fx-prompt-text-fill: #1A237E;
+    -fx-text-fill:#1A237E;
+    -fx-font-size: 12;
+}
+
+.button
+{
+    -fx-background-color: transparent;
+    -fx-text-fill: #616161;
+    -fx-font-size: 12;
+}
+
+.-button .rippler{
+      -fx-rippler-fill:#FFEB3B;
+}
+
+.label, .radio-button
+{
+      -fx-text-fill: #212121;
+}
+

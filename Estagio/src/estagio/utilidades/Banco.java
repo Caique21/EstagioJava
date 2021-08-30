@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javax.swing.JOptionPane;
@@ -54,9 +57,9 @@ public class Banco {
         }
     }
     
-    public static void realizaBackupNoMessage(String arq) 
+    public static boolean realizaBackupNoMessage(String arq) 
     {
-        String reslinha = "";
+        String reslinha = "",erros = "";
         Runtime r = Runtime.getRuntime();
         try {
             Process p = r.exec(arq);
@@ -66,16 +69,24 @@ public class Banco {
                 BufferedReader reader = new BufferedReader(str);                
                 String linha;
                 while ((linha = reader.readLine()) != null)                 
-                    reslinha += linha+"\n";                
+                    reslinha += linha+"\n"; 
+                
+                BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                while ((linha = reader.readLine()) != null)                 
+                    erros += linha+"\n"; 
             }
-        } catch (IOException ex) 
-        {
         }
+        catch (IOException ex)
+        {
+            Logger.getLogger(Banco.class.getName()).log(Level.SEVERE, null, ex);
+            erros += ex.getMessage();
+        } 
+        return erros.equals("");
     }
     
     public static void realizaRestaure(String arqlote)
     {
-         String linha = "";
+        String linha;
         Runtime r = Runtime.getRuntime();
         try {
             Process p = r.exec(arqlote);
@@ -94,7 +105,7 @@ public class Banco {
     
     public static void realizaRestaureNoMessage(String arqlote)
     {
-         String linha = "";
+       String linha;
         Runtime r = Runtime.getRuntime();
         try {
             Process p = r.exec(arqlote);
@@ -122,7 +133,8 @@ public class Banco {
                     + "LC_CTYPE = 'Portuguese_Brazil.1252'  CONNECTION LIMIT = -1;");
             statement.close();
             con.close();
-        } catch (Exception e)
+        } 
+        catch (SQLException e)
         {
             System.out.println(e.getMessage());
             return false;
@@ -169,9 +181,9 @@ public class Banco {
             }
             new Alert(Alert.AlertType.INFORMATION, "Backup realizado com sucesso!", ButtonType.OK).showAndWait();
  
-        } catch (Exception ex)
+        } 
+        catch (IOException ex)
         {
-            ex.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Erro no backup!" + ex.getMessage(), ButtonType.OK).showAndWait();
         }
     }
@@ -209,9 +221,9 @@ public class Banco {
             }
             new Alert(Alert.AlertType.INFORMATION, "Backup realizado com sucesso!", ButtonType.OK).showAndWait();
  
-        } catch (Exception ex)
+        } 
+        catch (IOException ex)
         {
-            ex.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Erro no backup!" + ex.getMessage(), ButtonType.OK).showAndWait();
         }
     }

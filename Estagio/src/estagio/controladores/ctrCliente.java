@@ -5,24 +5,31 @@
  */
 package estagio.controladores;
 
+import estagio.entidades.Cliente;
+
 /**
  *
  * @author Carlos
  */
-public class ctrClientes
+public class ctrCliente
 {
-    private static ctrClientes con;
+    private static ctrCliente con;
 
-    private ctrClientes()
+    private ctrCliente()
     {
     }
     
-    public static ctrClientes instancia()
+    public static ctrCliente instancia()
     {
         if (con == null)
         {
-            con = new ctrClientes();
+            con = new ctrCliente();
         }
         return con;
+    }
+
+    public int cpfExists(String cpf)
+    {
+        return new Cliente().getByCpf(cpf.replace(".", "").replace("-", "")).getCodigo();
     }
 }

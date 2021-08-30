@@ -29,4 +29,7 @@ and open the template in the editor.
     -jfx-rippler-fill: Yellow;
 }
 
-.jfx-tab-pane .tab-header-background { -fx-background-color: #35464F; }
+.jfx-tab-pane .tab-header-background 
+{
+    -fx-background-color: #35464F; 
+}

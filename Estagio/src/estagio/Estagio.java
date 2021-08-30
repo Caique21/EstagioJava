@@ -9,6 +9,7 @@ package estagio;
 import com.jfoenix.controls.JFXDecorator;
 import estagio.controladores.ctrParametrizacao;
 import estagio.utilidades.Banco;
+import estagio.utilidades.Utils;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +29,7 @@ public class Estagio extends Application
     public void start(Stage stage) throws Exception
     {
         Parent root;
+        Utils.carregaDesign();
         if(ctrParametrizacao.instancia().carrega() != null)
         {
             root = FXMLLoader.load(getClass().getResource("/estagio/TelaLogin.fxml"));
@@ -40,7 +42,7 @@ public class Estagio extends Application
             stage.setTitle("Parametrização");
         }
         JFXDecorator decorator = new JFXDecorator(stage , root);
-        decorator.setStyle("-fx-decorator-color: #040921;");
+        decorator.setStyle("-fx-decorator-color: " + Utils.getFundoPrimaria() + ";-fx-background-color:" + Utils.getFundoPrimaria());
 
         Scene scene = new Scene(decorator);
 

@@ -108,7 +108,7 @@
             </VBox>
             <VBox alignment="CENTER" prefHeight="125.0" prefWidth="200.0" spacing="5.0">
                <children>
-                  <Label fx:id="lbUsuario" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Usuário:" />
+                  <Label fx:id="lbUsuario" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Usuário: " />
                   <Label fx:id="lbData" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Data:" />
                   <Label fx:id="lbHora" alignment="CENTER" prefHeight="17.0" prefWidth="203.0" text="Hora:" />
                </children>

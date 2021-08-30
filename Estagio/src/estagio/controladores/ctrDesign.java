@@ -44,7 +44,7 @@ public class ctrDesign
             retorno.add(d.getFonte());
             retorno.add(d.getFundoBotao());
             retorno.add(d.getPreenchimento());
-            retorno.add(d.getFonte());
+            retorno.add(d.getFonteBotao());
             retorno.add(d.getTamanhoBotao() + "");
             retorno.add(d.getFonteTexto());
             retorno.add(d.getFocoTexto());

@@ -28,6 +28,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
@@ -41,6 +42,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 /**
  *
@@ -123,16 +126,16 @@ public class TelaPrincipalController implements Initializable
         
         nodes.add(btConfig);
         
-        nodes.add(lbFantasia);
+        //nodes.add(lbFantasia);
         nodes.add(lbFinancas);
         nodes.add(lbGerencimento);
         nodes.add(lbHome);
         nodes.add(lbLogout);
         nodes.add(lbRelatorios);
         nodes.add(lbTransporte);
-        nodes.add(lbData);
-        nodes.add(lbUsuario);
-        nodes.add(lbHora);
+        //nodes.add(lbData);
+        //nodes.add(lbUsuario);
+        //nodes.add(lbHora);
         
         nodes.add(faHome);
         nodes.add(faCog);
@@ -143,6 +146,19 @@ public class TelaPrincipalController implements Initializable
         nodes.add(faTruck);
         
         Utils.setDesign(2,nodes);
+        
+        faCogs.setSize("20");
+        faHome.setSize("20");
+        faLogout.setSize("20");
+        faMoney.setSize("20");
+        faReport.setSize("20");
+        faTruck.setSize("20");
+        lbGerencimento.setStyle(lbGerencimento.getStyle() + ";-fx-text-fill: " + Utils.getCorBotao());
+        lbFinancas.setStyle(lbGerencimento.getStyle() + ";-fx-text-fill: " + Utils.getCorBotao());
+        lbHome.setStyle(lbGerencimento.getStyle() + ";-fx-text-fill: " + Utils.getCorBotao());
+        lbLogout.setStyle(lbGerencimento.getStyle() + ";-fx-text-fill: " + Utils.getCorBotao());
+        lbRelatorios.setStyle(lbGerencimento.getStyle() + ";-fx-text-fill: " + Utils.getCorBotao());
+        lbTransporte.setStyle(lbGerencimento.getStyle() + ";-fx-text-fill: " + Utils.getCorBotao());
     }
     
     @Override
@@ -158,12 +174,30 @@ public class TelaPrincipalController implements Initializable
          + " de " + LocalDate.now().getYear());
         
         inicializaHora();
-        lbUsuario.setText(lbUsuario.getText() + usuario_logado.getParam2());        
-        
+        lbUsuario.setText(lbUsuario.getText() + usuario_logado.getParam2());  
         //VERIFICAR SE DATA É ULTIMA DO MES PARA GERAR CONTAS A PAGAR DAS DESPESAS
         
         if(ctr_acessos.firstOfDay(LocalDate.now()))
-            Banco.realizaBackupNoMessage("bkp\\copiar.bat");
+            if(Banco.realizaBackupNoMessage("bkp\\copiar.bat"))
+                Platform.runLater(() ->
+                {
+                    Notifications.create()
+                    .darkStyle()
+                    //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
+                    .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
+                    .text("Backup concluído com sucesso!!!")
+                    .showInformation();
+                });
+            else
+                Platform.runLater(() ->
+                {
+                    Notifications.create()
+                    .darkStyle()
+                    //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
+                    .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
+                    .text("Erro na criação do Backup")
+                    .showError();
+                });
         
         if(!usuario_logado.getParam4().equals("alto"))
             btConfig.setDisable(true);
@@ -187,7 +221,6 @@ public class TelaPrincipalController implements Initializable
                 }
                 catch (InterruptedException e)
                 {
-                    e.printStackTrace();
                 }
                 final String time = simpleDateFormat.format(new Date());
                 Platform.runLater(() ->
@@ -386,5 +419,4 @@ public class TelaPrincipalController implements Initializable
     {
         btConfig.setStyle(btConfig.getStyle() + ";-fx-cursor: hand;");
     }
-    
 }

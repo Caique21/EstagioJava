@@ -11,7 +11,6 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.controladores.ctrAcesso;
-import estagio.controladores.ctrParametrizacao;
 import estagio.controladores.ctrUsuario;
 import estagio.utilidades.Banco;
 import estagio.utilidades.Utils;
@@ -90,17 +89,16 @@ public class TelaLoginController implements Initializable
     {
         lbErroSenha.setText("");
         lbErroUsuario.setText("");
-        Utils.carregaDesign();
         
         List<Node>nodes = new ArrayList<>();
         nodes.add(panePrincipal);
         nodes.add(lbTitulo);
-        nodes.add(tfSenha);
-        nodes.add(tfUsuario);
+        //nodes.add(tfSenha);
+        //nodes.add(tfUsuario);
         nodes.add(faPassword);
         nodes.add(faUsuario);
-        nodes.add(btConfirmar);
-        nodes.add(btSair);
+        //nodes.add(btConfirmar);
+        //nodes.add(btSair);
         Utils.setDesign(1, nodes);
         
         tfSenha.setStyle(tfSenha.getStyle() + ";-fx-font-size: 15;");

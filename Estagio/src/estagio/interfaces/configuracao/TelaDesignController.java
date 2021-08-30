@@ -16,6 +16,7 @@ import estagio.TelaPrincipalController;
 import estagio.controladores.ctrDesign;
 import estagio.utilidades.Banco;
 import estagio.utilidades.Utils;
+import static estagio.utilidades.Utils.toRGB;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -131,55 +132,17 @@ public class TelaDesignController implements Initializable
     private JFXButton btCancelar;
     @FXML
     private JFXButton btReset;
+    @FXML
+    private JFXTextField tfTeste2;
 
     /**
      * Initializes the controller class.
      */
     private void altera()
     {
-        //cpFundo1.setValue(Color.web("#010410"));
-        //cpFundo2.setValue(Color.web("#040921"));
-        panePrincipal.setStyle("-fx-background-color: " + Utils.toRGBCode(cpFundo1.getValue()));
-        PaneInterface.setStyle("-fx-background-color: " + Utils.toRGBCode(cpFundo2.getValue()));
-        PaneBotoes.setStyle("-fx-background-color: " + Utils.toRGBCode(cpFundo2.getValue()));
-        paneTexto.setStyle("-fx-background-color: " + Utils.toRGBCode(cpFundo2.getValue()));
-
-        lbBotoes.setTextFill(cpFonte.getValue());
-        lbInterface.setTextFill(cpFonte.getValue());
-        lbTexto.setTextFill(cpFonte.getValue());
-        lbTitulo.setTextFill(cpFonte.getValue());
-        lb1.setTextFill(cpFonte.getValue());
-        lb10.setTextFill(cpFonte.getValue());
-        lb2.setTextFill(cpFonte.getValue());
-        lb3.setTextFill(cpFonte.getValue());
-        lb4.setTextFill(cpFonte.getValue());
-        lb5.setTextFill(cpFonte.getValue());
-        lb6.setTextFill(cpFonte.getValue());
-        lb7.setTextFill(cpFonte.getValue());
-        lb8.setTextFill(cpFonte.getValue());
-        lb9.setTextFill(cpFonte.getValue());
-        lbOpacidade.setTextFill(cpFonte.getValue());
-
-        style = btCancelar.getStyle() + "; -fx-text-fill: " + Utils.toRGBCode(cpFonteBotao.getValue()) + "; "
-                + "-fx-font-size: " + (int) slFonteBotao.getValue() + ";";
-        if(rbFundoBotao.isSelected())
-            style += ";-fx-background-color: " + Utils.toRGBCode(cpFundoBotao.getValue()) + ";";
-        else
-            style += ";-fx-background-color: transparent;";
-        
-        btTeste.setStyle(style);
-        btSalvar.setStyle(style);
-        btCancelar.setStyle(style);
-        btTeste.setRipplerFill(cpPreenchimento.getValue());
-        btSalvar.setRipplerFill(cpPreenchimento.getValue());
-        btCancelar.setRipplerFill(cpPreenchimento.getValue());
-
-        style = tfTeste.getStyle() + ";-fx-prompt-text-fill: " + Utils.toRGBCode(cpFonteTexto.getValue()) + ";";
-        style += "-fx-text-fill: " + Utils.toRGBCode(cpFonteTexto.getValue()) + ";";
-        style += "-jfx-focus-color: " + Utils.toRGBCode(cpFoco.getValue()) + ";";
-        style += "-jfx-unfocus-color: " + Utils.toRGBCode(cpFoco.getValue()) + ";";
-        tfTeste.setStyle(tfTeste.getStyle() + ";" + style);
-        //-fx-prompt-text-fill: white;
+        alterarBotoes();
+        alterarInputText();
+        alterarInterface();
     }
     
     private void alterarInputText()
@@ -189,6 +152,7 @@ public class TelaDesignController implements Initializable
         style += "-jfx-focus-color: " + Utils.toRGBCode(cpFoco.getValue()) + ";";
         style += "-jfx-unfocus-color: " + Utils.toRGBCode(cpFoco.getValue()) + ";";
         tfTeste.setStyle(tfTeste.getStyle() + ";" + style);
+        tfTeste2.setStyle(tfTeste2.getStyle() + ";" + style);
     }
     
     private void alterarBotoes()
@@ -210,10 +174,15 @@ public class TelaDesignController implements Initializable
     
     private void alterarInterface()
     {
+        java.awt.Color cor = toRGB(Utils.toRGBCode(cpFundo2.getValue()));
+        style = "-fx-background-color: rgba(" + + cor.getRed() + "," + cor.getGreen() + 
+             "," + cor.getBlue() + "," + ((double)((int) slOpacidade.getValue())/100) + ");" +
+            "-fx-background-radius:5px;";
+        
         panePrincipal.setStyle("-fx-background-color: " + Utils.toRGBCode(cpFundo1.getValue()));
-        PaneInterface.setStyle("-fx-background-color: " + Utils.toRGBCode(cpFundo2.getValue()));
-        PaneBotoes.setStyle("-fx-background-color: " + Utils.toRGBCode(cpFundo2.getValue()));
-        paneTexto.setStyle("-fx-background-color: " + Utils.toRGBCode(cpFundo2.getValue()));
+        PaneInterface.setStyle(style);
+        PaneBotoes.setStyle(style);
+        paneTexto.setStyle(style);
         
         lbBotoes.setTextFill(cpFonte.getValue());
         lbInterface.setTextFill(cpFonte.getValue());
@@ -274,6 +243,18 @@ public class TelaDesignController implements Initializable
             tfTeste.setStyle(tfTeste.getStyle() + ";-fx-font-size: " + (int) slFonteTexto.getValue());
         });
         
+        slOpacidade.valueProperty().addListener((observable, oldValue, newValue) ->
+        {
+            java.awt.Color cor = toRGB(Utils.toRGBCode(cpFundo2.getValue()));
+            style = "-fx-background-color: rgba(" + + cor.getRed() + "," + cor.getGreen() + 
+                 "," + cor.getBlue() + "," + ((double)((int) slOpacidade.getValue())/100) + ");" +
+                "-fx-background-radius:5px;";
+            //"rgba(" + cor.getRed() + "," + cor.getGreen() + "," + cor.getBlue() + ",0.5)"
+            PaneInterface.setStyle(style);
+            PaneBotoes.setStyle(style);
+            paneTexto.setStyle(style);
+        });
+        
         rbFundoBotao.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
         {
             if(newValue)
@@ -290,6 +271,9 @@ public class TelaDesignController implements Initializable
         if(list == null || list.isEmpty())
         {
             existe = false;
+            cpFonte.setValue(Color.web("#212121"));
+            cpFonteBotao.setValue(Color.web("#212121"));
+            cpFonteTexto.setValue(Color.web("#212121"));
         }
         else
         {
@@ -323,7 +307,7 @@ public class TelaDesignController implements Initializable
         
         if(a.getResult() == ButtonType.YES)
         {
-            String fundo = "";
+            String fundo;
             if(rbFundoBotao.isSelected())
                 fundo = Utils.toRGBCode(cpFundoBotao.getValue());
             else
@@ -334,6 +318,7 @@ public class TelaDesignController implements Initializable
                 if(ctrDes.salvar(cpFundo1,cpFundo2,cpFonte,fundo,cpPreenchimento,cpFonteBotao,slFonteBotao,
                 cpFonteTexto,cpFoco,slFonteTexto,slOpacidade))
                 {
+                    Utils.geraArquivoCSS();
                     carrega();
                     new Alert(Alert.AlertType.INFORMATION, "Design criado com sucesso!!!", ButtonType.OK)
                         .showAndWait();

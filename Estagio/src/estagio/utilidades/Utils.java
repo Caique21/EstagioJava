@@ -43,13 +43,15 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import estagio.TelaPrincipalController;
-//import oficina.controladores.ctrCliente;
 import estagio.controladores.ctrDesign;
 import estagio.controladores.ctrUsuario;
+import estagio.controladores.ctrCliente;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  *
@@ -81,10 +83,8 @@ public class Utils
 
         Optional<String> result = dialog.showAndWait();
         
-        if (result.isPresent() && ctr.matchPassword(TelaPrincipalController.usuario_logado.getParam2(), 
-                pwd.getText()))
-            return true;
-        return false;
+        return result.isPresent() && ctr.matchPassword(TelaPrincipalController.usuario_logado.getParam2(), 
+                pwd.getText());
     }
     
     public static boolean validaUsuario(String titulo, String header,String txt_label)
@@ -224,7 +224,7 @@ public class Utils
         return false;
     }
 
-    /*public static String validadorCPF(String cpf)
+    public static String validadorCPF(String cpf, int cod, ctrCliente cli)
     {
         if (cpf.length() < 14)
         {
@@ -234,12 +234,12 @@ public class Utils
         {
             return "CPF inválido";
         }
-        else if (new ctrCliente().cpfExists(cpf))
+        else if (cli.cpfExists(cpf) != cod)
         {
             return "CPF já cadastrado";
         }
         return "";
-    }*/
+    }
 
     
     public String consultaCep(String cep, String formato)
@@ -273,10 +273,10 @@ public class Utils
                 dados.append(s);
             }
             br.close();
-        } catch (Exception ex)
+        } 
+        catch (IOException ex)
         {
             System.out.println(ex);
-
         }
         return dados.toString();
     }
@@ -364,7 +364,6 @@ public class Utils
     
     public static Date setZeroTimeDate(Date data) 
     {
-        Date res = data;
         Calendar calendar = Calendar.getInstance();
 
         calendar.setTime(data);
@@ -373,7 +372,7 @@ public class Utils
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 
-        res = calendar.getTime();
+        Date res = calendar.getTime();
 
         return res;
     }
@@ -426,6 +425,59 @@ public class Utils
     public static void carregaDesign()
     {
         design = ctrDesign.instancia().carrega();
+        geraArquivoCSS();
+    }
+
+    public static void geraArquivoCSS()
+    {
+        File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
+        try
+        {
+            file.createNewFile();
+            
+            FileWriter writer = new FileWriter(file);
+            writer.write(".list-cell \n"
+                    + "{\n"
+                    + "    -fx-control-inner-background:" + design.get(1) + ";\n"
+                    + "    -fx-text-fill:" + design.get(2) + ";\n"
+                    + "}\n"
+                    + ".jfx-tab-pane .tab-header-background \n"
+                    + "{\n\n"
+                    + "    -fx-background-color:" +design.get(1) + "; \n"
+                    + "}\n"
+                    + ".jfx-date-picker .text-field\n"
+                    + "{\n"
+                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
+                    + "    -fx-text-fill:" + design.get(7) + ";\n"
+                    + "}\n\n"
+                    + ".text-field, .text-area\n"
+                    + "{\n"
+                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                    + "    -jfx-focus-color: " + design.get(8) + ";\n"
+                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
+                    + "    -fx-text-fill:" + design.get(7) + ";\n"
+                    + "    -fx-font-size: " + design.get(9) + ";\n"
+                    + "}\n\n"
+                    + ".button\n"
+                    + "{\n"
+                    + "    -fx-background-color: " + design.get(3) + ";\n"
+                    + "    -fx-text-fill: " + design.get(5) + ";\n"
+                    + "    -fx-font-size: " + design.get(6) + ";\n"
+                    + "}\n\n"
+                    + ".-button .rippler{\n"
+                    + "      -fx-rippler-fill:" + design.get(4) + ";\n"
+                    + "}\n\n"
+                    + ".label, .radio-button\n"
+                    + "{\n"
+                    + "      -fx-text-fill: " + design.get(2) + ";\n"
+                    + "}\n\n");
+            writer.close();
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public static void setDesign(int paineisPrincipais, List<Node> nodes)
@@ -495,7 +547,7 @@ public class Utils
                     else if(node instanceof JFXRadioButton)
                         node.setStyle("-fx-text-fill: " + design.get(2));
                     else if(node instanceof Circle)
-                        node.setStyle("-fx-fill: " + design.get(1));
+                        node.setStyle("-fx-fill: " + design.get(0));
                     else if(node instanceof Line)
                         node.setStyle("-fx-stroke: " + design.get(2));
             }
@@ -512,9 +564,19 @@ public class Utils
         return design.get(5);
     }
     
-    public static String getFundo2()
+    public static String getFundoSecundaria()
     {
         return design.get(1);
+    }
+    
+    public static String getFundoPrimaria()
+    {
+        return design.get(0);
+    }
+    
+    public static String getFonte()
+    {
+        return design.get(2);
     }
     
     public static String getFundo2withOpacity()

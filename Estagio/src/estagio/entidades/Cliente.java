@@ -6,10 +6,14 @@
 package estagio.entidades;
 
 import estagio.utilidades.Banco;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,6 +35,34 @@ public class Cliente
 
     public Cliente()
     {
+    }
+
+    public Cliente(int codigo)
+    {
+        this.codigo = codigo;
+        get();
+    }
+
+    public Cliente(String nome)
+    {
+        this.nome = nome;
+        get();
+    }
+
+    public Cliente(int codigo, String nome, String cpf, String rg, Date data, Endereco endereco, String email, boolean ativo, Timestamp data_alteracao)
+    {
+        this.codigo = codigo;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.rg = rg;
+        this.data = data;
+        this.endereco = endereco;
+        this.email = email;
+        this.ativo = ativo;
+        this.data_alteracao = data_alteracao;
+        this.endereco_completo = endereco.toString();
+        this.telefones = new ArrayList<>();
+        setTelefone(new Telefone().getAllByCliente(this));
     }
 
     public Cliente(int codigo, String nome, String cpf, String rg, Date data, Endereco endereco, String email, ArrayList<String> telefone, boolean ativo, Timestamp data_alteracao)
@@ -340,5 +372,77 @@ public class Cliente
     public boolean apagar()
     {
         return Banco.getCon().manipular("DELETE FROM cliente WHERE cli_codigo = " + this.codigo);
+    }
+
+    public Cliente getByCpf(String cpf)
+    {
+        String sql = "SELECT * FROM cliente WHERE cli_cpf = '" + cpf + "'";
+
+        ResultSet rs = Banco.getCon().consultar(sql);
+            
+        try
+        {
+            if(rs != null && rs.next())
+                return new Cliente(rs.getInt("cli_codigo"));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+
+    private void get()
+    {
+        String sql = "SELECT * FROM cliente WHERE ";
+        
+        if(nome != null)
+            sql += "cli_nome = '" + this.nome + "'";
+        else
+            sql += "cli_codigo = " + this.codigo;
+        
+        ResultSet rs = Banco.getCon().consultar(sql);
+        
+        try
+        {
+            if(rs != null && rs.next())            
+            {
+                this.codigo = rs.getInt("cli_codigo");
+                this.nome = rs.getString("cli_nome");
+                this.cpf = rs.getString("cli_cpf");
+                this.rg = rs.getString("cli_rg");
+                this.data = rs.getDate("cli_datacadastro");
+                this.endereco = new Endereco(rs.getInt("ender_codigo"));
+                this.endereco_completo = endereco.toString();
+                this.email = rs.getString("cli_email");
+                this.ativo = rs.getBoolean("cli_ativo");
+                this.data_alteracao = rs.getTimestamp("cli_alteracao");
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private ArrayList<Cliente> le(ResultSet rs)
+    {
+        ArrayList<Cliente> clientes = new ArrayList<>();
+        Cliente cliente;
+        try
+        {
+            while(rs != null && rs.next())            
+            {
+                clientes.add(new Cliente(rs.getInt("cli_codigo"),rs.getString("cli_nome"),rs.getString("cli_cpf"), 
+                    rs.getString("cli_rg"),rs.getDate("cli_datacadastro"),new Endereco(rs.getInt("ender_codigo")), 
+                        rs.getString("cli_email"), rs.getBoolean("cli_ativo"), rs.getTimestamp("cli_alteracao")));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return clientes;
     }
 }

@@ -9,6 +9,8 @@ import estagio.utilidades.Banco;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -27,6 +29,12 @@ public class Endereco
 
     public Endereco()
     {
+    }
+
+    public Endereco(int codigo)
+    {
+        this.codigo = codigo;
+        get();
     }
 
     public Endereco(int codigo, String cep, String rua, int numero, String bairro, String complemento, String cidade, String estado)
@@ -264,5 +272,28 @@ public class Endereco
             e = null;
         }
         return resultado;
+    }
+
+    private void get()
+    {
+        String sql = "SELECT * FROM endereco WHERE ender_codigo = " + codigo;
+        ResultSet rs = Banco.getCon().consultar(sql);
+        try
+        {
+            if (rs!= null && rs.next())
+            {
+                this.bairro = rs.getString("ender_bairro");
+                this.cep = rs.getString("ender_cep");
+                this.cidade = rs.getString("ender_cidade");
+                this.complemento = rs.getString("ender_complemento");
+                this.estado = rs.getString("ender_estado");
+                this.numero = rs.getInt("ender_numero");
+                this.rua = rs.getString("ender_rua");
+            }
+        } 
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Endereco.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
