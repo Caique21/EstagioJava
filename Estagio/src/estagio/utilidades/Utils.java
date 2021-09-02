@@ -224,9 +224,9 @@ public class Utils
         return false;
     }
 
-    public static String validadorCPF(String cpf, int cod, ctrCliente cli)
+    public static String validadorCPF(String cpf, Objeto cliente, ctrCliente ctrCli)
     {
-        if (cpf.length() < 14)
+        /*if (cpf.length() > 8 && cpf.length() < 14)
         {
             return "CPF incompleto";
         }
@@ -234,11 +234,19 @@ public class Utils
         {
             return "CPF inválido";
         }
-        else if (cli.cpfExists(cpf) != cod)
+        else if ((cliente == null && cli.cpfExists(cpf) > 0) || 
+             (cli.cpfExists(cpf) != Integer.parseInt(cliente.getParam1())))
         {
             return "CPF já cadastrado";
         }
-        return "";
+        return "";*/
+        if(!Utils.validaCPF(cpf.replace(".", "").replace("-", "")))
+            return "CPF inválido";
+        else if(cliente == null && ctrCli.cpfExists(cpf) > 0 || 
+            cliente != null && ctrCli.cpfExists(cpf) != Integer.parseInt(cliente.getParam1()))  
+            return "CPF já cadastrado";
+        else
+            return "";
     }
 
     
@@ -430,53 +438,76 @@ public class Utils
 
     public static void geraArquivoCSS()
     {
-        File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
-        try
+        if(!design.isEmpty())
         {
-            file.createNewFile();
-            
-            FileWriter writer = new FileWriter(file);
-            writer.write(".list-cell \n"
-                    + "{\n"
-                    + "    -fx-control-inner-background:" + design.get(1) + ";\n"
-                    + "    -fx-text-fill:" + design.get(2) + ";\n"
-                    + "}\n"
-                    + ".jfx-tab-pane .tab-header-background \n"
-                    + "{\n\n"
-                    + "    -fx-background-color:" +design.get(1) + "; \n"
-                    + "}\n"
-                    + ".jfx-date-picker .text-field\n"
-                    + "{\n"
-                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
-                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
-                    + "    -fx-text-fill:" + design.get(7) + ";\n"
-                    + "}\n\n"
-                    + ".text-field, .text-area\n"
-                    + "{\n"
-                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
-                    + "    -jfx-focus-color: " + design.get(8) + ";\n"
-                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
-                    + "    -fx-text-fill:" + design.get(7) + ";\n"
-                    + "    -fx-font-size: " + design.get(9) + ";\n"
-                    + "}\n\n"
-                    + ".button\n"
-                    + "{\n"
-                    + "    -fx-background-color: " + design.get(3) + ";\n"
-                    + "    -fx-text-fill: " + design.get(5) + ";\n"
-                    + "    -fx-font-size: " + design.get(6) + ";\n"
-                    + "}\n\n"
-                    + ".-button .rippler{\n"
-                    + "      -fx-rippler-fill:" + design.get(4) + ";\n"
-                    + "}\n\n"
-                    + ".label, .radio-button\n"
-                    + "{\n"
-                    + "      -fx-text-fill: " + design.get(2) + ";\n"
-                    + "}\n\n");
-            writer.close();
-        }
-        catch (IOException ex)
-        {
-            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+            File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
+            try
+            {
+                file.createNewFile();
+
+                FileWriter writer = new FileWriter(file);
+                writer.write(".list-cell \n"
+                        + "{\n"
+                        + "    -fx-control-inner-background:" + design.get(1) + ";\n"
+                        + "    -fx-text-fill:" + design.get(7) + ";\n"
+                        + "}\n"
+                        + ".jfx-tab-pane .tab-header-background \n"
+                        + "{\n"
+                        + "    -fx-background-color:" +design.get(1) + "; \n"
+                        + "}\n\n"
+                        + ".jfx-tab-pane .tab-label\n "
+                        + "{\n"
+                        + "    -fx-alignment: CENTER;\n"
+                        + "    -fx-text-fill: " + design.get(2) + ";\n"
+                        + "    -fx-font-weight: bold;\n"
+                        + "}"
+                        + ".jfx-date-picker .text-field\n"
+                        + "{\n"
+                        + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                        + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
+                        + "    -fx-text-fill:" + design.get(7) + ";\n"
+                        + "    -fx-control-inner-background: transparent;\n"
+                        + "}\n\n"
+                        + ".text-field, .text-area\n"
+                        + "{\n"
+                        + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                        + "    -jfx-focus-color: " + design.get(8) + ";\n"
+                        + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
+                        + "    -fx-text-fill:" + design.get(7) + ";\n"
+                        + "    -fx-font-size: " + design.get(9) + ";\n"
+                        + "}\n\n"
+                        + ".button\n"
+                        + "{\n"
+                        + "    -fx-background-color: " + design.get(3) + ";\n"
+                        + "    -fx-text-fill: " + design.get(5) + ";\n"
+                        + "    -fx-font-size: " + design.get(6) + ";\n"
+                        + "}\n\n"
+                        + ".button .rippler{\n"
+                        + "      -fx-rippler-fill:" + design.get(4) + ";\n"
+                        + "}\n\n"
+                        + ".label, .radio-button\n"
+                        + "{\n"
+                        + "      -fx-text-fill: " + design.get(2) + ";\n"
+                        + "}\n\n"
+                        + ".combo-box \n"
+                        + "{\n"
+                        + "    -fx-background-color: transparent;\n"
+                        + "    -fx-text-fill: " + design.get(2) + ";\n"
+                        + "    -fx-cell-size: 1.66667em; \n"
+                        + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                        + "    -jfx-focus-color: " + design.get(8) + ";\n"        
+                        + "}\n\n"
+                        + ".jfx-combo-box{\n"
+                        + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                        + "    -jfx-focus-color: " + design.get(8) + ";\n"
+                        + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
+                        +"}\n\n");
+                writer.close();
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
     
@@ -547,7 +578,14 @@ public class Utils
                     else if(node instanceof JFXRadioButton)
                         node.setStyle("-fx-text-fill: " + design.get(2));
                     else if(node instanceof Circle)
-                        node.setStyle("-fx-fill: " + design.get(0));
+                    {
+                        //node.setStyle("-fx-fill: " + design.get(1));
+                        java.awt.Color cor = toRGB(design.get(1));
+                        //"rgba(" + cor.getRed() + "," + cor.getGreen() + "," + cor.getBlue() + ",0.5)"
+                        node.setStyle("-fx-fill: rgba(" + + cor.getRed() + "," + cor.getGreen() + 
+                             "," + cor.getBlue() + "," + Double.parseDouble(design.get(10))/100 + ");" +
+                            "-fx-background-radius:5px;");
+                    }
                     else if(node instanceof Line)
                         node.setStyle("-fx-stroke: " + design.get(2));
             }

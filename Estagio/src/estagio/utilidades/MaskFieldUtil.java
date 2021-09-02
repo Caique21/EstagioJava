@@ -268,6 +268,10 @@ public abstract class MaskFieldUtil
             try
             {
                 String value = textField.getText();
+                int pos = textField.getCaretPosition();
+                if(pos < textField.getText().length())
+                    pos++;
+                
                 value = value.replaceAll("[^0-9]", "");
                 int tam = value.length();
                 value = value.replaceFirst("(\\d{2})(\\d)", "($1)$2");
@@ -278,7 +282,8 @@ public abstract class MaskFieldUtil
                     value = value.replaceFirst("(\\d{5})(\\d)", "$1-$2");
                 }
                 textField.setText(value);
-                MaskFieldUtil.positionCaret(textField);
+                //MaskFieldUtil.positionCaret(textField);
+                textField.positionCaret(pos);
 
             }
             catch (Exception ex)
@@ -322,6 +327,7 @@ public abstract class MaskFieldUtil
             value = value.replaceFirst("(\\d{3})(\\d)", "$1/$2");
             value = value.replaceFirst("(\\d{4})(\\d)", "$1-$2");
             textField.setText(value);
+            
             MaskFieldUtil.positionCaret(textField);
         }
         );

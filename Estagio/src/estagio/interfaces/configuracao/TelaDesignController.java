@@ -333,7 +333,8 @@ public class TelaDesignController implements Initializable
                 if(ctrDes.alterar(cpFundo1,cpFundo2,cpFonte,fundo,cpPreenchimento,cpFonteBotao,slFonteBotao,
                 cpFonteTexto,cpFoco,slFonteTexto,slOpacidade))
                 {
-                    carrega();
+                    Utils.geraArquivoCSS();
+                    Utils.carregaDesign();
                     new Alert(Alert.AlertType.INFORMATION, "Design alterado com sucesso!!!", ButtonType.OK)
                         .showAndWait();
                     
@@ -378,7 +379,6 @@ public class TelaDesignController implements Initializable
     
     private void reload()
     {
-        Utils.carregaDesign();
         Parent root;
         try
         {
@@ -392,6 +392,8 @@ public class TelaDesignController implements Initializable
 
             Scene scene = new Scene(decorator);
             scene.setFill(Paint.valueOf("black"));
+            //scene.getStylesheets().add("\\estagio\\utilidades\\CSS\\Style.css");
+            //scene.getStylesheets().add(getClass().getClassLoader().getResource("C:\\Users\\carlo\\OneDrive\\Documentos\\NetBeansProjects\\EstagioJava\\Estagio\\src\\estagio\\utilidades\\CSS\\Style.css").toExternalForm());
 
             stage.setScene(scene);
             stage.setMaximized(true);

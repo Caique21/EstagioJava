@@ -30,6 +30,8 @@ public class ctrCliente
 
     public int cpfExists(String cpf)
     {
-        return new Cliente().getByCpf(cpf.replace(".", "").replace("-", "")).getCodigo();
+        Cliente cliente = new Cliente().getByCpf(cpf.replace(".", "").replace("-", ""));
+        return cliente != null ?  cliente.getCodigo() : 0;
+        //return new Cliente().getByCpf(cpf.replace(".", "").replace("-", "")).getCodigo();
     }
 }

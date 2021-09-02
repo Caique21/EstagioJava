@@ -93,12 +93,15 @@ public class TelaLoginController implements Initializable
         List<Node>nodes = new ArrayList<>();
         nodes.add(panePrincipal);
         nodes.add(lbTitulo);
-        //nodes.add(tfSenha);
-        //nodes.add(tfUsuario);
+        nodes.add(tfSenha);
+        nodes.add(tfUsuario);
         nodes.add(faPassword);
         nodes.add(faUsuario);
-        //nodes.add(btConfirmar);
-        //nodes.add(btSair);
+        nodes.add(btConfirmar);
+        nodes.add(btSair);
+        nodes.add(line1);
+        nodes.add(line2);
+        nodes.add(circle);
         Utils.setDesign(1, nodes);
         
         tfSenha.setStyle(tfSenha.getStyle() + ";-fx-font-size: 15;");

@@ -9,6 +9,8 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXTextField;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.TelaLoginController;
 import estagio.TelaPrincipalController;
 import estagio.controladores.ctrDesign;
@@ -175,6 +177,12 @@ public class TelaParametrizacaoController implements Initializable
     private Separator sepPequeno3;
     @FXML
     private Separator sepPequeno4;
+    @FXML
+    private FontAwesomeIconView faSearch;
+    @FXML
+    private FontAwesomeIconView faSave;
+    @FXML
+    private FontAwesomeIconView faClose;
 
     /**
      * Initializes the controller class.
@@ -271,7 +279,11 @@ public class TelaParametrizacaoController implements Initializable
             nodes.add(btDelTelefone);
             nodes.add(btSalvar);
             
-            nodes.add(cbEstado);
+            //nodes.add(cbEstado);
+            
+            nodes.add(faClose);
+            nodes.add(faSave);
+            nodes.add(faSearch);
             
             nodes.add(lvEnderecos);
             nodes.add(lvTelefones);
@@ -311,6 +323,7 @@ public class TelaParametrizacaoController implements Initializable
         else
         {
             existe = true;
+            faSave.setIcon(FontAwesomeIcon.EDIT);
             btSalvar.setText("ALTERAR");
             tfNome.setText(para.getParam1());
             tfFantasia.setText(para.getParam2());
@@ -625,7 +638,7 @@ public class TelaParametrizacaoController implements Initializable
     {
         String str = consultaCep(tfCEP.getText().replace("-", ""), "json");
         JSONObject my_obj = new JSONObject(str);
-        tfRua.setText(my_obj.getString("logradouro"));
+        tfRua.setText(my_obj.getString("tipo_logradouro") + " " + my_obj.getString("logradouro"));
         tfCidade.setText(my_obj.getString("cidade"));
         tfBairro.setText(my_obj.getString("bairro"));
         cbEstado.getSelectionModel().select(my_obj.getString("uf"));

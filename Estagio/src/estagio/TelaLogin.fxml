@@ -12,9 +12,9 @@
 <?import java.net.URL?>
 
 <AnchorPane id="AnchorPane" fx:id="panePrincipal" prefHeight="400.0" prefWidth="328.0" style="-fx-background-color: #040921;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.TelaLoginController">
-   <stylesheets>
+   <!--<stylesheets>
         <URL value="@/estagio/utilidades/CSS/Style.css" />
-    </stylesheets>
+    </stylesheets>-->
     
     <children>
       <Label fx:id="lbTitulo" alignment="CENTER" layoutY="14.0" prefHeight="17.0" prefWidth="328.0" text="LOGIN" textFill="WHITE">

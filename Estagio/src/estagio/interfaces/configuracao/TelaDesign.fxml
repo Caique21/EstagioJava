@@ -102,7 +102,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <JFXTextField fx:id="tfTeste" editable="false" labelFloat="true" layoutX="731.0" layoutY="27.0" prefHeight="25.0" prefWidth="82.0" promptText="," text="Teste" />
+            <JFXTextField fx:id="tfTeste" editable="false" labelFloat="true" layoutX="731.0" layoutY="27.0" prefHeight="25.0" prefWidth="82.0" promptText="Entrada Teste" text="Teste" />
             <Label fx:id="lb8" layoutX="24.0" layoutY="34.0" text="Cor da Fonte:">
                <font>
                   <Font size="14.0" />

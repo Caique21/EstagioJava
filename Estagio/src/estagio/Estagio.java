@@ -75,11 +75,12 @@ public class Estagio extends Application
             JOptionPane.showMessageDialog(null, "Erro: " + Banco.getCon().getMensagemErro());
             if (JOptionPane.showConfirmDialog(null, "Deseja criar uma base de dados?") == JOptionPane.YES_OPTION)
             {
-                if (!Banco.criarBD("oficina"))
+                if (!Banco.criarBD("estagio"))
                 {
                     JOptionPane.showMessageDialog(null, "Erro ao criar banco: " + Banco.getCon().getMensagemErro());
                     System.exit(-1);
-                } else
+                } 
+                else
                 {
                     Banco.realizaRestaure("bkp\\restaurar.bat");
                     if (!Banco.conectar())
@@ -88,10 +89,9 @@ public class Estagio extends Application
                         System.exit(-1);
                     }
                 }
-            } else
-            {
+            } 
+            else
                 System.exit(-1);
-            }
         }
         launch(args);
     }

@@ -7,6 +7,7 @@
 <?import com.jfoenix.controls.JFXRadioButton?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -16,7 +17,6 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import java.net.URL?>
 
 <BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastroClienteController">
    <stylesheets>
@@ -40,9 +40,9 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="tfNome" labelFloat="true" layoutX="34.0" layoutY="39.0" prefHeight="25.0" prefWidth="296.0" promptText="Nome(*)" />
-                  <JFXTextField fx:id="tfCPF" labelFloat="true" layoutX="402.0" layoutY="39.0" prefWidth="89.0" promptText="CPF(*)" />
-                  <JFXTextField fx:id="tfRG" labelFloat="true" layoutX="571.0" layoutY="39.0" prefWidth="80.0" promptText="RG" />
+                  <JFXTextField fx:id="tfNome" labelFloat="true" layoutX="34.0" layoutY="39.0" onKeyPressed="#mainAction" prefHeight="25.0" prefWidth="296.0" promptText="Nome(*)" />
+                  <JFXTextField fx:id="tfCPF" labelFloat="true" layoutX="402.0" layoutY="39.0" onKeyPressed="#mainAction" prefWidth="89.0" promptText="CPF(*)" />
+                  <JFXTextField fx:id="tfRG" labelFloat="true" layoutX="571.0" layoutY="39.0" onKeyPressed="#mainAction" prefWidth="80.0" promptText="RG" />
                   <JFXDatePicker fx:id="dpData" layoutX="838.0" layoutY="39.0" prefHeight="25.0" prefWidth="109.0" />
                   <Label fx:id="lbNascimento" layoutX="723.0" layoutY="43.0" text="Data de Nascimento" />
                   <Label fx:id="lbErroNome" layoutX="34.0" layoutY="64.0" text="ErroNome" textFill="RED" />
@@ -58,14 +58,14 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="tfCEP" labelFloat="true" layoutX="34.0" layoutY="30.0" prefWidth="65.0" promptText="CEP" />
+                  <JFXTextField fx:id="tfCEP" labelFloat="true" layoutX="34.0" layoutY="30.0" onKeyPressed="#cepAction" prefWidth="65.0" promptText="CEP" />
                   <HBox layoutX="34.0" layoutY="80.0" prefHeight="29.0" prefWidth="1092.0" spacing="35.0">
                      <children>
-                        <JFXTextField fx:id="tfRua" labelFloat="true" prefHeight="25.0" prefWidth="213.0" promptText="Rua" />
-                        <JFXTextField fx:id="tfNumero" labelFloat="true" prefHeight="25.0" prefWidth="66.0" promptText="Número" />
-                        <JFXTextField fx:id="tfBairro" labelFloat="true" prefHeight="25.0" prefWidth="207.0" promptText="Bairro" />
-                        <JFXTextField fx:id="tfComplemento" labelFloat="true" prefHeight="25.0" prefWidth="180.0" promptText="Complemento" />
-                        <JFXTextField fx:id="tfCidade" labelFloat="true" prefHeight="25.0" prefWidth="186.0" promptText="Cidade" />
+                        <JFXTextField fx:id="tfRua" labelFloat="true" onKeyPressed="#mainAction" prefHeight="25.0" prefWidth="213.0" promptText="Rua" />
+                        <JFXTextField fx:id="tfNumero" labelFloat="true" onKeyPressed="#mainAction" prefHeight="25.0" prefWidth="66.0" promptText="Número" />
+                        <JFXTextField fx:id="tfBairro" labelFloat="true" onKeyPressed="#mainAction" prefHeight="25.0" prefWidth="207.0" promptText="Bairro" />
+                        <JFXTextField fx:id="tfComplemento" labelFloat="true" onKeyPressed="#mainAction" prefHeight="25.0" prefWidth="180.0" promptText="Complemento" />
+                        <JFXTextField fx:id="tfCidade" labelFloat="true" onKeyPressed="#mainAction" prefHeight="25.0" prefWidth="186.0" promptText="Cidade" />
                         <JFXComboBox fx:id="cbEstado" labelFloat="true" prefHeight="25.0" prefWidth="68.0" promptText="Estado" />
                      </children>
                   </HBox>
@@ -89,17 +89,17 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="tfEmail" labelFloat="true" layoutX="34.0" layoutY="66.0" prefHeight="25.0" prefWidth="226.0" promptText="Email" />
-                  <JFXListView fx:id="lvTelefones" layoutX="344.0" layoutY="24.0" prefHeight="109.0" prefWidth="300.0" />
+                  <JFXTextField fx:id="tfEmail" labelFloat="true" layoutX="34.0" layoutY="66.0" onKeyPressed="#mainAction" prefHeight="25.0" prefWidth="226.0" promptText="Email" />
+                  <JFXListView fx:id="lvTelefones" layoutX="344.0" layoutY="24.0" onMouseClicked="#selecionaTelefone" prefHeight="109.0" prefWidth="300.0" />
                   <Label fx:id="lbErroEmail" layoutX="34.0" layoutY="94.0" text="ErroEmail" textFill="RED" />
                   <Label fx:id="lbTelefones" layoutX="344.0" layoutY="6.0" text="Telefones/Celulares">
                      <font>
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="tfTelefone" labelFloat="true" layoutX="676.0" layoutY="66.0" prefHeight="25.0" prefWidth="197.0" promptText="Telefone/Celular" />
-                  <JFXButton fx:id="btAddTelefone" buttonType="RAISED" layoutX="668.0" layoutY="25.0" onMouseEntered="#addTelEnter" onMouseExited="#addTelExit" text="ADICIONAR TELEFONE" />
-                  <JFXButton fx:id="btDelTelefone" buttonType="RAISED" layoutX="817.0" layoutY="25.0" onMouseEntered="#delTelEnter" onMouseExited="#delTelExit" text="REMOVER TELEFONE" />
+                  <JFXTextField fx:id="tfTelefone" labelFloat="true" layoutX="676.0" layoutY="66.0" onKeyPressed="#foneAction" prefHeight="25.0" prefWidth="197.0" promptText="Telefone/Celular" />
+                  <JFXButton fx:id="btAddTelefone" buttonType="RAISED" layoutX="668.0" layoutY="25.0" onAction="#clickAddTelefone" onMouseEntered="#addTelEnter" onMouseExited="#addTelExit" text="ADICIONAR TELEFONE" />
+                  <JFXButton fx:id="btDelTelefone" buttonType="RAISED" layoutX="817.0" layoutY="25.0" onAction="#clickDelTelefone" onMouseEntered="#delTelEnter" onMouseExited="#delTelExit" text="REMOVER TELEFONE" />
                   <Label fx:id="lbErroTelefone" layoutX="676.0" layoutY="94.0" text="ErroTelefone" textFill="RED" />
                </children>
             </Pane>
@@ -110,8 +110,8 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="tfNomePesquisa" labelFloat="true" layoutX="69.0" layoutY="21.0" prefHeight="25.0" prefWidth="236.0" promptText="Digite Nome para Pesquisar" />
-                  <JFXTextField fx:id="tfCpfPesquisa" labelFloat="true" layoutX="69.0" layoutY="21.0" prefHeight="25.0" prefWidth="236.0" promptText="Digite CPF para Pesquisar" visible="false" />
+                  <JFXTextField fx:id="tfNomePesquisa" labelFloat="true" layoutX="69.0" layoutY="21.0" onKeyPressed="#searchAction" prefHeight="25.0" prefWidth="236.0" promptText="Digite Nome para Pesquisar" />
+                  <JFXTextField fx:id="tfCpfPesquisa" labelFloat="true" layoutX="69.0" layoutY="21.0" onKeyPressed="#searchAction" prefHeight="25.0" prefWidth="236.0" promptText="Digite CPF para Pesquisar" visible="false" />
                   <HBox alignment="CENTER_LEFT" layoutX="315.0" layoutY="19.0" prefHeight="29.0" prefWidth="137.0" spacing="15.0">
                      <children>
                         <JFXRadioButton fx:id="rbNome" text="Nome" />
@@ -123,7 +123,7 @@
                         <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
                      </graphic>
                   </JFXButton>
-                  <TableView fx:id="tvClientes" layoutX="29.0" layoutY="50.0" prefHeight="179.0" prefWidth="1072.0">
+                  <TableView fx:id="tvClientes" layoutX="29.0" layoutY="50.0" onMouseClicked="#selecionaCliente" prefHeight="179.0" prefWidth="1072.0">
                     <columns>
                       <TableColumn fx:id="tcNome" prefWidth="347.0" text="Nome" />
                       <TableColumn fx:id="tcCPF" prefWidth="101.0" text="CPF" />

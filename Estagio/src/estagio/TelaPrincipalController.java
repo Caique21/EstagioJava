@@ -126,16 +126,16 @@ public class TelaPrincipalController implements Initializable
         
         nodes.add(btConfig);
         
-        //nodes.add(lbFantasia);
+        nodes.add(lbData);
+        nodes.add(lbFantasia);
         nodes.add(lbFinancas);
         nodes.add(lbGerencimento);
         nodes.add(lbHome);
+        nodes.add(lbHora);
         nodes.add(lbLogout);
         nodes.add(lbRelatorios);
         nodes.add(lbTransporte);
-        //nodes.add(lbData);
-        //nodes.add(lbUsuario);
-        //nodes.add(lbHora);
+        nodes.add(lbUsuario);
         
         nodes.add(faHome);
         nodes.add(faCog);

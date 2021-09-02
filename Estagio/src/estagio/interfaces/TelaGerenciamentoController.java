@@ -103,7 +103,6 @@ public class TelaGerenciamentoController implements Initializable
             stage.setResizable(false);
 
             Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/basicas/CadastroCliente.fxml"));
-            root.getStylesheets().add(("/oficina/utilidades/CadastroCliente.css"));
             panePrincipal.getChildren().clear();
             panePrincipal.getChildren().add(root);
         }
@@ -124,7 +123,6 @@ public class TelaGerenciamentoController implements Initializable
             stage.setResizable(false);
 
             Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/basicas/CadastroFuncionario.fxml"));
-            root.getStylesheets().add(("/oficina/utilidades/CadastroCliente.css"));
             panePrincipal.getChildren().clear();
             panePrincipal.getChildren().add(root);
         }
@@ -145,7 +143,6 @@ public class TelaGerenciamentoController implements Initializable
             stage.setResizable(false);
 
             Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/basicas/CadastroUsuario.fxml"));
-            root.getStylesheets().add(("/oficina/utilidades/CadastroCliente.css"));
             panePrincipal.getChildren().clear();
             panePrincipal.getChildren().add(root);
         }
@@ -166,7 +163,6 @@ public class TelaGerenciamentoController implements Initializable
             stage.setResizable(false);
 
             Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/basicas/CadastroFornecedor.fxml"));
-            root.getStylesheets().add(("/oficina/utilidades/CadastroCliente.css"));
             panePrincipal.getChildren().clear();
             panePrincipal.getChildren().add(root);
         }
@@ -215,7 +211,6 @@ public class TelaGerenciamentoController implements Initializable
             stage.setResizable(false);
 
             Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/basicas/CadastroVeiculo.fxml"));
-            root.getStylesheets().add(("/oficina/utilidades/CadastroCliente.css"));
             panePrincipal.getChildren().clear();
             panePrincipal.getChildren().add(root);
         }
@@ -236,7 +231,6 @@ public class TelaGerenciamentoController implements Initializable
             stage.setResizable(false);
 
             Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/basicas/CadastroDespesa.fxml"));
-            root.getStylesheets().add(("/oficina/utilidades/CadastroCliente.css"));
             panePrincipal.getChildren().clear();
             panePrincipal.getChildren().add(root);
         }
@@ -257,7 +251,6 @@ public class TelaGerenciamentoController implements Initializable
             stage.setResizable(false);
 
             Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/basicas/CadastrosInativos.fxml"));
-            root.getStylesheets().add(("/oficina/utilidades/CadastroCliente.css"));
             panePrincipal.getChildren().clear();
             panePrincipal.getChildren().add(root);
         }

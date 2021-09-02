@@ -62,7 +62,7 @@ public class TelaConfiguracoesController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-         List<Node>nodes = new ArrayList<>();
+       List<Node>nodes = new ArrayList<>();
         nodes.add(panePrincipal);
         nodes.add(lbTitulo);
         Utils.setDesign(1, nodes);

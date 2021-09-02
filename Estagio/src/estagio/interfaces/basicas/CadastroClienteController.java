@@ -30,15 +30,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import static json.Json.consultaCep;
+import org.json.JSONObject;
 
 /**
  * FXML Controller class
@@ -182,7 +186,7 @@ public class CadastroClienteController implements Initializable
     @FXML
     private Label lbErroCidade;
     @FXML
-    private JFXListView<?> lvTelefones;
+    private JFXListView<String> lvTelefones;
     @FXML
     private JFXButton btPesquisarCEP;
 
@@ -237,14 +241,37 @@ public class CadastroClienteController implements Initializable
     
     private void setListeners()
     {
-        
         InvalidationListener listenerCPF = (Observable observable) ->
         {
-            Utils.validadorCPF(tfCPF.getText(), Integer.parseInt(cliente.getParam1()),ctrCli);
+            lbErroCPF.setText(Utils.validadorCPF(tfCPF.getText(), cliente,ctrCli));
         };
         
-        tfCPF.textProperty().addListener(listenerCPF);
-        tfCPF.focusedProperty().addListener(listenerCPF);
+        tfCPF.textProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(newValue.length() == 14)
+                lbErroCPF.setText(Utils.validadorCPF(newValue, cliente, ctrCli));
+            else
+                lbErroCPF.setText("");
+        });
+        
+        tfCPF.focusedProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(!newValue)
+            {
+                if(tfCPF.getText().length() == 14)
+                    lbErroCPF.setText(Utils.validadorCPF(tfCPF.getText(), cliente, ctrCli));
+                else
+                    lbErroCPF.setText("CPF incompleto");
+            }
+            else
+                if(tfCPF.getText().length() == 14)
+                    lbErroCPF.setText(Utils.validadorCPF(tfCPF.getText(), cliente, ctrCli));
+                else
+                    lbErroCPF.setText("");
+        });
+        
+        //tfCPF.textProperty().addListener(listenerCPF);
+        //tfCPF.focusedProperty().addListener(listenerCPF);
         
         tfEmail.textProperty().addListener((observable, oldValue, newValue) -> 
         {
@@ -299,7 +326,7 @@ public class CadastroClienteController implements Initializable
         nodes.add(lbNascimento);
         nodes.add(lbTelefones);
         
-        /*nodes.add(tfBairro);
+        nodes.add(tfBairro);
         nodes.add(tfCEP);
         nodes.add(tfCPF);
         nodes.add(tfCidade);
@@ -311,7 +338,7 @@ public class CadastroClienteController implements Initializable
         nodes.add(tfRua);
         nodes.add(tfTelefone);
         nodes.add(tfNomePesquisa);
-        nodes.add(tfCpfPesquisa);*/
+        nodes.add(tfCpfPesquisa);
         
         nodes.add(rbCPF);
         nodes.add(rbNome);
@@ -323,8 +350,19 @@ public class CadastroClienteController implements Initializable
         nodes.add(faSearch);
         nodes.add(faSearchCEP);
         nodes.add(faTrash);
-        nodes.add(cbEstado);
+        //nodes.add(cbEstado);
         Utils.setDesign(1, nodes);
+        lbErroBairro.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
+        lbErroCEP.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
+        lbErroCPF.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
+        lbErroData.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
+        lbErroEmail.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
+        lbErroEstado.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
+        lbErroNome.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
+        lbErroNumero.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
+        lbErroRG.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
+        lbErroRua.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
+        lbErroTelefone.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
     }
     
     private void inicializa()
@@ -336,6 +374,7 @@ public class CadastroClienteController implements Initializable
         limparCampos();
         
         acao = -1;
+        cliente = null;
     }
     
     @Override
@@ -343,30 +382,27 @@ public class CadastroClienteController implements Initializable
     {
         cbEstado.getItems().addAll("AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", 
             "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RO", "RS", "RR", "SC", "SE", "SP", "TO");
-        cbEstado.setOnAction((event) ->
-        {
-            cbEstado.setStyle("-fx-background-color:" + Utils.getFonte() + 
-                    ";-fx-prompt-text-fill: " + Utils.getPromptColor());
-        });
      
         rbCPF.setToggleGroup(goup);
         rbNome.setToggleGroup(goup);
         
         MaskFieldUtil.cepField(tfCEP);
         MaskFieldUtil.cpfField(tfCPF);
+        MaskFieldUtil.cpfField(tfCpfPesquisa);
         MaskFieldUtil.numericField(tfNumero);
         MaskFieldUtil.foneField(tfTelefone);
         MaskFieldUtil.rgField(tfRG);
         
         inicializaDesign();
-        
         inicializa();
+        setListeners();
     }    
 
     @FXML
     private void clickNovo(ActionEvent event)
     {
         setEstado(false, false, false, true, true, false, true, true, false);
+        acao = 0;
     }
 
     @FXML
@@ -380,26 +416,100 @@ public class CadastroClienteController implements Initializable
         if(!tvClientes.getItems().isEmpty() && tvClientes.getSelectionModel().getFocusedIndex() >= 0)
         {
             cliente = tvClientes.getSelectionModel().getSelectedItem();
+            acao = 1;
         }
+        else if(tvClientes.getItems().isEmpty())
+            new Alert(Alert.AlertType.ERROR, "Não há clientes cadastrados para ser alterado", ButtonType.OK)
+                    .showAndWait();
+        else
+            new Alert(Alert.AlertType.ERROR, "Selecione um cliente para ser alterado", ButtonType.OK)
+                    .showAndWait();
     }
 
     @FXML
     private void clickRemover(ActionEvent event)
     {
+        if(!tvClientes.getItems().isEmpty() && tvClientes.getSelectionModel().getFocusedIndex() >= 0)
+        {
+            cliente = tvClientes.getSelectionModel().getSelectedItem();
+        }
+        else if(tvClientes.getItems().isEmpty())
+            new Alert(Alert.AlertType.ERROR, "Não há clientes cadastrados para ser alterado", ButtonType.OK)
+                    .showAndWait();
+        else
+            new Alert(Alert.AlertType.ERROR, "Selecione um cliente para ser alterado", ButtonType.OK)
+                    .showAndWait();
     }
 
     @FXML
     private void clickCancelar(ActionEvent event)
     {
+        inicializa();
     }
 
     @FXML
     private void clickPesquisarCEP(ActionEvent event)
     {
+        String str = consultaCep(tfCEP.getText().replace("-", ""), "json");
+        JSONObject my_obj = new JSONObject(str);
+        tfRua.setText(my_obj.getString("tipo_logradouro") + " " + my_obj.getString("logradouro"));
+        tfCidade.setText(my_obj.getString("cidade"));
+        tfBairro.setText(my_obj.getString("bairro"));
+        cbEstado.getSelectionModel().select(my_obj.getString("uf"));
     }
 
     @FXML
     private void clickPesquisar(ActionEvent event)
+    {
+    }
+
+    @FXML
+    private void selecionaCliente(MouseEvent event)
+    {
+        if(!tvClientes.getItems().isEmpty() && tvClientes.getSelectionModel().getFocusedIndex() >= 0)
+        {
+            setEstado(true, true, true, false, false, true, true, true, true);
+        }
+    }
+
+    @FXML
+    private void clickAddTelefone(ActionEvent event)
+    {
+        String tel = tfTelefone.getText().replace("(", "").replace(")", "").replace("-", "");
+        if(!tel.equals(""))
+            if(tel.length() < 10)
+                if(tel.length() == 8)
+                    lbErroTelefone.setText("Número inválido, insira o DDD");
+                else
+                    lbErroTelefone.setText("Número de telefone/celular inválido");
+            else
+            {
+                lbErroTelefone.setText("");
+                for(String telefone : lvTelefones.getItems())
+                    if(telefone.replace("(", "").replace(")", "").replace("-", "").equals(tel))
+                    {
+                        lbErroTelefone.setText("Número de telefone/celular já cadastrado");
+                        break;
+                    }
+                
+                if(lbErroTelefone.getText().equals(""))
+                {
+                    lvTelefones.getItems().add(tfTelefone.getText());
+                    tfTelefone.clear();
+                    tfTelefone.requestFocus();
+                }
+            }
+        else
+            lbErroTelefone.setText("Digite um número de telefone/celular para inserir");
+    }
+
+    @FXML
+    private void clickDelTelefone(ActionEvent event)
+    {
+    }
+
+    @FXML
+    private void selecionaTelefone(MouseEvent event)
     {
     }
 
@@ -527,5 +637,33 @@ public class CadastroClienteController implements Initializable
         btPesquisar.setStyle("-fx-cursor: hand;" + btPesquisar.getStyle());
         tooltip.setText("Buscar Cliente");
         ToolTip.bindTooltip(btPesquisar, tooltip);
+    }
+
+    @FXML
+    private void mainAction(KeyEvent event)
+    {
+        if(event.getCode() == KeyCode.ENTER)
+            clickConfirmar(new ActionEvent());
+    }
+
+    @FXML
+    private void cepAction(KeyEvent event)
+    {
+        if(event.getCode() == KeyCode.ENTER)
+            clickPesquisarCEP(new ActionEvent());
+    }
+
+    @FXML
+    private void foneAction(KeyEvent event)
+    {
+        if(event.getCode() == KeyCode.ENTER)
+            clickAddTelefone(new ActionEvent());
+    }
+
+    @FXML
+    private void searchAction(KeyEvent event)
+    {
+        if(event.getCode() == KeyCode.ENTER)
+            clickPesquisar(new ActionEvent());
     }
 }
