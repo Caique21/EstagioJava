@@ -52,6 +52,8 @@ import estagio.controladores.ctrCliente;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import static json.Json.consultaCep;
+import org.json.JSONObject;
 
 /**
  *

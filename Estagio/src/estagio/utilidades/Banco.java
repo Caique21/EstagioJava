@@ -25,7 +25,8 @@ public class Banco {
     public static boolean conectar()
     {   
         con = new Conexao();
-        return con.conectar("jdbc:postgresql://localhost/","estagio","postgres","postgres123");
+        //return con.conectar("jdbc:postgresql://localhost/","estagio","postgres","postgres123");
+        return con.conectar("jdbc:postgresql://192.168.0.4/","estagio","postgres","postgres123");
     }
     
     public static Conexao getCon() {

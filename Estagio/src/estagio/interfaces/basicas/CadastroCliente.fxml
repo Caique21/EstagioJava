@@ -69,12 +69,12 @@
                         <JFXComboBox fx:id="cbEstado" labelFloat="true" prefHeight="25.0" prefWidth="68.0" promptText="Estado" />
                      </children>
                   </HBox>
-                  <Label fx:id="lbErroRua" layoutX="34.0" layoutY="109.0" text="ErroRua" textFill="RED" />
+                  <Label fx:id="lbErroRua" layoutX="34.0" layoutY="106.0" text="ErroRua" textFill="RED" />
                   <Label fx:id="lbErroCEP" layoutX="34.0" layoutY="55.0" text="ErroCEP" textFill="RED" />
-                  <Label fx:id="lbErroNumero" alignment="CENTER" layoutX="261.0" layoutY="109.0" prefHeight="17.0" prefWidth="106.0" text="ErroNúmero" textFill="RED" />
-                  <Label fx:id="lbErroBairro" layoutX="383.0" layoutY="109.0" text="ErroBairro" textFill="RED" />
-                  <Label fx:id="lbErroCidade" layoutX="842.0" layoutY="109.0" text="ErroCidade" textFill="RED" />
-                  <Label fx:id="lbErroEstado" layoutX="1062.0" layoutY="109.0" text="ErroEstado" textFill="RED" />
+                  <Label fx:id="lbErroNumero" alignment="CENTER" layoutX="261.0" layoutY="106.0" prefHeight="17.0" prefWidth="106.0" text="ErroNúmero" textFill="RED" />
+                  <Label fx:id="lbErroBairro" layoutX="383.0" layoutY="106.0" text="ErroBairro" textFill="RED" />
+                  <Label fx:id="lbErroCidade" layoutX="837.0" layoutY="106.0" text="ErroCidade" textFill="RED" />
+                  <Label fx:id="lbErroEstado" alignment="CENTER_RIGHT" layoutX="1020.0" layoutY="106.0" prefHeight="17.0" prefWidth="99.0" text="ErroEstado" textFill="RED" />
                   <JFXButton fx:id="btPesquisarCEP" buttonType="RAISED" layoutX="125.0" layoutY="30.0" onAction="#clickPesquisarCEP" onMouseEntered="#cepEnter" onMouseExited="#cepExit" text="PESQUISAR CEP">
                      <graphic>
                         <FontAwesomeIconView fx:id="faSearchCEP" glyphName="SEARCH" size="15" />
@@ -114,8 +114,8 @@
                   <JFXTextField fx:id="tfCpfPesquisa" labelFloat="true" layoutX="69.0" layoutY="21.0" onKeyPressed="#searchAction" prefHeight="25.0" prefWidth="236.0" promptText="Digite CPF para Pesquisar" visible="false" />
                   <HBox alignment="CENTER_LEFT" layoutX="315.0" layoutY="19.0" prefHeight="29.0" prefWidth="137.0" spacing="15.0">
                      <children>
-                        <JFXRadioButton fx:id="rbNome" text="Nome" />
-                        <JFXRadioButton fx:id="rbCPF" text="CPF" />
+                        <JFXRadioButton fx:id="rbNome" onAction="#clickNome" text="Nome" />
+                        <JFXRadioButton fx:id="rbCPF" onAction="#clickCPF" text="CPF" />
                      </children>
                   </HBox>
                   <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="459.0" layoutY="21.0" onAction="#clickPesquisar" onMouseEntered="#pesquisarEnter" onMouseExited="#pesquisarExit" text="PESQUISAR">
