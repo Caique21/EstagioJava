@@ -58,6 +58,7 @@ public class Endereco
         this.complemento = complemento;
         this.cidade = cidade;
         this.estado = estado;
+        existe();
     }
 
     public int getCodigo()
@@ -205,7 +206,7 @@ public class Endereco
     @Override
     public String toString()
     {
-        return this.cep + "\n" + this.rua + " - " + this.bairro + " - " + this.complemento + "\n"
+        return "CEP " + this.cep + " \n" + this.rua + " " + this.numero + ", " + this.bairro + " - " + this.complemento + "\n"
             + this.cidade + " - " + this.estado;
     }
     

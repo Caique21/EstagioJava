@@ -78,6 +78,20 @@ public class Conexao
         return executou;
     }
     
+    public boolean manipular2(String sql) throws SQLException // inserir, alterar,excluir
+    {   
+        boolean executou=false;
+       
+        Statement statement = connect.createStatement();
+        int result = statement.executeUpdate( sql );
+        statement.close();
+
+        if(result >= 1)
+            executou = true;
+        
+        return executou;
+    }
+    
     public ResultSet consultar(String sql)
     {   
         ResultSet rs = null;

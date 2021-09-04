@@ -1,63 +1,77 @@
-.list-cell 
+.jfx-list-view 
 {
-    -fx-control-inner-background:#EF6C00;
-    -fx-text-fill:#000000;
+    -fx-background-color: #25294A;
 }
+
+list-view .list-cell:odd 
+{
+    -fx-background-color: #202442;
+}
+
+.list-view .list-cell:even 
+{
+    -fx-background-color: #25294A;
+}
+
+.table-row-cell{
+   -fx-background-color: transparent;
+}
+
 .jfx-tab-pane .tab-header-background 
 {
-    -fx-background-color:#EF6C00; 
+    -fx-background-color:#202442; 
 }
 
 .jfx-tab-pane .tab-label
  {
     -fx-alignment: CENTER;
-    -fx-text-fill: #000000;
+    -fx-text-fill: #FAFAFA;
     -fx-font-weight: bold;
 }.jfx-date-picker .text-field
 {
-    -jfx-unfocus-color: #000000;
-    -fx-prompt-text-fill: #000000;
-    -fx-text-fill:#000000;
+    -jfx-unfocus-color: #4C7AF7;
+    -fx-prompt-text-fill: #FAFAFA;
+    -fx-text-fill:#FAFAFA;
     -fx-control-inner-background: transparent;
 }
 
 .text-field, .text-area
 {
-    -jfx-unfocus-color: #000000;
-    -jfx-focus-color: #000000;
-    -fx-prompt-text-fill: #000000;
-    -fx-text-fill:#000000;
+    -jfx-unfocus-color: #4C7AF7;
+    -jfx-focus-color: #4C7AF7;
+    -fx-prompt-text-fill: #FAFAFA;
+    -fx-text-fill:#FAFAFA;
     -fx-font-size: 12;
 }
 
 .button
 {
     -fx-background-color: transparent;
-    -fx-text-fill: #000000;
+    -fx-text-fill: #FAFAFA;
     -fx-font-size: 12;
 }
 
 .button .rippler{
-      -fx-rippler-fill:#FFEB3B;
+      -fx-rippler-fill:#4C7AF7;
 }
 
 .label, .radio-button
 {
-      -fx-text-fill: #000000;
+      -fx-text-fill: #FAFAFA;
 }
 
 .combo-box 
 {
     -fx-background-color: transparent;
-    -fx-text-fill: #000000;
+    -fx-text-fill: #FAFAFA;
     -fx-cell-size: 1.66667em; 
-    -jfx-unfocus-color: #000000;
-    -jfx-focus-color: #000000;
+    -jfx-unfocus-color: #4C7AF7;
+    -jfx-focus-color: #4C7AF7;
 }
 
 .jfx-combo-box{
-    -jfx-unfocus-color: #000000;
-    -jfx-focus-color: #000000;
-    -fx-prompt-text-fill: #000000;
+    -jfx-unfocus-color: #4C7AF7;
+    -jfx-focus-color: #4C7AF7;
+    -fx-prompt-text-fill: #FAFAFA;
 }
 

@@ -43,8 +43,8 @@
                   <JFXTextField fx:id="tfNome" labelFloat="true" layoutX="34.0" layoutY="39.0" onKeyPressed="#mainAction" prefHeight="25.0" prefWidth="296.0" promptText="Nome(*)" />
                   <JFXTextField fx:id="tfCPF" labelFloat="true" layoutX="402.0" layoutY="39.0" onKeyPressed="#mainAction" prefWidth="89.0" promptText="CPF(*)" />
                   <JFXTextField fx:id="tfRG" labelFloat="true" layoutX="571.0" layoutY="39.0" onKeyPressed="#mainAction" prefWidth="80.0" promptText="RG" />
-                  <JFXDatePicker fx:id="dpData" layoutX="838.0" layoutY="39.0" prefHeight="25.0" prefWidth="109.0" />
-                  <Label fx:id="lbNascimento" layoutX="723.0" layoutY="43.0" text="Data de Nascimento" />
+                  <JFXDatePicker fx:id="dpData" editable="false" layoutX="838.0" layoutY="39.0" prefHeight="25.0" prefWidth="109.0" />
+                  <Label fx:id="lbNascimento" layoutX="723.0" layoutY="43.0" text="Data de Cadastro" />
                   <Label fx:id="lbErroNome" layoutX="34.0" layoutY="64.0" text="ErroNome" textFill="RED" />
                   <Label fx:id="lbErroCPF" layoutX="402.0" layoutY="64.0" text="ErroCPF" textFill="RED" />
                   <Label fx:id="lbErroRG" layoutX="571.0" layoutY="64.0" text="ErroRG" textFill="RED" />
@@ -90,7 +90,7 @@
                      </font>
                   </Label>
                   <JFXTextField fx:id="tfEmail" labelFloat="true" layoutX="34.0" layoutY="66.0" onKeyPressed="#mainAction" prefHeight="25.0" prefWidth="226.0" promptText="Email" />
-                  <JFXListView fx:id="lvTelefones" layoutX="344.0" layoutY="24.0" onMouseClicked="#selecionaTelefone" prefHeight="109.0" prefWidth="300.0" />
+                  <JFXListView fx:id="lvTelefones" layoutX="344.0" layoutY="24.0" onMouseClicked="#selecionaTelefone" prefHeight="103.0" prefWidth="300.0" />
                   <Label fx:id="lbErroEmail" layoutX="34.0" layoutY="94.0" text="ErroEmail" textFill="RED" />
                   <Label fx:id="lbTelefones" layoutX="344.0" layoutY="6.0" text="Telefones/Celulares">
                      <font>
@@ -125,14 +125,19 @@
                   </JFXButton>
                   <TableView fx:id="tvClientes" layoutX="29.0" layoutY="50.0" onMouseClicked="#selecionaCliente" prefHeight="179.0" prefWidth="1072.0">
                     <columns>
-                      <TableColumn fx:id="tcNome" prefWidth="347.0" text="Nome" />
-                      <TableColumn fx:id="tcCPF" prefWidth="101.0" text="CPF" />
-                        <TableColumn fx:id="tcRG" prefWidth="105.0" text="RG" />
-                        <TableColumn fx:id="tcData" prefWidth="121.0" text="Data de Nasci." />
-                        <TableColumn fx:id="tcEndereco" prefWidth="244.0" text="Endereço" />
-                        <TableColumn fx:id="tcEmail" prefWidth="153.0" text="Email" />
+                      <TableColumn fx:id="tcNome" prefWidth="262.0" text="Nome" />
+                      <TableColumn fx:id="tcCPF" prefWidth="89.0" text="CPF" />
+                        <TableColumn fx:id="tcRG" prefWidth="87.0" text="RG" />
+                        <TableColumn fx:id="tcData" prefWidth="114.0" text="Data Cadastro" />
+                        <TableColumn fx:id="tcEndereco" prefWidth="352.0" text="Endereço" />
+                        <TableColumn fx:id="tcEmail" prefWidth="167.0" text="Email" />
                     </columns>
                   </TableView>
+                  <Label fx:id="lbDataAlteracao" layoutX="674.0" layoutY="25.0" prefHeight="17.0" prefWidth="429.0" text="Data da última alteração: ">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
                </children>
             </Pane>
          </children>

@@ -17,6 +17,7 @@ import estagio.controladores.ctrDesign;
 import estagio.utilidades.Banco;
 import estagio.utilidades.Utils;
 import static estagio.utilidades.Utils.toRGB;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -392,6 +393,9 @@ public class TelaDesignController implements Initializable
 
             Scene scene = new Scene(decorator);
             scene.setFill(Paint.valueOf("black"));
+            File file = new File("/estagio/utilidades/CSS/Style.css");
+            URL url = file.toURI().toURL();
+            scene.getStylesheets().add(url.toExternalForm());
             //scene.getStylesheets().add("\\estagio\\utilidades\\CSS\\Style.css");
             //scene.getStylesheets().add(getClass().getClassLoader().getResource("C:\\Users\\carlo\\OneDrive\\Documentos\\NetBeansProjects\\EstagioJava\\Estagio\\src\\estagio\\utilidades\\CSS\\Style.css").toExternalForm());
 

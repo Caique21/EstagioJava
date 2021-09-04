@@ -52,8 +52,6 @@ import estagio.controladores.ctrCliente;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import static json.Json.consultaCep;
-import org.json.JSONObject;
 
 /**
  *
@@ -448,11 +446,26 @@ public class Utils
                 file.createNewFile();
 
                 FileWriter writer = new FileWriter(file);
-                writer.write(".list-cell \n"
+                writer.write(/*".list-cell \n"
                         + "{\n"
                         + "    -fx-control-inner-background:" + design.get(1) + ";\n"
                         + "    -fx-text-fill:" + design.get(7) + ";\n"
-                        + "}\n"
+                        + "}\n\n"
+                        +*/ ".jfx-list-view \n"
+                        + "{\n"
+                        + "    -fx-background-color: " + design.get(0) + ";\n"
+                        + "}\n\n"
+                        + "list-view .list-cell:odd \n"
+                        + "{\n"
+                        + "    -fx-background-color: " + design.get(1) + ";\n"
+                        + "}\n\n"
+                        + ".list-view .list-cell:even \n"
+                        + "{\n"
+                        + "    -fx-background-color: " + design.get(0) + ";\n"
+                        + "}\n\n"
+                        + ".table-row-cell{\n" 
+                        + "   -fx-background-color: transparent;\n"
+                        + "}\n\n"
                         + ".jfx-tab-pane .tab-header-background \n"
                         + "{\n"
                         + "    -fx-background-color:" +design.get(1) + "; \n"

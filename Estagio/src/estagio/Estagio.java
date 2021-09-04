@@ -10,6 +10,8 @@ import com.jfoenix.controls.JFXDecorator;
 import estagio.controladores.ctrParametrizacao;
 import estagio.utilidades.Banco;
 import estagio.utilidades.Utils;
+import java.io.File;
+import java.net.URL;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -45,24 +47,14 @@ public class Estagio extends Application
         decorator.setStyle("-fx-decorator-color: " + Utils.getFundoPrimaria() + ";-fx-background-color:" + Utils.getFundoPrimaria());
 
         Scene scene = new Scene(decorator);
+        //File file = new File("/estagio/utilidades/CSS/Style.css");
+        //URL url = file.toURI().toURL();
+        //scene.getStylesheets().add(url.toExternalForm());
 
         stage.setTitle("Nome");
         stage.setAlwaysOnTop(false);
         stage.setScene(scene);
         stage.show();
-        
-        /*FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/TelaLogin.fxml"));     
-        Parent root = (Parent) fxmlLoader.load();
-        stage.setTitle("Parametrização");
-        JFXDecorator decorator = new JFXDecorator(stage , root);
-        decorator.setStyle("-fx-decorator-color: #040921;");
-
-        Scene scene = new Scene(decorator);
-
-        stage.setTitle("Login");
-        stage.setAlwaysOnTop(false);
-        stage.setScene(scene);
-        stage.show();*/
     }
 
     /**

@@ -26,7 +26,7 @@ public abstract class ToolTip
                 // +15 moves the tooltip 15 pixels below the mouse cursor;
                 // if you don't change the y coordinate of the tooltip, you
                 // will see constant screen flicker
-                tooltip.setStyle("-fx-font-size:15");
+                tooltip.setStyle("-fx-font-size:12");
                 tooltip.show(node, event.getScreenX() + 15, event.getScreenY() + 15);
             }
         });

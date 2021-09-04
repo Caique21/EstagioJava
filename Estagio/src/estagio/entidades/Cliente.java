@@ -11,9 +11,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -62,7 +64,7 @@ public class Cliente
         this.data_alteracao = data_alteracao;
         this.endereco_completo = endereco.toString();
         this.telefones = new ArrayList<>();
-        setTelefone(new Telefone().getAllByCliente(this));
+        setTelefones(new Telefone().getAllByCliente(this));
     }
 
     public Cliente(int codigo, String nome, String cpf, String rg, Date data, Endereco endereco, String email, ArrayList<String> telefone, boolean ativo, Timestamp data_alteracao)
@@ -120,6 +122,24 @@ public class Cliente
         this.data_alteracao = data_alteracao;
         this.endereco_completo = endereco.toString();
     }
+    
+    public Cliente(String nome, String cpf, String rg, Date data, Endereco endereco, String email, ObservableList<String> telefone, Timestamp data_alteracao)
+    {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.rg = rg;
+        this.data = data;
+        this.endereco = endereco;
+        this.email = email;
+        this.data_alteracao = data_alteracao;
+        this.endereco_completo = endereco.toString();
+        this.telefones = new ArrayList<>();
+        
+        telefone.forEach((tel) ->
+        {
+            telefones.add(tel);
+        });
+    }
 
     public Cliente(String nome, String cpf, String rg, Date data, Endereco endereco, String email, ArrayList<String> telefone)
     {
@@ -173,6 +193,26 @@ public class Cliente
         this.rg = rg;
     }
 
+    public ArrayList<String> getTelefones()
+    {
+        return telefones;
+    }
+
+    public void setTelefones(ArrayList<String> telefones)
+    {
+        this.telefones = telefones;
+    }
+
+    public boolean isAtivo()
+    {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo)
+    {
+        this.ativo = ativo;
+    }
+
     public Date getData()
     {
         return data;
@@ -212,22 +252,12 @@ public class Cliente
     {
         this.email = email;
     }
-
-    public ArrayList<String> getTelefone()
-    {
-        return telefones;
-    }
     
     public void addTelefone(String telefone)
     {
         if(this.telefones == null)
             this.telefones = new ArrayList<>();
         this.telefones.add(telefone);
-    }
-
-    public void setTelefone(ArrayList<String> telefone)
-    {
-        this.telefones = telefone;
     }
 
     public Timestamp getData_alteracao()
@@ -329,7 +359,7 @@ public class Cliente
         sql = sql.replace("$7", String.valueOf(data_alteracao));
         sql = sql.replace("$8", String.valueOf(endereco.getCodigo()));
         
-        return Banco.getCon().manipular(sql);
+        return Banco.getCon().manipular(sql) && salvarTelefones();
     }
     
     public boolean salvarTelefones()
@@ -339,8 +369,12 @@ public class Cliente
         for (String tel : telefones)
         {
             sql = "insert into telefone (tel_numero, cli_codigo) values('$1',$2)";
-            sql = sql.replace("$2", String.valueOf(codigo));
             sql = sql.replace("$1", tel.replace("(", "").replace(")", "").replace("-", ""));
+            
+            if(this.codigo > 0)
+                sql = sql.replace("$2", String.valueOf(codigo));
+            else
+                sql = sql.replace("$2", String.valueOf(Banco.getCon().getMaxPK("cliente", "cli_codigo")));
 
             flag = flag && Banco.getCon().manipular(sql);
         }
@@ -372,25 +406,6 @@ public class Cliente
     public boolean apagar()
     {
         return Banco.getCon().manipular("DELETE FROM cliente WHERE cli_codigo = " + this.codigo);
-    }
-
-    public Cliente getByCpf(String cpf)
-    {
-        String sql = "SELECT * FROM cliente WHERE cli_cpf = '" + cpf + "'";
-
-        ResultSet rs = Banco.getCon().consultar(sql);
-            
-        try
-        {
-            if(rs != null && rs.next())
-                return new Cliente(rs.getInt("cli_codigo"));
-        }
-        catch (SQLException ex)
-        {
-            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        return null;
     }
 
     private void get()
@@ -430,13 +445,20 @@ public class Cliente
     {
         ArrayList<Cliente> clientes = new ArrayList<>();
         Cliente cliente;
+        ResultSet rs2;
         try
         {
             while(rs != null && rs.next())            
             {
-                clientes.add(new Cliente(rs.getInt("cli_codigo"),rs.getString("cli_nome"),rs.getString("cli_cpf"), 
+                Cliente cli = new Cliente(rs.getInt("cli_codigo"),rs.getString("cli_nome"),rs.getString("cli_cpf"), 
                     rs.getString("cli_rg"),rs.getDate("cli_datacadastro"),new Endereco(rs.getInt("ender_codigo")), 
-                        rs.getString("cli_email"), rs.getBoolean("cli_ativo"), rs.getTimestamp("cli_alteracao")));
+                        rs.getString("cli_email"), rs.getBoolean("cli_ativo"), rs.getTimestamp("cli_alteracao"));
+                
+                rs2 = Banco.getCon().consultar("SELECT * FROM telefone WHERE cli_codigo = " + cli.getCodigo());
+                while(rs2 != null && rs2.next())
+                    cli.addTelefone(rs2.getString("tel_numero"));
+                
+                clientes.add(cli);
             }
         }
         catch (SQLException ex)
@@ -444,5 +466,30 @@ public class Cliente
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
         return clientes;
+    }
+
+    public ArrayList<Cliente> getByName(String nome, boolean ativo)
+    {
+        return le(Banco.getCon().consultar("SELECT * FROM cliente WHERE cli_nome Ilike '%" + nome + "%' AND "
+            + "cli_ativo = '" + ativo + "'"));
+    }
+    
+    public Cliente getByCpf(String cpf)
+    {
+        String sql = "SELECT * FROM cliente WHERE cli_cpf = '" + cpf + "'";
+
+        ResultSet rs = Banco.getCon().consultar(sql);
+            
+        try
+        {
+            if(rs != null && rs.next())
+                return new Cliente(rs.getInt("cli_codigo"));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
     }
 }
