@@ -275,6 +275,8 @@ public class TelaDesignController implements Initializable
             cpFonte.setValue(Color.web("#212121"));
             cpFonteBotao.setValue(Color.web("#212121"));
             cpFonteTexto.setValue(Color.web("#212121"));
+            cpPreenchimento.setValue(Color.web("#212121"));
+            cpFoco.setValue(Color.web("#212121"));
         }
         else
         {
@@ -319,8 +321,7 @@ public class TelaDesignController implements Initializable
                 if(ctrDes.salvar(cpFundo1,cpFundo2,cpFonte,fundo,cpPreenchimento,cpFonteBotao,slFonteBotao,
                 cpFonteTexto,cpFoco,slFonteTexto,slOpacidade))
                 {
-                    Utils.geraArquivoCSS();
-                    carrega();
+                    Utils.carregaDesign();
                     new Alert(Alert.AlertType.INFORMATION, "Design criado com sucesso!!!", ButtonType.OK)
                         .showAndWait();
                     carregaTelaLogin();
@@ -334,7 +335,6 @@ public class TelaDesignController implements Initializable
                 if(ctrDes.alterar(cpFundo1,cpFundo2,cpFonte,fundo,cpPreenchimento,cpFonteBotao,slFonteBotao,
                 cpFonteTexto,cpFoco,slFonteTexto,slOpacidade))
                 {
-                    Utils.geraArquivoCSS();
                     Utils.carregaDesign();
                     new Alert(Alert.AlertType.INFORMATION, "Design alterado com sucesso!!!", ButtonType.OK)
                         .showAndWait();

@@ -123,7 +123,7 @@
                         <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
                      </graphic>
                   </JFXButton>
-                  <TableView fx:id="tvClientes" layoutX="29.0" layoutY="50.0" onMouseClicked="#selecionaCliente" prefHeight="179.0" prefWidth="1072.0">
+                  <TableView fx:id="tvClientes" layoutX="29.0" layoutY="50.0" onMouseClicked="#selecionaCliente" prefHeight="179.0" prefWidth="1072.0" style="-fx-background-color: transparent;">
                     <columns>
                       <TableColumn fx:id="tcNome" prefWidth="262.0" text="Nome" />
                       <TableColumn fx:id="tcCPF" prefWidth="89.0" text="CPF" />

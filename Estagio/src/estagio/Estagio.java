@@ -41,10 +41,13 @@ public class Estagio extends Application
         {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/configuracao/TelaParametrizacao.fxml"));     
             root = (Parent) fxmlLoader.load();
-            stage.setTitle("Parametrização");
+            
         }
         JFXDecorator decorator = new JFXDecorator(stage , root);
-        decorator.setStyle("-fx-decorator-color: " + Utils.getFundoPrimaria() + ";-fx-background-color:" + Utils.getFundoPrimaria());
+        if(!Utils.getFundoPrimaria().equals("") && !Utils.getFundoPrimaria().equals(""))
+            decorator.setStyle("-fx-decorator-color: " + Utils.getFundoPrimaria() + ";-fx-background-color:" + Utils.getFundoPrimaria());
+        else
+            decorator.setStyle("-fx-decorator-color:black;-fx-background-color:white;");
 
         Scene scene = new Scene(decorator);
         //File file = new File("/estagio/utilidades/CSS/Style.css");

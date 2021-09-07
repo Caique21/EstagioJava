@@ -438,92 +438,200 @@ public class Utils
 
     public static void geraArquivoCSS()
     {
-        if(!design.isEmpty())
+        File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
+        try
         {
-            File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
+            FileWriter writer = new FileWriter(file);
+            file.createNewFile();
             try
             {
-                file.createNewFile();
-
-                FileWriter writer = new FileWriter(file);
-                writer.write(/*".list-cell \n"
-                        + "{\n"
-                        + "    -fx-control-inner-background:" + design.get(1) + ";\n"
-                        + "    -fx-text-fill:" + design.get(7) + ";\n"
-                        + "}\n\n"
-                        +*/ ".jfx-list-view \n"
-                        + "{\n"
-                        + "    -fx-background-color: " + design.get(0) + ";\n"
-                        + "}\n\n"
-                        + "list-view .list-cell:odd \n"
-                        + "{\n"
-                        + "    -fx-background-color: " + design.get(1) + ";\n"
-                        + "}\n\n"
-                        + ".list-view .list-cell:even \n"
-                        + "{\n"
-                        + "    -fx-background-color: " + design.get(0) + ";\n"
-                        + "}\n\n"
-                        + ".table-row-cell{\n" 
-                        + "   -fx-background-color: transparent;\n"
-                        + "}\n\n"
-                        + ".jfx-tab-pane .tab-header-background \n"
-                        + "{\n"
-                        + "    -fx-background-color:" +design.get(1) + "; \n"
-                        + "}\n\n"
-                        + ".jfx-tab-pane .tab-label\n "
-                        + "{\n"
-                        + "    -fx-alignment: CENTER;\n"
-                        + "    -fx-text-fill: " + design.get(2) + ";\n"
-                        + "    -fx-font-weight: bold;\n"
-                        + "}"
-                        + ".jfx-date-picker .text-field\n"
-                        + "{\n"
-                        + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
-                        + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
-                        + "    -fx-text-fill:" + design.get(7) + ";\n"
-                        + "    -fx-control-inner-background: transparent;\n"
-                        + "}\n\n"
-                        + ".text-field, .text-area\n"
-                        + "{\n"
-                        + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
-                        + "    -jfx-focus-color: " + design.get(8) + ";\n"
-                        + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
-                        + "    -fx-text-fill:" + design.get(7) + ";\n"
-                        + "    -fx-font-size: " + design.get(9) + ";\n"
-                        + "}\n\n"
-                        + ".button\n"
-                        + "{\n"
-                        + "    -fx-background-color: " + design.get(3) + ";\n"
-                        + "    -fx-text-fill: " + design.get(5) + ";\n"
-                        + "    -fx-font-size: " + design.get(6) + ";\n"
-                        + "}\n\n"
-                        + ".button .rippler{\n"
-                        + "      -fx-rippler-fill:" + design.get(4) + ";\n"
-                        + "}\n\n"
-                        + ".label, .radio-button\n"
-                        + "{\n"
-                        + "      -fx-text-fill: " + design.get(2) + ";\n"
-                        + "}\n\n"
-                        + ".combo-box \n"
-                        + "{\n"
-                        + "    -fx-background-color: transparent;\n"
-                        + "    -fx-text-fill: " + design.get(2) + ";\n"
-                        + "    -fx-cell-size: 1.66667em; \n"
-                        + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
-                        + "    -jfx-focus-color: " + design.get(8) + ";\n"        
-                        + "}\n\n"
-                        + ".jfx-combo-box{\n"
-                        + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
-                        + "    -jfx-focus-color: " + design.get(8) + ";\n"
-                        + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
-                        +"}\n\n");
+                writer.write("");
+                
+                if(!design.isEmpty())
+                {
+                    writer.write(/*".list-cell \n"
+                    + "{\n"
+                    + "    -fx-control-inner-background:" + design.get(1) + ";\n"
+                    + "    -fx-text-fill:" + design.get(7) + ";\n"
+                    + "}\n\n"
+                    +*/ ".jfx-list-view \n"
+                    + "{\n"
+                    + "    -fx-background-color: " + design.get(0) + ";\n"
+                    + "}\n\n"
+                            
+                    + "list-view .list-cell:odd \n"
+                    + "{\n"
+                    + "    -fx-background-color: " + design.get(1) + ";\n"
+                    + "    -fx-text-fill: " + design.get(2) + ";\n"
+                    + "}\n\n"
+                            
+                    + ".list-view .list-cell:even \n"
+                    + "{\n"
+                    + "    -fx-background-color: " + design.get(0) + ";\n"
+                    + "    -fx-text-fill: " + design.get(2) + ";\n"
+                    + "}\n\n"
+                            
+                    + ".table-row-cell\n"
+                    + "{\n" 
+                    + "   -fx-background-color: transparent;\n"
+                    + "}\n\n"
+                            
+                    + ".jfx-tab-pane .tab-header-background \n"
+                    + "{\n"
+                    + "    -fx-background-color:" +design.get(1) + "; \n"
+                    + "}\n\n"
+                            
+                    + ".jfx-tab-pane .tab-label\n "
+                    + "{\n"
+                    + "    -fx-alignment: CENTER;\n"
+                    + "    -fx-text-fill: " + design.get(2) + ";\n"
+                    + "    -fx-font-weight: bold;\n"
+                    + "}\n\n"
+                            
+                    + ".jfx-date-picker .text-field\n"
+                    + "{\n"
+                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
+                    + "    -fx-text-fill:" + design.get(7) + ";\n"
+                    + "    -fx-control-inner-background: transparent;\n"
+                    + "}\n\n"
+                            
+                    + ".text-field, .text-area , .jfx-text-field, .jfx-text-area\n"
+                    + "{\n"
+                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                    + "    -jfx-focus-color: " + design.get(8) + ";\n"
+                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
+                    + "    -fx-text-fill:" + design.get(7) + ";\n"
+                    + "    -fx-font-size: " + design.get(9) + ";\n"
+                    + "}\n\n"
+                            
+                    + ".button , .jfx-button\n"
+                    + "{\n"
+                    + "    -fx-background-color: " + design.get(3) + ";\n"
+                    + "    -fx-text-fill: " + design.get(5) + ";\n"
+                    + "    -fx-font-size: " + design.get(6) + ";\n"
+                    + "}\n\n"
+                            
+                    + ".button .rippler\n"
+                    + "{\n"
+                    + "      -fx-rippler-fill:" + design.get(4) + ";\n"
+                    + "}\n\n"
+                            
+                    //+ ".label, .radio-button\n"
+                    + ".radio-button, .jfx-radio-button\n"
+                    + "{\n"
+                    + "      -fx-text-fill: " + design.get(2) + ";\n"
+                    + "}\n\n"
+                            
+                    + ".combo-box, .jfx-combo-box\n"
+                    + "{\n"
+                    + "    -fx-background-color: transparent;\n"
+                    + "    -fx-text-fill: " + design.get(2) + ";\n"
+                    + "    -fx-cell-size: 1.66667em; \n"
+                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                    + "    -jfx-focus-color: " + design.get(8) + ";\n"        
+                    /*+ "}\n\n"
+                    + ".jfx-combo-box{\n"
+                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                    + "    -jfx-focus-color: " + design.get(8) + ";\n"
+                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
+                    */+"}\n\n");
+                }
                 writer.close();
             }
             catch (IOException ex)
             {
                 Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
             }
+        
         }
+        catch (IOException ex)
+        {
+            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        /*if(!design.isEmpty())
+        {
+            try
+            {
+                FileWriter writer = new FileWriter(file);
+                writer.write(".list-cell \n"
+                    + "{\n"
+                    + "    -fx-control-inner-background:" + design.get(1) + ";\n"
+                    + "    -fx-text-fill:" + design.get(7) + ";\n"
+                    + "}\n\n"
+                    + ".jfx-list-view \n"
+                    + "{\n"
+                    + "    -fx-background-color: " + design.get(0) + ";\n"
+                    + "}\n\n"
+                    + "list-view .list-cell:odd \n"
+                    + "{\n"
+                    + "    -fx-background-color: " + design.get(1) + ";\n"
+                    + "}\n\n"
+                    + ".list-view .list-cell:even \n"
+                    + "{\n"
+                    + "    -fx-background-color: " + design.get(0) + ";\n"
+                    + "}\n\n"
+                    + ".table-row-cell{\n" 
+                    + "   -fx-background-color: transparent;\n"
+                    + "}\n\n"
+                    + ".jfx-tab-pane .tab-header-background \n"
+                    + "{\n"
+                    + "    -fx-background-color:" +design.get(1) + "; \n"
+                    + "}\n\n"
+                    + ".jfx-tab-pane .tab-label\n "
+                    + "{\n"
+                    + "    -fx-alignment: CENTER;\n"
+                    + "    -fx-text-fill: " + design.get(2) + ";\n"
+                    + "    -fx-font-weight: bold;\n"
+                    + "}"
+                    + ".jfx-date-picker .text-field\n"
+                    + "{\n"
+                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
+                    + "    -fx-text-fill:" + design.get(7) + ";\n"
+                    + "    -fx-control-inner-background: transparent;\n"
+                    + "}\n\n"
+                    + ".text-field, .text-area\n"
+                    + "{\n"
+                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                    + "    -jfx-focus-color: " + design.get(8) + ";\n"
+                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
+                    + "    -fx-text-fill:" + design.get(7) + ";\n"
+                    + "    -fx-font-size: " + design.get(9) + ";\n"
+                    + "}\n\n"
+                    + ".button\n"
+                    + "{\n"
+                    + "    -fx-background-color: " + design.get(3) + ";\n"
+                    + "    -fx-text-fill: " + design.get(5) + ";\n"
+                    + "    -fx-font-size: " + design.get(6) + ";\n"
+                    + "}\n\n"
+                    + ".button .rippler{\n"
+                    + "      -fx-rippler-fill:" + design.get(4) + ";\n"
+                    + "}\n\n"
+                    + ".label, .radio-button\n"
+                    + "{\n"
+                    + "      -fx-text-fill: " + design.get(2) + ";\n"
+                    + "}\n\n"
+                    + ".combo-box \n"
+                    + "{\n"
+                    + "    -fx-background-color: transparent;\n"
+                    + "    -fx-text-fill: " + design.get(2) + ";\n"
+                    + "    -fx-cell-size: 1.66667em; \n"
+                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                    + "    -jfx-focus-color: " + design.get(8) + ";\n"        
+                    + "}\n\n"
+                    + ".jfx-combo-box{\n"
+                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
+                    + "    -jfx-focus-color: " + design.get(8) + ";\n"
+                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
+                    +"}\n\n");
+                writer.close();
+            }
+            catch (IOException ex)
+            {
+                Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }*/
     }
     
     public static void setDesign(int paineisPrincipais, List<Node> nodes)
@@ -595,7 +703,7 @@ public class Utils
                     else if(node instanceof Circle)
                     {
                         //node.setStyle("-fx-fill: " + design.get(1));
-                        java.awt.Color cor = toRGB(design.get(1));
+                        java.awt.Color cor = toRGB(design.get(2));
                         //"rgba(" + cor.getRed() + "," + cor.getGreen() + "," + cor.getBlue() + ",0.5)"
                         node.setStyle("-fx-fill: rgba(" + + cor.getRed() + "," + cor.getGreen() + 
                              "," + cor.getBlue() + "," + Double.parseDouble(design.get(10))/100 + ");" +
@@ -609,35 +717,39 @@ public class Utils
     
     public static String getPromptColor()
     {
-        return design.get(7);
+        return design != null && !design.isEmpty() ? design.get(7) : "";
     }
     
     public static String getCorBotao()
     {
-        return design.get(5);
+        return design != null && !design.isEmpty() ? design.get(5) : "";
     }
     
     public static String getFundoSecundaria()
     {
-        return design.get(1);
+        return design != null && !design.isEmpty() ? design.get(1) : "";
     }
     
     public static String getFundoPrimaria()
     {
-        return design.get(0);
+        return design != null && !design.isEmpty() ? design.get(0) : "";
     }
     
     public static String getFonte()
     {
-        return design.get(2);
+        return design != null && !design.isEmpty() ? design.get(2) : "";
     }
     
     public static String getFundo2withOpacity()
     {
-        java.awt.Color cor = toRGB(design.get(1));
-        //"rgba(" + cor.getRed() + "," + cor.getGreen() + "," + cor.getBlue() + ",0.5)"
-        return "-fx-background-color: rgba(" + + cor.getRed() + "," + cor.getGreen() + 
-             "," + cor.getBlue() + "," + Double.parseDouble(design.get(10))/100 + ");";
+        if(design != null && !design.isEmpty())
+        {
+            java.awt.Color cor = toRGB(design.get(1));
+            //"rgba(" + cor.getRed() + "," + cor.getGreen() + "," + cor.getBlue() + ",0.5)"
+            return "-fx-background-color: rgba(" + + cor.getRed() + "," + cor.getGreen() + 
+                 "," + cor.getBlue() + "," + Double.parseDouble(design.get(10))/100 + ");";
+        }
+        return "";
     }
     
     public static void centerImage(ImageView imageView) 

@@ -189,17 +189,18 @@ public class TelaParametrizacaoController implements Initializable
      */
     private void inicializaLabels()
     {
-        lbErroEmail.setText("");
-        lbErroFantasia.setText("");
-        lbErroNome.setText("");
-        lbErroNumero.setText("");
-        lbErroRazao.setText("");
-        lbErroBairro.setText("");
-        lbErroComplemento.setText("");
-        lbErroCep.setText("");
-        lbErroCidade.setText("");
-        lbErroNumero.setText("");
-        lbErroRua.setText("");
+        lbErroEmail.setText("");    lbErroEmail.setStyle("-fx-text-fill: red;");
+        lbErroFantasia.setText(""); lbErroFantasia.setStyle("-fx-text-fill: red;");
+        lbErroNome.setText(""); lbErroNome.setStyle("-fx-text-fill: red;");
+        lbErroNumero.setText("");   lbErroNumero.setStyle("-fx-text-fill: red;");
+        lbErroRazao.setText("");    lbErroRazao.setStyle("-fx-text-fill: red;");
+        lbErroBairro.setText("");   lbErroBairro.setStyle("-fx-text-fill: red;");
+        lbErroComplemento.setText("");  lbErroComplemento.setStyle("-fx-text-fill: red;");
+        lbErroCep.setText("");  lbErroCep.setStyle("-fx-text-fill: red;");
+        lbErroCidade.setText("");   lbErroCidade.setStyle("-fx-text-fill: red;");
+        lbErroNumero.setText("");   lbErroNumero.setStyle("-fx-text-fill: red;");
+        lbErroRua.setText("");  lbErroRua.setStyle("-fx-text-fill: red;");
+        
     }
     
     private void limpaEndereco()
@@ -249,7 +250,7 @@ public class TelaParametrizacaoController implements Initializable
             nodes.add(paneEndereco);
             nodes.add(paneTelefones);
             
-            nodes.add(lbTitulo);
+            /*nodes.add(lbTitulo);
             nodes.add(lbTelefone);
             nodes.add(lbTelefone);
             nodes.add(lbLogoPequeno);
@@ -277,7 +278,7 @@ public class TelaParametrizacaoController implements Initializable
             nodes.add(btCarregarPequeno);
             nodes.add(btDelEndereco);
             nodes.add(btDelTelefone);
-            nodes.add(btSalvar);
+            nodes.add(btSalvar);*/
             
             //nodes.add(cbEstado);
             
@@ -638,10 +639,25 @@ public class TelaParametrizacaoController implements Initializable
     {
         String str = consultaCep(tfCEP.getText().replace("-", ""), "json");
         JSONObject my_obj = new JSONObject(str);
-        tfRua.setText(my_obj.getString("tipo_logradouro") + " " + my_obj.getString("logradouro"));
-        tfCidade.setText(my_obj.getString("cidade"));
-        tfBairro.setText(my_obj.getString("bairro"));
-        cbEstado.getSelectionModel().select(my_obj.getString("uf"));
+        if(!my_obj.getString("resultado").equals("0"))
+        {
+            limpaLablesEndereco();
+            tfRua.setText(my_obj.getString("tipo_logradouro") + " " + my_obj.getString("logradouro"));
+            tfCidade.setText(my_obj.getString("cidade"));
+            tfBairro.setText(my_obj.getString("bairro"));
+            cbEstado.getSelectionModel().select(my_obj.getString("uf"));
+        }
+        
+    }
+    
+    private void limpaLablesEndereco()
+    {
+        lbErroBairro.setText("");
+        lbErroCep.setText("");
+        lbErroCidade.setText("");
+        lbErroComplemento.setText("");
+        lbErroNumero.setText("");
+        lbErroRua.setText("");
     }
 
     @FXML
@@ -694,21 +710,21 @@ public class TelaParametrizacaoController implements Initializable
         
         if(tfNumero.getText().equals(""))
         {
-            lbErroCep.setText("Digite número");
+            lbErroNumero.setText("Digite número");
             erros += "Número inválido\n";
             flag = false;
         }
         
         if(tfBairro.getText().equals(""))
         {
-            lbErroCep.setText("Digite nome do Bairro");
+            lbErroBairro.setText("Digite nome do Bairro");
             erros += "Bairro inválido\n";
             flag = false;
         }
         
         if(tfCidade.getText().equals(""))
         {
-            lbErroCep.setText("Digite o nome da Cidade");
+            lbErroCidade.setText("Digite o nome da Cidade");
             erros += "Cidade inválido\n";
             flag = false;
         }

@@ -1,0 +1,45 @@
+.jfx-list-view 
+{
+    -fx-background-color: transparent;
+}
+
+.table-row-cell{
+   -fx-background-color: transparent;
+}
+
+.text-field, .text-area
+{
+    -jfx-unfocus-color: #000000;
+    -jfx-focus-color: #000000;
+    -fx-prompt-text-fill: #000000;
+    -fx-text-fill:#000000;
+    -fx-font-size: 12px;
+}
+
+.jfx-button
+{
+    -fx-background-color: transparent;
+    -fx-text-fill: #000000;
+    -fx-font-size: 12px bold;
+}
+
+.label, .radio-button
+{
+      -fx-text-fill: #000000;
+}
+
+.combo-box 
+{
+    -fx-background-color: transparent;
+    -fx-text-fill: #000000;
+    -fx-cell-size: 1.66667em; 
+    -jfx-unfocus-color: #6485e8;
+    -jfx-focus-color: #6485e8;
+}
+
+.jfx-combo-box{
+    -jfx-unfocus-color: #6485e8;
+    -jfx-focus-color: #6485e8;
+    -fx-prompt-text-fill: #000000;
+}
+

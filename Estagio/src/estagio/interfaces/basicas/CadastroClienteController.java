@@ -20,7 +20,6 @@ import estagio.utilidades.Utils;
 import estagio.utilidades.ToolTip;
 import estagio.utilidades.TooltippedTableCell;
 import java.net.URL;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -391,7 +390,7 @@ public class CadastroClienteController implements Initializable
         nodes.add(paneEndereco);
         nodes.add(panePesquisa);
         
-        nodes.add(btAlterar);
+        /*nodes.add(btAlterar);
         nodes.add(btPesquisar);
         nodes.add(btPesquisarCEP);
         nodes.add(btCancelar);
@@ -424,7 +423,7 @@ public class CadastroClienteController implements Initializable
         nodes.add(tfCpfPesquisa);
         
         nodes.add(rbCPF);
-        nodes.add(rbNome);
+        nodes.add(rbNome);*/
         
         nodes.add(faCheck);
         nodes.add(faClose);
