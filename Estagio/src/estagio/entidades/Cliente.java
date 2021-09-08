@@ -140,6 +140,25 @@ public class Cliente
             telefones.add(tel);
         });
     }
+    
+    public Cliente(int codigo, String nome, String cpf, String rg, Date data, Endereco endereco, String email, ObservableList<String> telefone, Timestamp data_alteracao)
+    {
+        this.codigo = codigo;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.rg = rg;
+        this.data = data;
+        this.endereco = endereco;
+        this.email = email;
+        this.data_alteracao = data_alteracao;
+        this.endereco_completo = endereco.toString();
+        this.telefones = new ArrayList<>();
+        
+        telefone.forEach((tel) ->
+        {
+            telefones.add(tel);
+        });
+    }
 
     public Cliente(String nome, String cpf, String rg, Date data, Endereco endereco, String email, ArrayList<String> telefone)
     {
@@ -395,7 +414,13 @@ public class Cliente
         sql = sql.replace("$8", String.valueOf(data_alteracao));
         sql = sql.replace("$9", String.valueOf(endereco.getCodigo()));
         
-        return Banco.getCon().manipular(sql);
+        return Banco.getCon().manipular(sql) && alteraTelefones();
+    }
+
+    private boolean alteraTelefones()
+    {
+        Banco.getCon().manipular("DELETE FROM telefone WHERE cli_codigo = " + this.codigo);
+        return salvarTelefones();
     }
     
     public boolean tornarInativo()

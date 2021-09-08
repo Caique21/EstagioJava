@@ -127,7 +127,7 @@ CREATE TABLE telefone
 		REFERENCES fornecedor ON DELETE CASCADE,
 	CONSTRAINT fk_telefone_parametrizacao
 		FOREIGN KEY (para_nome)
-		REFERENCES parametrizacao
+		REFERENCES parametrizacao ON UPDATE CASCADE
 );
 
 

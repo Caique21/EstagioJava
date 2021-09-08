@@ -1,18 +1,24 @@
 .jfx-list-view 
 {
-    -fx-background-color: #FFFFFF;
+    -fx-background-color: #212121;
+}
+
+.list-view:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected
+{
+    -fx-background-color: #0096c9;
+    -fx-text-fill: white;
 }
 
 list-view .list-cell:odd 
 {
-    -fx-background-color: #F5F5F5;
-    -fx-text-fill: #000000;
+    -fx-background-color: #212121;
+    -fx-text-fill: #FAFAFA;
 }
 
 .list-view .list-cell:even 
 {
-    -fx-background-color: #FFFFFF;
-    -fx-text-fill: #000000;
+    -fx-background-color: #212121;
+    -fx-text-fill: #FAFAFA;
 }
 
 .table-row-cell
@@ -22,56 +28,81 @@ list-view .list-cell:odd
 
 .jfx-tab-pane .tab-header-background 
 {
-    -fx-background-color:#F5F5F5; 
+    -fx-background-color:#212121; 
 }
 
 .jfx-tab-pane .tab-label
  {
     -fx-alignment: CENTER;
-    -fx-text-fill: #000000;
+    -fx-text-fill: #FAFAFA;
     -fx-font-weight: bold;
 }
 
 .jfx-date-picker .text-field
 {
-    -jfx-unfocus-color: #000000;
-    -fx-prompt-text-fill: #000000;
-    -fx-text-fill:#000000;
+    -jfx-unfocus-color: #FAFAFA;
+    -fx-prompt-text-fill: #FAFAFA;
+    -fx-text-fill:#FAFAFA;
     -fx-control-inner-background: transparent;
 }
 
 .text-field, .text-area , .jfx-text-field, .jfx-text-area
 {
-    -jfx-unfocus-color: #000000;
-    -jfx-focus-color: #000000;
-    -fx-prompt-text-fill: #000000;
-    -fx-text-fill:#000000;
+    -jfx-unfocus-color: #FAFAFA;
+    -jfx-focus-color: #FAFAFA;
+    -fx-prompt-text-fill: #FAFAFA;
+    -fx-text-fill:#FAFAFA;
     -fx-font-size: 12;
 }
 
 .button , .jfx-button
 {
     -fx-background-color: transparent;
-    -fx-text-fill: #000000;
+    -fx-text-fill: #FAFAFA;
     -fx-font-size: 12;
 }
 
 .button .rippler
 {
-      -fx-rippler-fill:#1E88E5;
+      -fx-rippler-fill:#FAFAFA;
 }
 
-.radio-button, .jfx-radio-button
+.radio-button, .jfx-radio-button, .label
 {
-      -fx-text-fill: #000000;
+      -fx-text-fill: #FAFAFA;
 }
 
 .combo-box, .jfx-combo-box
 {
     -fx-background-color: transparent;
-    -fx-text-fill: #000000;
+    -fx-text-fill: #FAFAFA;
     -fx-cell-size: 1.66667em; 
-    -jfx-unfocus-color: #000000;
-    -jfx-focus-color: #000000;
+    -jfx-unfocus-color: #FAFAFA;
+    -jfx-focus-color: #FAFAFA;
+}
+
+.table-view .column-header .label 
+{
+    -fx-text-fill: #FAFAFA;
+    -fx-font-weight: bold;
+}
+
+.table-view .column-header-background
+{
+    -fx-background-color: transparent;
+    -fx-background-radius: 7px 7px 0px 0px;
+    -fx-background-insets: 0 11px 0 0;
+}
+
+.table-row-cell:filled 
+{
+    -fx-background-color: transparent;
+    -fx-text-fill: #FAFAFA;
+}
+
+.table-row-cell:filled:selected 
+{
+    -fx-background-color: #0096c9;
+    -fx-text-fill: #FAFAFA;
 }
 

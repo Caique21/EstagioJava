@@ -105,8 +105,11 @@ public class TelaLoginController implements Initializable
         Utils.setDesign(1, nodes);
         
         tfSenha.setStyle(tfSenha.getStyle() + ";-fx-font-size: 15;");
+        lbErroSenha.setStyle(lbErroSenha.getStyle() + ";-fx-text-fill: red;");
         faPassword.setSize("20");
+        
         tfUsuario.setStyle(tfUsuario.getStyle() + ";-fx-font-size: 15");
+        lbErroUsuario.setStyle(lbErroUsuario.getStyle() + ";-fx-text-fill: red;");
         faUsuario.setSize("20");
     }
     

@@ -20,6 +20,7 @@
 
 <BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastroClienteController">
    <stylesheets>
+        <URL value="@/estagio/utilidades/CSS/init.css" />
         <URL value="@/estagio/utilidades/CSS/Style.css" />
     </stylesheets>
     
@@ -59,6 +60,11 @@
                      </font>
                   </Label>
                   <JFXTextField fx:id="tfCEP" labelFloat="true" layoutX="34.0" layoutY="30.0" onKeyPressed="#cepAction" prefWidth="65.0" promptText="CEP" />
+                  <JFXButton fx:id="btPesquisarCEP" buttonType="RAISED" layoutX="125.0" layoutY="30.0" onAction="#clickPesquisarCEP" onMouseEntered="#cepEnter" onMouseExited="#cepExit" text="PESQUISAR CEP">
+                     <graphic>
+                        <FontAwesomeIconView fx:id="faSearchCEP" glyphName="SEARCH" size="15" />
+                     </graphic>
+                  </JFXButton>
                   <HBox layoutX="34.0" layoutY="80.0" prefHeight="29.0" prefWidth="1092.0" spacing="35.0">
                      <children>
                         <JFXTextField fx:id="tfRua" labelFloat="true" onKeyPressed="#mainAction" prefHeight="25.0" prefWidth="213.0" promptText="Rua" />
@@ -75,11 +81,6 @@
                   <Label fx:id="lbErroBairro" layoutX="383.0" layoutY="106.0" text="ErroBairro" textFill="RED" />
                   <Label fx:id="lbErroCidade" layoutX="837.0" layoutY="106.0" text="ErroCidade" textFill="RED" />
                   <Label fx:id="lbErroEstado" alignment="CENTER_RIGHT" layoutX="1020.0" layoutY="106.0" prefHeight="17.0" prefWidth="99.0" text="ErroEstado" textFill="RED" />
-                  <JFXButton fx:id="btPesquisarCEP" buttonType="RAISED" layoutX="125.0" layoutY="30.0" onAction="#clickPesquisarCEP" onMouseEntered="#cepEnter" onMouseExited="#cepExit" text="PESQUISAR CEP">
-                     <graphic>
-                        <FontAwesomeIconView fx:id="faSearchCEP" glyphName="SEARCH" size="15" />
-                     </graphic>
-                  </JFXButton>
                </children>
             </Pane>
             <Pane fx:id="paneContato" prefHeight="136.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;;">
@@ -90,6 +91,9 @@
                      </font>
                   </Label>
                   <JFXTextField fx:id="tfEmail" labelFloat="true" layoutX="34.0" layoutY="66.0" onKeyPressed="#mainAction" prefHeight="25.0" prefWidth="226.0" promptText="Email" />
+                  <JFXTextField fx:id="tfTelefone" labelFloat="true" layoutX="676.0" layoutY="66.0" onKeyPressed="#foneAction" prefHeight="25.0" prefWidth="197.0" promptText="Telefone/Celular" />
+                  <JFXButton fx:id="btAddTelefone" buttonType="RAISED" layoutX="668.0" layoutY="25.0" onAction="#clickAddTelefone" onMouseEntered="#addTelEnter" onMouseExited="#addTelExit" text="ADICIONAR TELEFONE" />
+                  <JFXButton fx:id="btDelTelefone" buttonType="RAISED" layoutX="817.0" layoutY="25.0" onAction="#clickDelTelefone" onMouseEntered="#delTelEnter" onMouseExited="#delTelExit" text="REMOVER TELEFONE" />
                   <JFXListView fx:id="lvTelefones" layoutX="344.0" layoutY="24.0" onMouseClicked="#selecionaTelefone" prefHeight="103.0" prefWidth="300.0" />
                   <Label fx:id="lbErroEmail" layoutX="34.0" layoutY="94.0" text="ErroEmail" textFill="RED" />
                   <Label fx:id="lbTelefones" layoutX="344.0" layoutY="6.0" text="Telefones/Celulares">
@@ -97,9 +101,6 @@
                         <Font name="System Bold" size="13.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="tfTelefone" labelFloat="true" layoutX="676.0" layoutY="66.0" onKeyPressed="#foneAction" prefHeight="25.0" prefWidth="197.0" promptText="Telefone/Celular" />
-                  <JFXButton fx:id="btAddTelefone" buttonType="RAISED" layoutX="668.0" layoutY="25.0" onAction="#clickAddTelefone" onMouseEntered="#addTelEnter" onMouseExited="#addTelExit" text="ADICIONAR TELEFONE" />
-                  <JFXButton fx:id="btDelTelefone" buttonType="RAISED" layoutX="817.0" layoutY="25.0" onAction="#clickDelTelefone" onMouseEntered="#delTelEnter" onMouseExited="#delTelExit" text="REMOVER TELEFONE" />
                   <Label fx:id="lbErroTelefone" layoutX="676.0" layoutY="94.0" text="ErroTelefone" textFill="RED" />
                </children>
             </Pane>
@@ -123,7 +124,7 @@
                         <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
                      </graphic>
                   </JFXButton>
-                  <TableView fx:id="tvClientes" layoutX="29.0" layoutY="50.0" onMouseClicked="#selecionaCliente" prefHeight="179.0" prefWidth="1072.0" style="-fx-background-color: transparent;">
+                  <TableView fx:id="tvClientes" layoutX="29.0" layoutY="50.0" onMouseClicked="#selecionaCliente" prefHeight="179.0" prefWidth="1072.0">
                     <columns>
                       <TableColumn fx:id="tcNome" prefWidth="262.0" text="Nome" />
                       <TableColumn fx:id="tcCPF" prefWidth="89.0" text="CPF" />

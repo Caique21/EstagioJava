@@ -33,6 +33,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
@@ -323,61 +324,121 @@ public class CadastroClienteController implements Initializable
         
         tfRua.textProperty().addListener((observable, oldValue, newValue) ->
         {
-            if(cliente != null)
-                lbErroEstado.setText("");
-            else if(endereco_pesquisado == null || endereco_pesquisado.getString("resultado").equals("0") || 
-                 endereco_pesquisado.getString("tipo_logradouro").equals("") &&
-                    endereco_pesquisado.getString("logradouro").equals(""))
+            if(cliente != null || endereco_pesquisado == null || endereco_pesquisado.getString("resultado").equals("0"))
                 lbErroRua.setText("");
-            else
+            else if(endereco_pesquisado != null && !endereco_pesquisado.getString("resultado").equals("0"))
             {
-                if(tfRua.getText().equals(endereco_pesquisado.getString("tipo_logradouro") + " " + 
-                    endereco_pesquisado.getString("logradouro")))
+                if(endereco_pesquisado.getString("tipo_logradouro").equals("") &&
+                    endereco_pesquisado.getString("logradouro").equals(""))
                     lbErroRua.setText("");
                 else
-                    lbErroRua.setText("Rua diferente da pesquisa online");
+                {
+                    if(tfRua.getText().equals(endereco_pesquisado.getString("tipo_logradouro") + " " + 
+                        endereco_pesquisado.getString("logradouro")))
+                        lbErroRua.setText("");
+                    else
+                        lbErroRua.setText("Rua diferente da pesquisa online");
+                }
             }
+        });
+        
+        tfRua.focusedProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(!newValue)
+            {
+                if(tfRua.getText().equals(""))
+                    lbErroRua.setText("Digite o nome da rua");
+            }
+            else 
+                lbErroRua.setText("");
+        });
+        
+        tfNumero.focusedProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(!newValue)
+            {
+                if(tfNumero.getText().equals(""))
+                    lbErroNumero.setText("Digite o número");
+            }
+            else
+                lbErroNumero.setText("");
         });
         
         tfBairro.textProperty().addListener((observable, oldValue, newValue) ->
         {
-            if(cliente != null)
-                lbErroEstado.setText("");
-            else if(endereco_pesquisado == null || endereco_pesquisado.getString("resultado").equals("0") || 
-                !endereco_pesquisado.getString("bairro").equals(""))
-                if(tfBairro.getText().equals(endereco_pesquisado.getString("bairro")))
+            if(cliente != null || endereco_pesquisado == null || endereco_pesquisado.getString("resultado").equals("0"))
+                lbErroBairro.setText("");
+            else if(endereco_pesquisado != null && !endereco_pesquisado.getString("resultado").equals("0"))
+            {
+                if(endereco_pesquisado.getString("bairro").equals(""))
                     lbErroBairro.setText("");
                 else
-                    lbErroBairro.setText("Bairro diferente da pesquisa online");
+                {
+                    if(tfBairro.getText().equals(endereco_pesquisado.getString("bairro")))
+                        lbErroBairro.setText("");
+                    else
+                        lbErroBairro.setText("Bairro diferente da pesquisa online");
+                }
+            }
+        });
+        
+        tfBairro.focusedProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(!newValue)
+            {
+                if(tfBairro.getText().equals(""))
+                    lbErroBairro.setText("Digite o nome do bairro");
+            }
             else
                 lbErroBairro.setText("");
         });
         
         tfCidade.textProperty().addListener((observable, oldValue, newValue) ->
         {
-            if(cliente != null)
-                lbErroEstado.setText("");
-            else if(endereco_pesquisado == null || endereco_pesquisado.getString("resultado").equals("0") ||
-                !endereco_pesquisado.getString("cidade").equals(""))
-                if(tfCidade.getText().equals(endereco_pesquisado.getString("cidade")))
+            if(cliente != null || endereco_pesquisado == null || endereco_pesquisado.getString("resultado").equals("0"))
+                lbErroCidade.setText("");
+            else if(endereco_pesquisado != null && !endereco_pesquisado.getString("resultado").equals("0"))
+            {
+                if(endereco_pesquisado.getString("cidade").equals(""))
                     lbErroCidade.setText("");
                 else
-                    lbErroCidade.setText("Cidade diferente da pesquisa online");
+                {
+                    if(tfCidade.getText().equals(endereco_pesquisado.getString("cidade")))
+                        lbErroCidade.setText("");
+                    else
+                        lbErroCidade.setText("Cidade diferente da pesquisa online");
+                }
+            }
+        });
+        
+        tfCidade.focusedProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(!newValue)
+            {
+                if(tfCidade.getText().equals(""))
+                    lbErroCidade.setText("Digite o nome da cidade");
+            }
             else
                 lbErroCidade.setText("");
         });
         
         cbEstado.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
         {
-            if(cliente != null)
+            if(cliente != null || endereco_pesquisado == null || endereco_pesquisado.getString("resultado").equals("0"))
                 lbErroEstado.setText("");
-            else if(endereco_pesquisado == null || endereco_pesquisado.getString("resultado").equals("0"))
-                lbErroEstado.setText("");
-            else if(endereco_pesquisado.getString("uf").equals("") || 
-                    cbEstado.getSelectionModel().getSelectedItem().equals(endereco_pesquisado.getString("uf")))
-                lbErroEstado.setText("");
-            else
-                lbErroEstado.setText("Estado diferente");
+            else if(endereco_pesquisado != null && !endereco_pesquisado.getString("resultado").equals("0"))
+            {
+                if(endereco_pesquisado.getString("cidade").equals(""))
+                    lbErroEstado.setText("");
+                else
+                {
+                    if(endereco_pesquisado.getString("uf").equals("") || 
+                        cbEstado.getSelectionModel().getSelectedItem().equals(endereco_pesquisado.getString("uf")))
+                        lbErroEstado.setText("");
+                    else
+                        lbErroEstado.setText("Estado diferente da pesquisa online");
+                }
+            }
         });
     }
     
@@ -390,41 +451,6 @@ public class CadastroClienteController implements Initializable
         nodes.add(paneEndereco);
         nodes.add(panePesquisa);
         
-        /*nodes.add(btAlterar);
-        nodes.add(btPesquisar);
-        nodes.add(btPesquisarCEP);
-        nodes.add(btCancelar);
-        nodes.add(btConfirmar);
-        nodes.add(btNovo);
-        nodes.add(btRemover);
-        nodes.add(btAddTelefone);
-        nodes.add(btDelTelefone);
-        
-        nodes.add(lbInfoBasica);
-        nodes.add(lbEndereco);
-        nodes.add(lbContato);
-        nodes.add(lbPesquisa);
-        nodes.add(lbTitulo);
-        nodes.add(lbNascimento);
-        nodes.add(lbTelefones);
-        
-        nodes.add(tfBairro);
-        nodes.add(tfCEP);
-        nodes.add(tfCPF);
-        nodes.add(tfCidade);
-        nodes.add(tfEmail);
-        nodes.add(tfNome);
-        nodes.add(tfNumero);
-        nodes.add(tfComplemento);
-        nodes.add(tfRG);
-        nodes.add(tfRua);
-        nodes.add(tfTelefone);
-        nodes.add(tfNomePesquisa);
-        nodes.add(tfCpfPesquisa);
-        
-        nodes.add(rbCPF);
-        nodes.add(rbNome);*/
-        
         nodes.add(faCheck);
         nodes.add(faClose);
         nodes.add(faEdit);
@@ -432,7 +458,7 @@ public class CadastroClienteController implements Initializable
         nodes.add(faSearch);
         nodes.add(faSearchCEP);
         nodes.add(faTrash);
-        //nodes.add(cbEstado);
+        
         Utils.setDesign(1, nodes);
         lbErroBairro.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
         lbErroCEP.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
@@ -450,8 +476,6 @@ public class CadastroClienteController implements Initializable
     
     private void inicializa()
     {
-        inicializaLabels();
-        
         setEstado(true, true, true, false, false, true, true, true, false);
         limparCampos();
         dpData.setValue(LocalDate.now());
@@ -461,6 +485,7 @@ public class CadastroClienteController implements Initializable
         cliente = null;
         endereco_pesquisado = null;
         clickPesquisar(new ActionEvent());
+        inicializaLabels();
     }
     
     @Override
@@ -493,7 +518,6 @@ public class CadastroClienteController implements Initializable
         tcEndereco.setCellFactory(TooltippedTableCell.forTableColumn());
         tcNome.setCellFactory(TooltippedTableCell.forTableColumn());
         tcEmail.setCellFactory(TooltippedTableCell.forTableColumn());
-        //tvClientes.setStyle("-fx-background-color:black;");
     }    
 
     @FXML
@@ -522,9 +546,9 @@ public class CadastroClienteController implements Initializable
                     new Alert(Alert.AlertType.ERROR, "Erro no cadastro do cliente", ButtonType.OK).showAndWait();
 
             }
-            else if(acao == 1)//UPDATE
+            else if(acao == 1 && cliente != null)//UPDATE
             {
-                if(ctrCli.alterar(tfNome,tfCPF,tfRG,dpData,tfCEP,tfRua,tfNumero,tfBairro,tfComplemento,tfCidade,
+                if(ctrCli.alterar(Integer.parseInt(cliente.getParam1()),tfNome,tfCPF,tfRG,dpData,tfCEP,tfRua,tfNumero,tfBairro,tfComplemento,tfCidade,
                         cbEstado,tfEmail,lvTelefones))
                 {
                     new Alert(Alert.AlertType.INFORMATION, "Cliente alterado com sucesso!!!", ButtonType.OK).showAndWait();
@@ -541,6 +565,7 @@ public class CadastroClienteController implements Initializable
     {
         if(!tvClientes.getItems().isEmpty() && tvClientes.getSelectionModel().getFocusedIndex() >= 0)
         {
+            setEstado(false, false, false, true, true, false, true, true, false);
             cliente = tvClientes.getSelectionModel().getSelectedItem();
             acao = 1;
         }
@@ -1057,7 +1082,11 @@ public class CadastroClienteController implements Initializable
         lvTelefones.getItems().clear();
         if(selectedItem.getList1() != null)
             for(Objeto telefone : selectedItem.getList1())
-                lvTelefones.getItems().add(telefone.getParam1());
+            {
+                tfTelefone.setText(telefone.getParam1());
+                lvTelefones.getItems().add(tfTelefone.getText());
+            }
+        tfTelefone.clear();
         inicializaLabels();
     }
 }

@@ -438,7 +438,8 @@ public class Utils
 
     public static void geraArquivoCSS()
     {
-        File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
+        //File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
+        File file = new File("C:/Program Files/EstagioJava/Estagio/src\\estagio\\utilidades\\CSS\\Style.css");
         try
         {
             FileWriter writer = new FileWriter(file);
@@ -457,6 +458,12 @@ public class Utils
                     +*/ ".jfx-list-view \n"
                     + "{\n"
                     + "    -fx-background-color: " + design.get(0) + ";\n"
+                    + "}\n\n"
+                            
+                    + ".list-view:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected\n"
+                    + "{\n"
+                    + "    -fx-background-color: #0096c9;\n"
+                    + "    -fx-text-fill: white;\n"      
                     + "}\n\n"
                             
                     + "list-view .list-cell:odd \n"
@@ -517,8 +524,7 @@ public class Utils
                     + "      -fx-rippler-fill:" + design.get(4) + ";\n"
                     + "}\n\n"
                             
-                    //+ ".label, .radio-button\n"
-                    + ".radio-button, .jfx-radio-button\n"
+                    + ".radio-button, .jfx-radio-button, .label\n"
                     + "{\n"
                     + "      -fx-text-fill: " + design.get(2) + ";\n"
                     + "}\n\n"
@@ -535,7 +541,32 @@ public class Utils
                     + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
                     + "    -jfx-focus-color: " + design.get(8) + ";\n"
                     + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
-                    */+"}\n\n");
+                    */+"}\n\n"
+                            
+                    + ".table-view .column-header .label \n"
+                    + "{\n"
+                    + "    -fx-text-fill: " + design.get(2) + ";\n"
+                    + "    -fx-font-weight: bold;\n"
+                    + "}\n\n"
+                    
+                    + ".table-view .column-header-background\n"
+                    + "{\n"
+                    + "    -fx-background-color: transparent;\n"
+                    + "    -fx-background-radius: 7px 7px 0px 0px;\n"
+                    + "    -fx-background-insets: 0 11px 0 0;\n"
+                    + "}\n\n"
+                            
+                    + ".table-row-cell:filled \n"
+                    + "{\n"
+                    + "    -fx-background-color: transparent;\n"
+                    + "    -fx-text-fill: " + design.get(2) + ";\n"       
+                    + "}\n\n"
+                            
+                    + ".table-row-cell:filled:selected \n"
+                    + "{\n"
+                    + "    -fx-background-color: #0096c9;\n"
+                    + "    -fx-text-fill: " + design.get(2) + ";\n"      
+                    + "}\n\n");
                 }
                 writer.close();
             }

@@ -66,7 +66,7 @@ public class ctrCliente
         return cliente.salvar();
     }
 
-    public boolean alterar(JFXTextField nome, JFXTextField cpf, JFXTextField rg,JFXDatePicker data,JFXTextField cep,
+    public boolean alterar(int codigo, JFXTextField nome, JFXTextField cpf, JFXTextField rg,JFXDatePicker data,JFXTextField cep,
         JFXTextField rua, JFXTextField numero, JFXTextField bairro, JFXTextField complemento,JFXTextField cidade, 
             JFXComboBox<String> estado, JFXTextField email, JFXListView<String> telefones)
     {
@@ -74,8 +74,8 @@ public class ctrCliente
             Integer.parseInt(numero.getText()), bairro.getText(), complemento.getText(), cidade.getText(), 
                 estado.getSelectionModel().getSelectedItem());
         
-        Cliente cliente = new Cliente(nome.getText(), cpf.getText(), rg.getText(), Date.valueOf(data.getValue()), 
-            endereco, email.getText(),telefones.getItems(),
+        Cliente cliente = new Cliente(codigo, nome.getText(), cpf.getText(), rg.getText(), 
+            Date.valueOf(data.getValue()), endereco, email.getText(),telefones.getItems(),
                 new Timestamp(new java.util.Date().getTime()));
         
         if(endereco.getCodigo() <= 0)

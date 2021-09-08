@@ -249,13 +249,15 @@ public class Endereco
     public boolean existe()
     {
         String sql = "SELECT ender_codigo FROM endereco WHERE ender_rua = '$1' AND ender_bairro = '$2' AND "
-                + "ender_numero = $3 AND ender_cidade = '$4' AND ender_estado = '$5' AND ender_cep = '$6'";
+                + "ender_numero = $3 AND ender_cidade = '$4' AND ender_estado = '$5' AND ender_cep = '$6' "
+                + "AND ender_complemento = '$7'";
         sql = sql.replace("$1", rua);
         sql = sql.replace("$2", bairro);
         sql = sql.replace("$3", String.valueOf(numero));
         sql = sql.replace("$4", cidade);
         sql = sql.replace("$5", estado);
         sql = sql.replace("$6", cep);
+        sql = sql.replace("$7", complemento);
         
         ResultSet rs = null;
         Endereco e = null;
