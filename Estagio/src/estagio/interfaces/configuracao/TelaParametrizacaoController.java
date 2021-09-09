@@ -58,6 +58,8 @@ import estagio.utilidades.ToolTip;
 import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.control.Separator;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
  * FXML Controller class
@@ -183,6 +185,10 @@ public class TelaParametrizacaoController implements Initializable
     private FontAwesomeIconView faSave;
     @FXML
     private FontAwesomeIconView faClose;
+    @FXML
+    private HBox hbBotoes;
+    @FXML
+    private VBox hbEndereco;
 
     /**
      * Initializes the controller class.
@@ -296,6 +302,13 @@ public class TelaParametrizacaoController implements Initializable
             nodes.add(lvEnderecos);
             nodes.add(lvTelefones);
             Utils.setDesign(1, nodes);
+            
+            painel_central.setPrefWidth(TelaPrincipalController.screenBounds.getMaxX() - 200);
+            painel_central.setPrefHeight(TelaPrincipalController.screenBounds.getMaxY() - 80);
+            hbBotoes.setLayoutY(painel_central.getPrefHeight() - 50);
+            paneEndereco.setPrefHeight(hbBotoes.getLayoutY() - paneEndereco.getLayoutY() - 10);
+            lvEnderecos.setPrefHeight(paneEndereco.getPrefHeight() - lvEnderecos.getLayoutY() - 10);
+            hbEndereco.setPrefHeight(paneEndereco.getPrefHeight() - lvEnderecos.getLayoutY() - 10);
         }
     }
     

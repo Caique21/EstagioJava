@@ -109,9 +109,10 @@ public class TelaConfiguracoesController implements Initializable
             stage.setScene(scene);
             stage.showAndWait();
 
-        } catch (IOException er)
+        } 
+        catch (IOException er)
         {
-            Alert a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Veículos! \nErro: " + er.getMessage(), ButtonType.OK);
+            Alert a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Design! \nErro: " + er.getMessage(), ButtonType.OK);
             System.out.println(er.getMessage());
             a.showAndWait();
         }

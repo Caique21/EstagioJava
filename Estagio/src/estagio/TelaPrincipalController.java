@@ -119,6 +119,12 @@ public class TelaPrincipalController implements Initializable
     private Label lbHora;
     @FXML
     private ImageView imgLogo;
+    @FXML
+    private VBox hbLogo;
+    @FXML
+    private VBox hbCentral;
+    @FXML
+    private VBox hbUsuario;
     
     private void setDesign()
     {
@@ -167,6 +173,9 @@ public class TelaPrincipalController implements Initializable
         painelPrincipal.setPrefHeight(screenBounds.getMaxY());
         painelCentral.setPrefHeight(screenBounds.getMaxY());
         painelPrincipal.setPrefWidth(screenBounds.getMaxX());
+        hbLogo.setPrefHeight(painelPrincipal.getPrefHeight()/10*3);
+        hbUsuario.setPrefHeight(painelPrincipal.getPrefHeight()/10*3);
+        hbCentral.setPrefHeight(painelPrincipal.getPrefHeight()/10*6);
     }
     
     @Override

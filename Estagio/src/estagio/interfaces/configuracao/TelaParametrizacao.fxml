@@ -59,7 +59,7 @@
       </Pane>
       <Pane fx:id="paneEndereco" layoutX="57.0" layoutY="335.0" prefHeight="298.0" prefWidth="711.0" style="-fx-background-color: lightgray;">
          <children>
-            <Label fx:id="lbEndereco" layoutY="-4.0" text="Endereço" />
+            <Label fx:id="lbEndereco" text="Endereço" />
             <JFXTextField fx:id="tfCEP" focusColor="#6485e8" labelFloat="true" layoutX="25.0" layoutY="22.0" prefHeight="25.0" prefWidth="104.0" promptText="CEP" unFocusColor="WHITE" />
             <JFXButton fx:id="btCEP" buttonType="RAISED" layoutX="145.0" layoutY="24.0" onAction="#clickPesquisarCep" prefHeight="25.0" text="PESQUISAR CEP">
                <graphic>
@@ -79,7 +79,7 @@
             <Label fx:id="lbErroCidade" layoutX="293.0" layoutY="148.0" text="erro Cidade" textFill="RED" />
             <JFXComboBox fx:id="cbEstado" editable="true" focusColor="#6485e8" labelFloat="true" layoutX="569.0" layoutY="122.0" prefHeight="25.0" prefWidth="77.0" promptText="Estado" unFocusColor="WHITE" />
             <ListView fx:id="lvEnderecos" layoutX="109.0" layoutY="167.0" prefHeight="124.0" prefWidth="587.0" />
-            <VBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="164.0" prefHeight="132.0" prefWidth="85.0" spacing="10.0">
+            <VBox fx:id="hbEndereco" alignment="CENTER_LEFT" layoutX="20.0" layoutY="164.0" prefHeight="132.0" prefWidth="85.0" spacing="10.0">
                <children>
                   <JFXButton fx:id="btAddEndereco" buttonType="RAISED" onAction="#clickAddEndereco" prefHeight="25.0" text="ADICIONAR" />
                   <JFXButton fx:id="btAlterarEndereco" buttonType="RAISED" onAction="#clickAlterarEndereco" text="ALTERAR" />
@@ -88,7 +88,7 @@
             </VBox>
          </children>
       </Pane>
-      <HBox alignment="CENTER" layoutY="643.0" prefHeight="57.0" prefWidth="1150.0" spacing="15.0">
+      <HBox fx:id="hbBotoes" alignment="CENTER" layoutY="650.0" prefHeight="50.0" prefWidth="1150.0" spacing="15.0">
          <children>
             <JFXButton fx:id="btSalvar" buttonType="RAISED" onAction="#clickSalvar" onMouseEntered="#salvarEnter" onMouseExited="#salvarExit" text="SALVAR">
                <font>

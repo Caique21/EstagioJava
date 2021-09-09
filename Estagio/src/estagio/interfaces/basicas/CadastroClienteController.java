@@ -527,9 +527,10 @@ public class CadastroClienteController implements Initializable
         lbErroTelefone.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
         
         panePrincipal.setPrefWidth(TelaPrincipalController.screenBounds.getMaxX() - 200);
-        panePrincipal.setPrefHeight(TelaPrincipalController.screenBounds.getMaxY() - 60);
+        panePrincipal.setPrefHeight(TelaPrincipalController.screenBounds.getMaxY() - 80);
+        lbTitulo.setPrefHeight(45);
         painelCentral.setPrefHeight(panePrincipal.getPrefHeight() - 47);
-        panePesquisa.setPrefHeight(painelCentral.getPrefHeight() - 387);
+        panePesquisa.setPrefHeight(painelCentral.getPrefHeight() - 407);
         tvClientes.setPrefHeight(panePesquisa.getPrefHeight() - 60);
     }
     
@@ -593,28 +594,44 @@ public class CadastroClienteController implements Initializable
     {
         if(validaCliente())
         {
+            Alert alerta;
             if(acao == 0)//INSERT
             {
-                if(ctrCli.salvar(tfNome,tfCPF,tfRG,dpData,tfCEP,tfRua,tfNumero,tfBairro,tfComplemento,tfCidade,
-                    cbEstado,tfEmail,lvTelefones))
+                alerta = new Alert(Alert.AlertType.CONFIRMATION,"Deseja cadastrar cliente " + tfNome.getText() + "?",
+                        ButtonType.YES,ButtonType.NO);
+                alerta.showAndWait();
+                
+                if(alerta.getResult() == ButtonType.YES)
                 {
-                    new Alert(Alert.AlertType.INFORMATION, "Cliente cadastrado com sucesso!!!", ButtonType.OK).showAndWait();
-                    inicializa();
+                    if(ctrCli.salvar(tfNome,tfCPF,tfRG,dpData,tfCEP,tfRua,tfNumero,tfBairro,tfComplemento,tfCidade,
+                    cbEstado,tfEmail,lvTelefones))
+                    {
+                        new Alert(Alert.AlertType.INFORMATION, "Cliente cadastrado com sucesso!!!", ButtonType.OK)
+                            .showAndWait();
+                        inicializa();
+                    }
+                    else
+                        new Alert(Alert.AlertType.ERROR, "Erro no cadastro do cliente", ButtonType.OK).showAndWait();
                 }
-                else
-                    new Alert(Alert.AlertType.ERROR, "Erro no cadastro do cliente", ButtonType.OK).showAndWait();
-
             }
             else if(acao == 1 && cliente != null)//UPDATE
             {
-                if(ctrCli.alterar(Integer.parseInt(cliente.getParam1()),tfNome,tfCPF,tfRG,dpData,tfCEP,tfRua,tfNumero,tfBairro,tfComplemento,tfCidade,
-                        cbEstado,tfEmail,lvTelefones))
+                alerta = new Alert(Alert.AlertType.CONFIRMATION,"Deseja alterar cliente " + tfNome.getText() + "?",
+                        ButtonType.YES,ButtonType.NO);
+                alerta.showAndWait();
+                
+                if(alerta.getResult() == ButtonType.YES)
                 {
-                    new Alert(Alert.AlertType.INFORMATION, "Cliente alterado com sucesso!!!", ButtonType.OK).showAndWait();
-                    inicializa();
+                    if(ctrCli.alterar(Integer.parseInt(cliente.getParam1()),tfNome,tfCPF,tfRG,dpData,tfCEP,tfRua,tfNumero,tfBairro,tfComplemento,tfCidade,
+                        cbEstado,tfEmail,lvTelefones))
+                    {
+                        new Alert(Alert.AlertType.INFORMATION, "Cliente alterado com sucesso!!!", ButtonType.OK)
+                            .showAndWait();
+                        inicializa();
+                    }
+                    else
+                        new Alert(Alert.AlertType.ERROR, "Erro na alteração do cliente", ButtonType.OK).showAndWait();
                 }
-                else
-                    new Alert(Alert.AlertType.ERROR, "Erro na alteração do cliente", ButtonType.OK).showAndWait();
             }
         }
     }

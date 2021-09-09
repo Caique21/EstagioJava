@@ -51,6 +51,15 @@ list-view .list-cell:odd
       -fx-rippler-fill:#212121;
 }
 
+.combo-box, .jfx-combo-box
+{
+    -fx-background-color: transparent;
+    -fx-text-fill: #212121;
+    -fx-cell-size: 1.66667em; 
+    -jfx-unfocus-color: #212121;
+    -jfx-focus-color: #212121;
+}
+
 .table-view .column-header .label 
 {
     -fx-text-fill: #212121;

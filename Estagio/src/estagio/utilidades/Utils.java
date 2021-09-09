@@ -529,14 +529,14 @@ public class Utils
                     + "      -fx-text-fill: " + design.get(2) + ";\n"
                     + "}\n\n"
                             
-                    + ".combo-box, .jfx-combo-box\n"
+                    */+ ".combo-box, .jfx-combo-box\n"
                     + "{\n"
                     + "    -fx-background-color: transparent;\n"
                     + "    -fx-text-fill: " + design.get(2) + ";\n"
                     + "    -fx-cell-size: 1.66667em; \n"
                     + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
                     + "    -jfx-focus-color: " + design.get(8) + ";\n"        
-                    + "}\n\n"
+                    + "}\n\n"/*
                     + ".jfx-combo-box{\n"
                     + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
                     + "    -jfx-focus-color: " + design.get(8) + ";\n"
@@ -734,7 +734,7 @@ public class Utils
                     else if(node instanceof Circle)
                     {
                         //node.setStyle("-fx-fill: " + design.get(1));
-                        java.awt.Color cor = toRGB(design.get(2));
+                        java.awt.Color cor = toRGB(design.get(0));
                         //"rgba(" + cor.getRed() + "," + cor.getGreen() + "," + cor.getBlue() + ",0.5)"
                         node.setStyle("-fx-fill: rgba(" + + cor.getRed() + "," + cor.getGreen() + 
                              "," + cor.getBlue() + "," + Double.parseDouble(design.get(10))/100 + ");" +
