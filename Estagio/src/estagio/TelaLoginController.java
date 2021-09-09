@@ -179,7 +179,7 @@ public class TelaLoginController implements Initializable
 
             stage.setScene(scene);
             stage.setMaximized(true);
-            stage.setTitle("Nome");
+            stage.setTitle("LGD");
             stage.setAlwaysOnTop(false);
             stage.setOnCloseRequest((WindowEvent event) ->
             {

@@ -401,7 +401,7 @@ public class TelaDesignController implements Initializable
 
             stage.setScene(scene);
             stage.setMaximized(true);
-            stage.setTitle("Oficina");
+            stage.setTitle("LGD");
             stage.setOnCloseRequest((WindowEvent event) ->
             {
                 if(TelaPrincipalController.alteracoes)

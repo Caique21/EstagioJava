@@ -60,6 +60,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 
 /**
  * FXML Controller class
@@ -74,6 +75,7 @@ public class TelaParametrizacaoController implements Initializable
     private String caminhoPequeno;
     Tooltip tooltip = new Tooltip();
     private boolean existe;
+    public static Pane bt;
 
     @FXML
     private Pane painel_central;
@@ -302,13 +304,6 @@ public class TelaParametrizacaoController implements Initializable
             nodes.add(lvEnderecos);
             nodes.add(lvTelefones);
             Utils.setDesign(1, nodes);
-            
-            painel_central.setPrefWidth(TelaPrincipalController.screenBounds.getMaxX() - 200);
-            painel_central.setPrefHeight(TelaPrincipalController.screenBounds.getMaxY() - 80);
-            hbBotoes.setLayoutY(painel_central.getPrefHeight() - 50);
-            paneEndereco.setPrefHeight(hbBotoes.getLayoutY() - paneEndereco.getLayoutY() - 10);
-            lvEnderecos.setPrefHeight(paneEndereco.getPrefHeight() - lvEnderecos.getLayoutY() - 10);
-            hbEndereco.setPrefHeight(paneEndereco.getPrefHeight() - lvEnderecos.getLayoutY() - 10);
         }
     }
     
@@ -474,8 +469,10 @@ public class TelaParametrizacaoController implements Initializable
                 {
                     if(ctrPara.alterar(tfNome,tfFantasia,tfEmail,tfRazao,lvEnderecos,lvTelefones,caminhoGrande,caminhoPequeno))
                     {
-                         new Alert(Alert.AlertType.INFORMATION, "Parametrização salva com sucesso!!", 
-                            ButtonType.OK).showAndWait();
+                        new Alert(Alert.AlertType.INFORMATION, "Parametrização salva com sucesso!!",
+                                ButtonType.OK).showAndWait();
+                        Stage stage = (Stage) bt.getScene().getWindow();
+                        stage.close();
                         reload();
                     }
                     else
@@ -598,7 +595,7 @@ public class TelaParametrizacaoController implements Initializable
 
             stage.setScene(scene);
             stage.setMaximized(true);
-            stage.setTitle("Oficina");
+            stage.setTitle("LGD");
             stage.setAlwaysOnTop(false);
             stage.setOnCloseRequest((WindowEvent event) ->
             {

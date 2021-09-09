@@ -77,6 +77,29 @@ public class TelaConfiguracoesController implements Initializable
     {
         try
         {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/configuracao/TelaParametrizacao.fxml"));     
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            JFXDecorator decorator = new JFXDecorator(stage, root);
+            TelaParametrizacaoController.bt = paneParametrizacao;
+
+            decorator.setStyle("-fx-decorator-color: #040921;");
+
+            Scene scene = new Scene(decorator);            
+            
+            stage.setTitle("Tela de Parametrização");
+            stage.setScene(scene);
+            stage.showAndWait();
+
+        } 
+        catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Parametrização! \nErro: " + er.getMessage(), ButtonType.OK);
+            System.out.println(er.getMessage());
+            a.showAndWait();
+        }
+        /*try
+        {
             Stage stage = (Stage) panePrincipal.getScene().getWindow();
             stage.setResizable(false);
 
@@ -87,7 +110,7 @@ public class TelaConfiguracoesController implements Initializable
         catch (IOException ex)
         {
             Logger.getLogger(TelaParametrizacaoController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
     }
 
     @FXML
