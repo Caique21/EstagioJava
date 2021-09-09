@@ -42,12 +42,14 @@ public class Cliente
     public Cliente(int codigo)
     {
         this.codigo = codigo;
+        this.telefones = new ArrayList<>();
         get();
     }
 
     public Cliente(String nome)
     {
         this.nome = nome;
+        this.telefones = new ArrayList<>();
         get();
     }
 
@@ -458,6 +460,7 @@ public class Cliente
                 this.email = rs.getString("cli_email");
                 this.ativo = rs.getBoolean("cli_ativo");
                 this.data_alteracao = rs.getTimestamp("cli_alteracao");
+                setTelefones(new Telefone().getAllByCliente(this));
             }
         }
         catch (SQLException ex)

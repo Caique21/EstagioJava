@@ -717,7 +717,7 @@ public class CadastroClienteController implements Initializable
             else if(tfCpfPesquisa.getText().length() < 14)
                 new Alert(Alert.AlertType.ERROR, "Digite o CPF completo para pesquisar", ButtonType.OK).showAndWait();
             else
-                tvClientes.setItems(FXCollections.observableArrayList(ctrCli.getByName(tfNomePesquisa.getText())));
+                tvClientes.setItems(FXCollections.observableArrayList(ctrCli.getByCPF(tfCpfPesquisa.getText())));
         }
     }
 

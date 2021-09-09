@@ -110,7 +110,7 @@ public class ctrCliente
         ArrayList<Objeto>retorno = new ArrayList<>();
         Cliente cliente = new Cliente().getByCpf(cpf);
         
-        if(!cliente.isAtivo())
+        if(cliente.isAtivo())
             retorno.add(convertClienteToObjeto(cliente));
         
         return retorno;
