@@ -250,6 +250,45 @@ public class TelaParametrizacaoController implements Initializable
             nodes.add(paneEndereco);
             nodes.add(paneTelefones);
             
+            nodes.add(btAddEndereco);
+            nodes.add(btAddTelefone);
+            nodes.add(btAlterarEndereco);
+            nodes.add(btCEP);
+            nodes.add(btCancelar);
+            nodes.add(btCarregarGrande);
+            nodes.add(btCarregarPequeno);
+            nodes.add(btDelEndereco);
+            nodes.add(btDelTelefone);
+            nodes.add(btSalvar);
+            
+            nodes.add(tfBairro);
+            nodes.add(tfCEP);
+            nodes.add(tfCidade);
+            nodes.add(tfComplemento);
+            nodes.add(tfEmail);
+            nodes.add(tfFantasia);
+            nodes.add(tfNome);
+            nodes.add(tfNumero);
+            nodes.add(tfRazao);
+            nodes.add(tfRua);
+            nodes.add(tfTelefone);
+            
+            nodes.add(lbEndereco);
+            nodes.add(lbErroBairro);
+            nodes.add(lbErroCep);
+            nodes.add(lbErroCidade);
+            nodes.add(lbErroComplemento);
+            nodes.add(lbErroEmail);
+            nodes.add(lbErroFantasia);
+            nodes.add(lbErroNome);
+            nodes.add(lbErroNumero);
+            nodes.add(lbErroRazao);
+            nodes.add(lbErroRua);
+            nodes.add(lbLogoGrande);
+            nodes.add(lbLogoPequeno);
+            nodes.add(lbTelefone);
+            nodes.add(lbTitulo);
+            
             nodes.add(faClose);
             nodes.add(faSave);
             nodes.add(faSearch);

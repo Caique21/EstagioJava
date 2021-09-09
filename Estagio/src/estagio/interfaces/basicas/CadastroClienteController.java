@@ -12,6 +12,7 @@ import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import estagio.TelaPrincipalController;
 import estagio.controladores.ctrCliente;
 import estagio.controladores.ctrEndereco;
 import estagio.utilidades.MaskFieldUtil;
@@ -43,6 +44,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import static json.Json.consultaCep;
 import org.json.JSONObject;
 
@@ -194,6 +196,8 @@ public class CadastroClienteController implements Initializable
     private JFXButton btPesquisarCEP;
     @FXML
     private Label lbDataAlteracao;
+    @FXML
+    private VBox painelCentral;
 
     /**
      * Initializes the controller class.
@@ -451,6 +455,54 @@ public class CadastroClienteController implements Initializable
         nodes.add(paneEndereco);
         nodes.add(panePesquisa);
         
+        nodes.add(btAddTelefone);
+        nodes.add(btAlterar);
+        nodes.add(btCancelar);
+        nodes.add(btConfirmar);
+        nodes.add(btDelTelefone);
+        nodes.add(btNovo);
+        nodes.add(btPesquisarCEP);
+        nodes.add(btPesquisar);
+        nodes.add(btRemover);
+        
+        nodes.add(tfBairro);
+        nodes.add(tfCEP);
+        nodes.add(tfCPF);
+        nodes.add(tfCidade);
+        nodes.add(tfComplemento);
+        nodes.add(tfCpfPesquisa);
+        nodes.add(tfEmail);
+        nodes.add(tfNome);
+        nodes.add(tfNomePesquisa);
+        nodes.add(tfNumero);
+        nodes.add(tfRG);
+        nodes.add(tfRua);
+        nodes.add(tfTelefone);
+        
+        nodes.add(lbContato);
+        nodes.add(lbDataAlteracao);
+        nodes.add(lbEndereco);
+        nodes.add(lbErroBairro);
+        nodes.add(lbErroCEP);
+        nodes.add(lbErroCPF);
+        nodes.add(lbErroCidade);
+        nodes.add(lbErroData);
+        nodes.add(lbErroEmail);
+        nodes.add(lbErroEstado);
+        nodes.add(lbErroNome);
+        nodes.add(lbErroNumero);
+        nodes.add(lbErroRua);
+        nodes.add(lbErroRG);
+        nodes.add(lbErroTelefone);
+        nodes.add(lbInfoBasica);
+        nodes.add(lbNascimento);
+        nodes.add(lbPesquisa);
+        nodes.add(lbTelefones);
+        nodes.add(lbTitulo);
+        
+        nodes.add(rbCPF);
+        nodes.add(rbNome);
+        
         nodes.add(faCheck);
         nodes.add(faClose);
         nodes.add(faEdit);
@@ -460,6 +512,7 @@ public class CadastroClienteController implements Initializable
         nodes.add(faTrash);
         
         Utils.setDesign(1, nodes);
+        
         lbErroBairro.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
         lbErroCEP.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
         lbErroCPF.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
@@ -472,6 +525,12 @@ public class CadastroClienteController implements Initializable
         lbErroRG.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
         lbErroRua.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
         lbErroTelefone.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
+        
+        panePrincipal.setPrefWidth(TelaPrincipalController.screenBounds.getMaxX() - 200);
+        panePrincipal.setPrefHeight(TelaPrincipalController.screenBounds.getMaxY() - 60);
+        painelCentral.setPrefHeight(panePrincipal.getPrefHeight() - 47);
+        panePesquisa.setPrefHeight(painelCentral.getPrefHeight() - 387);
+        tvClientes.setPrefHeight(panePesquisa.getPrefHeight() - 60);
     }
     
     private void inicializa()

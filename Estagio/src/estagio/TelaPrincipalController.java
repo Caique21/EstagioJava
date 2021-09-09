@@ -29,6 +29,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
@@ -41,6 +42,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
@@ -59,6 +61,7 @@ public class TelaPrincipalController implements Initializable
     private final ctrAcesso ctr_acessos = ctrAcesso.instancia();
     private final ctrParametrizacao ctr_para = ctrParametrizacao.instancia();
     public static Image logo;
+    public static Rectangle2D screenBounds;
     
     @FXML
     private BorderPane painelPrincipal;
@@ -153,17 +156,24 @@ public class TelaPrincipalController implements Initializable
         faMoney.setSize("20");
         faReport.setSize("20");
         faTruck.setSize("20");
+        
         lbGerencimento.setStyle(lbGerencimento.getStyle() + ";-fx-text-fill: " + Utils.getCorBotao());
         lbFinancas.setStyle(lbGerencimento.getStyle() + ";-fx-text-fill: " + Utils.getCorBotao());
         lbHome.setStyle(lbGerencimento.getStyle() + ";-fx-text-fill: " + Utils.getCorBotao());
         lbLogout.setStyle(lbGerencimento.getStyle() + ";-fx-text-fill: " + Utils.getCorBotao());
         lbRelatorios.setStyle(lbGerencimento.getStyle() + ";-fx-text-fill: " + Utils.getCorBotao());
         lbTransporte.setStyle(lbGerencimento.getStyle() + ";-fx-text-fill: " + Utils.getCorBotao());
+        
+        painelPrincipal.setPrefHeight(screenBounds.getMaxY());
+        painelCentral.setPrefHeight(screenBounds.getMaxY());
+        painelPrincipal.setPrefWidth(screenBounds.getMaxX());
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
+        screenBounds = Screen.getPrimary().getBounds();
+        
         setDesign();
         tooltip = new Tooltip();
         

@@ -6,6 +6,7 @@
 package estagio.interfaces.configuracao;
 
 import com.jfoenix.controls.JFXDecorator;
+import estagio.TelaPrincipalController;
 import estagio.utilidades.Utils;
 import java.io.IOException;
 import java.net.URL;
@@ -66,6 +67,9 @@ public class TelaConfiguracoesController implements Initializable
         nodes.add(panePrincipal);
         nodes.add(lbTitulo);
         Utils.setDesign(1, nodes);
+        
+        panePrincipal.setPrefWidth(TelaPrincipalController.screenBounds.getMaxX() - 200);
+        panePrincipal.setPrefHeight(TelaPrincipalController.screenBounds.getMaxY() - 40);
     }    
 
     @FXML

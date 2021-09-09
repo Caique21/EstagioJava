@@ -438,8 +438,8 @@ public class Utils
 
     public static void geraArquivoCSS()
     {
-        //File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
-        File file = new File("C:/Program Files/EstagioJava/Estagio/src\\estagio\\utilidades\\CSS\\Style.css");
+        File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
+        //File file = new File("C:/Program Files/EstagioJava/Estagio/src\\estagio\\utilidades\\CSS\\Style.css");
         try
         {
             FileWriter writer = new FileWriter(file);
@@ -503,7 +503,7 @@ public class Utils
                     + "    -fx-control-inner-background: transparent;\n"
                     + "}\n\n"
                             
-                    + ".text-field, .text-area , .jfx-text-field, .jfx-text-area\n"
+                    /*+ ".text-field, .text-area , .jfx-text-field, .jfx-text-area\n"
                     + "{\n"
                     + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
                     + "    -jfx-focus-color: " + design.get(8) + ";\n"
@@ -517,14 +517,14 @@ public class Utils
                     + "    -fx-background-color: " + design.get(3) + ";\n"
                     + "    -fx-text-fill: " + design.get(5) + ";\n"
                     + "    -fx-font-size: " + design.get(6) + ";\n"
-                    + "}\n\n"
+                    + "}\n\n"*/
                             
                     + ".button .rippler\n"
                     + "{\n"
                     + "      -fx-rippler-fill:" + design.get(4) + ";\n"
                     + "}\n\n"
                             
-                    + ".radio-button, .jfx-radio-button, .label\n"
+                    /*+ ".radio-button, .jfx-radio-button, .label\n"
                     + "{\n"
                     + "      -fx-text-fill: " + design.get(2) + ";\n"
                     + "}\n\n"
@@ -536,12 +536,12 @@ public class Utils
                     + "    -fx-cell-size: 1.66667em; \n"
                     + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
                     + "    -jfx-focus-color: " + design.get(8) + ";\n"        
-                    /*+ "}\n\n"
+                    + "}\n\n"
                     + ".jfx-combo-box{\n"
                     + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
                     + "    -jfx-focus-color: " + design.get(8) + ";\n"
                     + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
-                    */+"}\n\n"
+                    +"}\n\n"*/
                             
                     + ".table-view .column-header .label \n"
                     + "{\n"

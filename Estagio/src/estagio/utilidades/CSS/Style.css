@@ -1,6 +1,6 @@
 .jfx-list-view 
 {
-    -fx-background-color: #212121;
+    -fx-background-color: #FAFAFA;
 }
 
 .list-view:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected
@@ -11,14 +11,14 @@
 
 list-view .list-cell:odd 
 {
-    -fx-background-color: #212121;
-    -fx-text-fill: #FAFAFA;
+    -fx-background-color: #E0E0E0;
+    -fx-text-fill: #212121;
 }
 
 .list-view .list-cell:even 
 {
-    -fx-background-color: #212121;
-    -fx-text-fill: #FAFAFA;
+    -fx-background-color: #FAFAFA;
+    -fx-text-fill: #212121;
 }
 
 .table-row-cell
@@ -28,62 +28,32 @@ list-view .list-cell:odd
 
 .jfx-tab-pane .tab-header-background 
 {
-    -fx-background-color:#212121; 
+    -fx-background-color:#E0E0E0; 
 }
 
 .jfx-tab-pane .tab-label
  {
     -fx-alignment: CENTER;
-    -fx-text-fill: #FAFAFA;
+    -fx-text-fill: #212121;
     -fx-font-weight: bold;
 }
 
 .jfx-date-picker .text-field
 {
-    -jfx-unfocus-color: #FAFAFA;
-    -fx-prompt-text-fill: #FAFAFA;
-    -fx-text-fill:#FAFAFA;
+    -jfx-unfocus-color: #212121;
+    -fx-prompt-text-fill: #212121;
+    -fx-text-fill:#212121;
     -fx-control-inner-background: transparent;
-}
-
-.text-field, .text-area , .jfx-text-field, .jfx-text-area
-{
-    -jfx-unfocus-color: #FAFAFA;
-    -jfx-focus-color: #FAFAFA;
-    -fx-prompt-text-fill: #FAFAFA;
-    -fx-text-fill:#FAFAFA;
-    -fx-font-size: 12;
-}
-
-.button , .jfx-button
-{
-    -fx-background-color: transparent;
-    -fx-text-fill: #FAFAFA;
-    -fx-font-size: 12;
 }
 
 .button .rippler
 {
-      -fx-rippler-fill:#FAFAFA;
-}
-
-.radio-button, .jfx-radio-button, .label
-{
-      -fx-text-fill: #FAFAFA;
-}
-
-.combo-box, .jfx-combo-box
-{
-    -fx-background-color: transparent;
-    -fx-text-fill: #FAFAFA;
-    -fx-cell-size: 1.66667em; 
-    -jfx-unfocus-color: #FAFAFA;
-    -jfx-focus-color: #FAFAFA;
+      -fx-rippler-fill:#212121;
 }
 
 .table-view .column-header .label 
 {
-    -fx-text-fill: #FAFAFA;
+    -fx-text-fill: #212121;
     -fx-font-weight: bold;
 }
 
@@ -97,12 +67,12 @@ list-view .list-cell:odd
 .table-row-cell:filled 
 {
     -fx-background-color: transparent;
-    -fx-text-fill: #FAFAFA;
+    -fx-text-fill: #212121;
 }
 
 .table-row-cell:filled:selected 
 {
     -fx-background-color: #0096c9;
-    -fx-text-fill: #FAFAFA;
+    -fx-text-fill: #212121;
 }
 

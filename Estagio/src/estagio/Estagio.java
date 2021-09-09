@@ -10,8 +10,6 @@ import com.jfoenix.controls.JFXDecorator;
 import estagio.controladores.ctrParametrizacao;
 import estagio.utilidades.Banco;
 import estagio.utilidades.Utils;
-import java.io.File;
-import java.net.URL;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
