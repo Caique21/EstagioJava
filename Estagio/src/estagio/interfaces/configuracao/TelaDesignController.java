@@ -31,6 +31,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -42,6 +43,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 /**
  * FXML Controller class
@@ -336,7 +339,14 @@ public class TelaDesignController implements Initializable
                 cpFonteTexto,cpFoco,slFonteTexto,slOpacidade))
                 {
                     Utils.carregaDesign();
-                    new Alert(Alert.AlertType.INFORMATION, "Design alterado com sucesso!!!", ButtonType.OK)
+                    Notifications.create()
+                        .darkStyle()
+                        //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
+                        .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
+                        .text("Design alterado com sucesso!!!")
+                        .showInformation();
+                    new Alert(Alert.AlertType.WARNING, "Alguns componentes podem não ser alterados, caso ocorra "
+                            + "reinicie o programa", ButtonType.OK)
                         .showAndWait();
                     
                     Stage stage = (Stage) bt.getScene().getWindow();

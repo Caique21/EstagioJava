@@ -633,21 +633,8 @@ public class TelaParametrizacaoController implements Initializable
         
         if(alerta.getResult() == ButtonType.YES)
         {
-            try
-            {
                 Stage stage = (Stage) painel_central.getScene().getWindow();
-                stage.setResizable(false);
-
-                Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/configuracao/TelaConfiguracao.fxml"));
-                painel_central.getChildren().clear();
-                painel_central.getChildren().add(root);
-            }
-            catch (IOException er)
-            {
-                Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Configuração!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
-                a.showAndWait();
-                System.out.println(er.getMessage());
-            }
+                stage.close();
         }
     }
 

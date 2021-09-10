@@ -438,8 +438,8 @@ public class Utils
 
     public static void geraArquivoCSS()
     {
-        File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
-        //File file = new File("C:/Program Files/EstagioJava/Estagio/src\\estagio\\utilidades\\CSS\\Style.css");
+        //File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
+        File file = new File("C:/Program Files/EstagioJava/Estagio/src\\estagio\\utilidades\\CSS\\Style.css");
         try
         {
             FileWriter writer = new FileWriter(file);

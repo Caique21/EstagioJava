@@ -1,6 +1,6 @@
 .jfx-list-view 
 {
-    -fx-background-color: #F5F5F5;
+    -fx-background-color: #EEEEEE;
 }
 
 .list-view:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected
@@ -11,13 +11,13 @@
 
 list-view .list-cell:odd 
 {
-    -fx-background-color: #FFFFFF;
+    -fx-background-color: #FAFAFA;
     -fx-text-fill: #212121;
 }
 
 .list-view .list-cell:even 
 {
-    -fx-background-color: #F5F5F5;
+    -fx-background-color: #EEEEEE;
     -fx-text-fill: #212121;
 }
 
@@ -28,7 +28,7 @@ list-view .list-cell:odd
 
 .jfx-tab-pane .tab-header-background 
 {
-    -fx-background-color:#FFFFFF; 
+    -fx-background-color:#FAFAFA; 
 }
 
 .jfx-tab-pane .tab-label
@@ -48,7 +48,7 @@ list-view .list-cell:odd
 
 .button .rippler
 {
-      -fx-rippler-fill:#212121;
+      -fx-rippler-fill:#000000;
 }
 
 .combo-box, .jfx-combo-box

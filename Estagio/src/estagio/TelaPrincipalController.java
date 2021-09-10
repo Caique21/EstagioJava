@@ -14,6 +14,8 @@ import estagio.utilidades.Banco;
 import estagio.utilidades.Objeto;
 import estagio.utilidades.Utils;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -196,28 +200,6 @@ public class TelaPrincipalController implements Initializable
         lbUsuario.setText(lbUsuario.getText() + usuario_logado.getParam2());  
         //VERIFICAR SE DATA É ULTIMA DO MES PARA GERAR CONTAS A PAGAR DAS DESPESAS
         
-        if(ctr_acessos.firstOfDay(LocalDate.now()))
-            if(Banco.realizaBackupNoMessage("bkp\\copiar.bat"))
-                Platform.runLater(() ->
-                {
-                    Notifications.create()
-                    .darkStyle()
-                    //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
-                    .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
-                    .text("Backup concluído com sucesso!!!")
-                    .showInformation();
-                });
-            else
-                Platform.runLater(() ->
-                {
-                    Notifications.create()
-                    .darkStyle()
-                    //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
-                    .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
-                    .text("Erro na criação do Backup")
-                    .showError();
-                });
-        
         if(!usuario_logado.getParam4().equals("alto"))
             btConfig.setDisable(true);
         
@@ -225,6 +207,42 @@ public class TelaPrincipalController implements Initializable
         if(ctr_para.carregaLogoPequeno() != null)
             atualizaLogo(SwingFXUtils.toFXImage(ctr_para.carregaLogoPequeno(),null));
         lbFantasia.setText(ctr_para.carregaFantasia());
+        
+        Socket socket = new Socket();
+        try
+        {
+            socket.connect(new InetSocketAddress("google.com", 80));
+            
+            if(ctr_acessos.firstOfDay(LocalDate.now()) && socket.getLocalAddress().toString().replace("/", "")
+                    .equals("192.168.0.101"))
+            {
+                if(Banco.realizaBackupNoMessage("C:/Program Files/EstagioJava/Estagio/bkp\\copiar.bat"))
+                    Platform.runLater(() ->
+                    {
+                        Notifications.create()
+                        .darkStyle()
+                        //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
+                        .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
+                        .text("Backup concluído com sucesso!!!")
+                        .showInformation();
+                    });
+                else
+                    Platform.runLater(() ->
+                    {
+                        Notifications.create()
+                        .darkStyle()
+                        //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
+                        .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
+                        .text("Erro na criação do Backup")
+                        .showError();
+                    });
+            }
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(TelaPrincipalController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }    
 
     private void inicializaHora()

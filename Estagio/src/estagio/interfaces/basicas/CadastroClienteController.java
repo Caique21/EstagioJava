@@ -532,6 +532,11 @@ public class CadastroClienteController implements Initializable
         painelCentral.setPrefHeight(panePrincipal.getPrefHeight() - 47);
         panePesquisa.setPrefHeight(painelCentral.getPrefHeight() - 407);
         tvClientes.setPrefHeight(panePesquisa.getPrefHeight() - 60);
+        tvClientes.setPrefWidth(panePesquisa.getPrefWidth() - 80);
+        int sobra = (int)((tvClientes.getPrefWidth() - 1073)/3);
+        tcNome.setPrefWidth(tcNome.getPrefWidth() + sobra);
+        tcEndereco.setPrefWidth(tcEndereco.getPrefWidth() + sobra);
+        tcEmail.setPrefWidth(tcEmail.getPrefWidth() + sobra);
     }
     
     private void inicializa()
