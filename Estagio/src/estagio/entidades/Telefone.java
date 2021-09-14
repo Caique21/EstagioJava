@@ -5,6 +5,7 @@
  */
 package estagio.entidades;
 
+import com.jfoenix.controls.JFXTextField;
 import estagio.utilidades.Banco;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +22,7 @@ public class Telefone
     private int codigo;
     private String numero;
     private Cliente cliente;
-    //private Funcionario funcionario;
+    private Funcionario funcionario;
     //private Fornecedor fornecedor;
     private Parametrizacao parametrizacao;
 
@@ -38,6 +39,12 @@ public class Telefone
     {
         this.numero = numero;
         this.cliente = cliente;
+    }
+
+    public Telefone(String numero, Funcionario funcionario)
+    {
+        this.numero = numero;
+        this.funcionario = funcionario;
     }
 
     public Telefone(int codigo, String numero, Cliente cliente)
@@ -73,6 +80,11 @@ public class Telefone
             sql = "insert into telefone (tel_numero, para_nome) values('$1','$2')";
             sql = sql.replace("$2", parametrizacao.getNome());
         }
+        else if(funcionario != null)
+        {
+            sql = "insert into telefone (tel_numero, func_codigo) values('$1','$2')";
+            sql = sql.replace("$2", String.valueOf(funcionario.getCodigo()));
+        }
             
         sql = sql.replace("$1", numero);
         return Banco.getCon().manipular(sql);
@@ -84,6 +96,47 @@ public class Telefone
         
         ResultSet rs = Banco.getCon().consultar("SELECT tel_numero FROM telefone WHERE cli_codigo" + 
                 cliente.getCodigo());
+        
+        try
+        {
+            while(rs != null && rs.next())            
+            {
+                telefones.add(rs.getString("tel_numero"));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Telefone.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return telefones;
+    }
+    
+    public ArrayList<String> getAllByFuncionario(Funcionario funcionario)
+    {
+        ArrayList<String> telefones = new ArrayList<>();
+        
+        ResultSet rs = Banco.getCon().consultar("SELECT tel_numero FROM telefone WHERE func_codigo" + 
+                funcionario.getCodigo());
+        
+        try
+        {
+            while(rs != null && rs.next())            
+            {
+                telefones.add(rs.getString("tel_numero"));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Telefone.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return telefones;
+    }
+    
+    public ArrayList<String> getAllByFuncionario(int codigo)
+    {
+        ArrayList<String> telefones = new ArrayList<>();
+        
+        ResultSet rs = Banco.getCon().consultar("SELECT tel_numero FROM telefone WHERE func_codigo" + codigo);
         
         try
         {

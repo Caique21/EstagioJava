@@ -14,7 +14,6 @@ import com.jfoenix.controls.JFXTextField;
 import estagio.TelaLoginController;
 import estagio.TelaPrincipalController;
 import estagio.controladores.ctrDesign;
-import estagio.utilidades.Banco;
 import estagio.utilidades.Utils;
 import static estagio.utilidades.Utils.toRGB;
 import java.io.File;
@@ -414,8 +413,6 @@ public class TelaDesignController implements Initializable
             stage.setTitle("LGD");
             stage.setOnCloseRequest((WindowEvent event) ->
             {
-                if(TelaPrincipalController.alteracoes)
-                    Banco.realizaBackupNoMessage("bkp\\copiar.bat");
                 Platform.exit();
                 System.exit(0);
             });

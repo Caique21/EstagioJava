@@ -10,6 +10,8 @@ import com.jfoenix.controls.JFXDecorator;
 import estagio.controladores.ctrParametrizacao;
 import estagio.utilidades.Banco;
 import estagio.utilidades.Utils;
+import java.io.File;
+import java.net.URL;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
@@ -48,9 +50,8 @@ public class Estagio extends Application
             decorator.setStyle("-fx-decorator-color:black;-fx-background-color:white;");
 
         Scene scene = new Scene(decorator);
-        //File file = new File("/estagio/utilidades/CSS/Style.css");
-        //URL url = file.toURI().toURL();
-        //scene.getStylesheets().add(url.toExternalForm());
+        URL url = new File("C:\\Users\\carlo\\OneDrive\\Documentos\\NetBeansProjects\\EstagioJava\\Estagio\\src\\estagio\\utilidades\\CSS\\Style.css").toURI().toURL();
+        scene.getStylesheets().add(url.toExternalForm());
 
         stage.setTitle("Nome");
         stage.setAlwaysOnTop(false);

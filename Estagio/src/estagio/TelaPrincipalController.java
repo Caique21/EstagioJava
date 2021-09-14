@@ -59,7 +59,6 @@ public class TelaPrincipalController implements Initializable
 {
     public static Objeto usuario_logado;
     public static Timestamp data_login;
-    public static boolean alteracoes = false;
     private Tooltip tooltip;
     Thread timerThread;
     private final ctrAcesso ctr_acessos = ctrAcesso.instancia();
@@ -203,7 +202,6 @@ public class TelaPrincipalController implements Initializable
         if(!usuario_logado.getParam4().equals("alto"))
             btConfig.setDisable(true);
         
-        alteracoes = false;
         if(ctr_para.carregaLogoPequeno() != null)
             atualizaLogo(SwingFXUtils.toFXImage(ctr_para.carregaLogoPequeno(),null));
         lbFantasia.setText(ctr_para.carregaFantasia());

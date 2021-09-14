@@ -1,24 +1,18 @@
+.list-cell 
+{
+    -fx-control-inner-background:#212121;
+    -fx-text-fill:#FAFAFA;
+}
+
 .jfx-list-view 
 {
-    -fx-background-color: #EEEEEE;
+    -fx-background-color: #263238;
 }
 
 .list-view:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected
 {
     -fx-background-color: #0096c9;
     -fx-text-fill: white;
-}
-
-list-view .list-cell:odd 
-{
-    -fx-background-color: #FAFAFA;
-    -fx-text-fill: #212121;
-}
-
-.list-view .list-cell:even 
-{
-    -fx-background-color: #EEEEEE;
-    -fx-text-fill: #212121;
 }
 
 .table-row-cell
@@ -28,42 +22,49 @@ list-view .list-cell:odd
 
 .jfx-tab-pane .tab-header-background 
 {
-    -fx-background-color:#FAFAFA; 
+    -fx-background-color:#212121; 
 }
 
 .jfx-tab-pane .tab-label
  {
     -fx-alignment: CENTER;
-    -fx-text-fill: #212121;
+    -fx-text-fill: #FAFAFA;
     -fx-font-weight: bold;
 }
 
 .jfx-date-picker .text-field
 {
-    -jfx-unfocus-color: #212121;
-    -fx-prompt-text-fill: #212121;
-    -fx-text-fill:#212121;
+    -jfx-unfocus-color: #FAFAFA;
+    -fx-prompt-text-fill: #FAFAFA;
+    -fx-text-fill:#FAFAFA;
     -fx-control-inner-background: transparent;
 }
 
 .button .rippler
 {
-      -fx-rippler-fill:#000000;
+      -fx-rippler-fill:#FAFAFA;
 }
 
 .combo-box, .jfx-combo-box
 {
     -fx-background-color: transparent;
-    -fx-text-fill: #212121;
+    -fx-text-fill: #FAFAFA;
     -fx-cell-size: 1.66667em; 
-    -jfx-unfocus-color: #212121;
-    -jfx-focus-color: #212121;
+    -jfx-unfocus-color: #FAFAFA;
+    -jfx-focus-color: #FAFAFA;
 }
 
-.table-view .column-header .label 
+.jfx-combo-box{
+    -jfx-unfocus-color: #FAFAFA;
+    -jfx-focus-color: #FAFAFA;
+    -fx-prompt-text-fill: #FAFAFA;
+    -fx-text-fill: #FAFAFA;
+    -fx-cell-size: 1.66667em; 
+}
+
+.combo-box-base .text
 {
-    -fx-text-fill: #212121;
-    -fx-font-weight: bold;
+     -fx-fill: #FAFAFA;
 }
 
 .table-view .column-header-background
@@ -76,12 +77,12 @@ list-view .list-cell:odd
 .table-row-cell:filled 
 {
     -fx-background-color: transparent;
-    -fx-text-fill: #212121;
+    -fx-text-fill: #FAFAFA;
 }
 
 .table-row-cell:filled:selected 
 {
     -fx-background-color: #0096c9;
-    -fx-text-fill: #212121;
+    -fx-text-fill: #FAFAFA;
 }
 

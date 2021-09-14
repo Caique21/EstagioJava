@@ -24,6 +24,10 @@ public class Objeto
     private String param8;
     private String param9;
     private String param10;
+    private String param11;
+    private String param12;
+    private String param13;
+    private String param14;
     
     private ArrayList<Objeto>list1;
     private ArrayList<Objeto>list2;
@@ -115,6 +119,45 @@ public class Objeto
         this.param1 = param1;
         this.param2 = param2;
         this.param3 = param3;
+    }
+
+    public Objeto(String param1, String param2, String param3, String param4, String param5, String param6, String param7, String param8, String param9, String param10, String param11, String param12, String param13, ArrayList<Objeto> list1, ArrayList<Objeto> list2, ArrayList<Objeto> list3)
+    {
+        this.param1 = param1;
+        this.param2 = param2;
+        this.param3 = param3;
+        this.param4 = param4;
+        this.param5 = param5;
+        this.param6 = param6;
+        this.param7 = param7;
+        this.param8 = param8;
+        this.param9 = param9;
+        this.param10 = param10;
+        this.param11 = param11;
+        this.param12 = param12;
+        this.param13 = param13;
+        this.param13 = param13;
+        this.list1 = list1;
+        this.list2 = list2;
+        this.list3 = list3;
+    }
+
+    public Objeto(String param1, String param2, String param3, String param4, String param5, String param6, String param7, String param8, String param9, String param10, String param11, String param12, String param13, String param14)
+    {
+        this.param1 = param1;
+        this.param2 = param2;
+        this.param3 = param3;
+        this.param4 = param4;
+        this.param5 = param5;
+        this.param6 = param6;
+        this.param7 = param7;
+        this.param8 = param8;
+        this.param9 = param9;
+        this.param10 = param10;
+        this.param11 = param11;
+        this.param12 = param12;
+        this.param13 = param13;
+        this.param14 = param14;
     }
     
     public Objeto(String param1, String param2)
@@ -226,6 +269,46 @@ public class Objeto
     public void setParam10(String param10)
     {
         this.param10 = param10;
+    }
+
+    public String getParam11()
+    {
+        return param11;
+    }
+
+    public void setParam11(String param11)
+    {
+        this.param11 = param11;
+    }
+
+    public String getParam12()
+    {
+        return param12;
+    }
+
+    public void setParam12(String param12)
+    {
+        this.param12 = param12;
+    }
+
+    public String getParam13()
+    {
+        return param13;
+    }
+
+    public void setParam13(String param13)
+    {
+        this.param13 = param13;
+    }
+
+    public String getParam14()
+    {
+        return param14;
+    }
+
+    public void setParam14(String param14)
+    {
+        this.param14 = param14;
     }
 
     public ArrayList<Objeto> getList1()

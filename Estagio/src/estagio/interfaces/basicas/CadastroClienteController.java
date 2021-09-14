@@ -34,7 +34,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
@@ -511,6 +510,8 @@ public class CadastroClienteController implements Initializable
         nodes.add(faSearchCEP);
         nodes.add(faTrash);
         
+        nodes.add(cbEstado);
+        
         Utils.setDesign(1, nodes);
         
         lbErroBairro.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
@@ -564,6 +565,7 @@ public class CadastroClienteController implements Initializable
         tcRG.setCellValueFactory(new PropertyValueFactory<>("param4"));
         tcData.setCellValueFactory(new PropertyValueFactory<>("param5"));
         tcEndereco.setCellValueFactory(new PropertyValueFactory<>("param7"));
+        tcEmail.setCellValueFactory(new PropertyValueFactory<>("param8"));
      
         rbCPF.setToggleGroup(goup);
         rbNome.setToggleGroup(goup);
@@ -664,7 +666,7 @@ public class CadastroClienteController implements Initializable
         if(!tvClientes.getItems().isEmpty() && tvClientes.getSelectionModel().getFocusedIndex() >= 0)
         {
             cliente = tvClientes.getSelectionModel().getSelectedItem();
-            if(ctrCli.apagar(Integer.parseInt(cliente.getParam1())))
+            if(ctrCli.inativar(Integer.parseInt(cliente.getParam1())))
             {
                 new Alert(Alert.AlertType.INFORMATION, "Cliente removido com sucesso!!!", ButtonType.OK).showAndWait();
                 inicializa();

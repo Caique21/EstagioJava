@@ -15,7 +15,6 @@ import estagio.TelaLoginController;
 import estagio.TelaPrincipalController;
 import estagio.controladores.ctrDesign;
 import estagio.controladores.ctrParametrizacao;
-import estagio.utilidades.Banco;
 import estagio.utilidades.MaskFieldUtil;
 import estagio.utilidades.Objeto;
 import estagio.utilidades.Utils;
@@ -60,7 +59,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
 
 /**
  * FXML Controller class
@@ -301,6 +299,8 @@ public class TelaParametrizacaoController implements Initializable
             nodes.add(faSave);
             nodes.add(faSearch);
             
+            nodes.add(cbEstado);
+            
             nodes.add(lvEnderecos);
             nodes.add(lvTelefones);
             Utils.setDesign(1, nodes);
@@ -310,8 +310,6 @@ public class TelaParametrizacaoController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        cbEstado.getItems().addAll("AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", 
-            "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RO", "RS", "RR", "SC", "SE", "SP", "TO");
         inicializaLabels();
         carregaDesign();
         setListeners();
@@ -325,6 +323,9 @@ public class TelaParametrizacaoController implements Initializable
                 tfNome.requestFocus();
             });
         }
+        
+        cbEstado.getItems().addAll("AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", 
+            "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RO", "RS", "RR", "SC", "SE", "SP", "TO");
         cbEstado.getSelectionModel().select(-1);
     }  
 
@@ -599,18 +600,8 @@ public class TelaParametrizacaoController implements Initializable
             stage.setAlwaysOnTop(false);
             stage.setOnCloseRequest((WindowEvent event) ->
             {
-                if(TelaPrincipalController.alteracoes)
-                    Banco.realizaBackupNoMessage("bkp\\copiar.bat");
                 Platform.exit();
                 System.exit(0);
-                try
-                {
-                    Process p = Runtime.getRuntime().exec("Upload.bat");
-                }
-                catch (IOException ex)
-                {
-                    Logger.getLogger(TelaPrincipalController.class.getName()).log(Level.SEVERE, null, ex);
-                }
             });
 
             Stage login = (Stage) btCancelar.getScene().getWindow();
@@ -941,5 +932,11 @@ public class TelaParametrizacaoController implements Initializable
         sep2.setVisible(b);
         sep3.setVisible(b);
         sep4.setVisible(b);
+    }
+
+    @FXML
+    private void clickEstado(ActionEvent event)
+    {
+        cbEstado.setStyle(cbEstado.getStyle() + ";-fx-background-color:" + Utils.getFonte());
     }
 }

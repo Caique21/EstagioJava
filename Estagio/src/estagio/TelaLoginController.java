@@ -12,8 +12,8 @@ import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.controladores.ctrAcesso;
 import estagio.controladores.ctrUsuario;
-import estagio.utilidades.Banco;
 import estagio.utilidades.Utils;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -176,6 +176,8 @@ public class TelaLoginController implements Initializable
 
             Scene scene = new Scene(decorator);
             scene.setFill(Paint.valueOf("black"));
+            URL url = new File("C:\\Users\\carlo\\OneDrive\\Documentos\\NetBeansProjects\\EstagioJava\\Estagio\\src\\estagio\\utilidades\\CSS\\Style.css").toURI().toURL();
+            scene.getStylesheets().add(url.toExternalForm());
 
             stage.setScene(scene);
             stage.setMaximized(true);
@@ -188,8 +190,6 @@ public class TelaLoginController implements Initializable
                 
                 if(alert.getResult() == ButtonType.YES)
                 {
-                    if(TelaPrincipalController.alteracoes)
-                        Banco.realizaBackupNoMessage("bkp\\copiar.bat");
                     ctr_acessos.salvar
                         (TelaPrincipalController.data_login,new Timestamp(new java.util.Date().getTime()), 
                             TelaPrincipalController.usuario_logado);

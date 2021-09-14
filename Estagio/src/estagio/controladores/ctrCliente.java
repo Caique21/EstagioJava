@@ -86,7 +86,7 @@ public class ctrCliente
         return cliente.alterar();
     }
 
-    public boolean apagar(int codigo)
+    public boolean inativar(int codigo)
     {
         Cliente cliente = new Cliente();
         cliente.setCodigo(codigo);

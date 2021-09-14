@@ -438,8 +438,8 @@ public class Utils
 
     public static void geraArquivoCSS()
     {
-        //File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
-        File file = new File("C:/Program Files/EstagioJava/Estagio/src\\estagio\\utilidades\\CSS\\Style.css");
+        File file = new File("src\\estagio\\utilidades\\CSS\\Style.css");
+        //File file = new File("C:/Program Files/EstagioJava/Estagio/src\\estagio\\utilidades\\CSS\\Style.css");
         try
         {
             FileWriter writer = new FileWriter(file);
@@ -450,12 +450,12 @@ public class Utils
                 
                 if(!design.isEmpty())
                 {
-                    writer.write(/*".list-cell \n"
+                    writer.write(".list-cell \n"
                     + "{\n"
                     + "    -fx-control-inner-background:" + design.get(1) + ";\n"
                     + "    -fx-text-fill:" + design.get(7) + ";\n"
                     + "}\n\n"
-                    +*/ ".jfx-list-view \n"
+                    + ".jfx-list-view \n"
                     + "{\n"
                     + "    -fx-background-color: " + design.get(0) + ";\n"
                     + "}\n\n"
@@ -466,7 +466,7 @@ public class Utils
                     + "    -fx-text-fill: white;\n"      
                     + "}\n\n"
                             
-                    + "list-view .list-cell:odd \n"
+                    /*+ "list-view .list-cell:odd \n"
                     + "{\n"
                     + "    -fx-background-color: " + design.get(1) + ";\n"
                     + "    -fx-text-fill: " + design.get(2) + ";\n"
@@ -476,7 +476,7 @@ public class Utils
                     + "{\n"
                     + "    -fx-background-color: " + design.get(0) + ";\n"
                     + "    -fx-text-fill: " + design.get(2) + ";\n"
-                    + "}\n\n"
+                    + "}\n\n"*/
                             
                     + ".table-row-cell\n"
                     + "{\n" 
@@ -536,18 +536,25 @@ public class Utils
                     + "    -fx-cell-size: 1.66667em; \n"
                     + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
                     + "    -jfx-focus-color: " + design.get(8) + ";\n"        
-                    + "}\n\n"/*
+                    + "}\n\n"
                     + ".jfx-combo-box{\n"
                     + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
                     + "    -jfx-focus-color: " + design.get(8) + ";\n"
                     + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
-                    +"}\n\n"*/
-                            
+                    + "    -fx-text-fill: " + design.get(2) + ";\n"
+                    + "    -fx-cell-size: 1.66667em; \n"
+                    +"}\n\n"
+                    
+                    + ".combo-box-base .text\n"
+                    + "{\n" 
+                    + "     -fx-fill: " + design.get(7) + ";\n" 
+                    +"}\n\n"
+                     /*       
                     + ".table-view .column-header .label \n"
                     + "{\n"
                     + "    -fx-text-fill: " + design.get(2) + ";\n"
                     + "    -fx-font-weight: bold;\n"
-                    + "}\n\n"
+                    + "}\n\n"*/
                     
                     + ".table-view .column-header-background\n"
                     + "{\n"
@@ -705,8 +712,9 @@ public class Utils
                             design.get(7) + "; -fx-font-size: " + design.get(9) + ";-jfx-focus-color: " + 
                              design.get(8) + ";-jfx-unfocus-color:" + design.get(8));
                     else if(node instanceof JFXComboBox)
-                        node.setStyle("-fx-background-color:" + design.get(2) + ";-fx-prompt-text-fill:" + design.get(7) +
-                            ";-jfx-focus-color: " + design.get(8) + ";-jfx-unfocus-color:" + design.get(8));
+                        node.setStyle("-fx-background-color:transparent;-fx-prompt-text-fill:" + design.get(7) +
+                            ";-jfx-focus-color: " + design.get(8) + ";-jfx-unfocus-color:" + design.get(8)
+                            + "; -fx-text-fill: " + design.get(7) + ";");
                     //"-fx-background-color:white;-fx-prompt-text-fill:#6485e8;"
                     else if(node instanceof ListView)
                     {
