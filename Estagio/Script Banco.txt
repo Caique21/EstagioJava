@@ -76,6 +76,7 @@ CREATE TABLE funcionario
 	func_cpf VARCHAR(15) NOT NULL UNIQUE,
 	func_rg varchar(15) not null,
 	func_email VARCHAR(45) NULL ,
+	func_funcao VARCHAR(45) NOT NULL,
 	func_datacadastro DATE NOT NULL,
 	func_ativo BOOLEAN NOT NULL,
 	func_alteracao TIMESTAMP NOT NULL,
@@ -417,8 +418,9 @@ CREATE TABLE registro_pagamento
 );
 
 insert into usuario(user_nome, user_senha, user_nivel,user_ativo) values ('admin','admin','alto',true);
-insert into design(desi_fundo_interface, desi_fundo2_interface, desi_fonte_interface, desi_fonte_botao,
-	desi_fundo_botao, desi_preenchimento_botao, desi_tamanho_botao, desi_fonte_entrada,
-	desi_foco_entrada, desi_tamanho_entrada, desi_opacidade) 
-	values('#FFFFFF','#E0E0E0','#212121','transparent','#212121','#000000',12,'#212121','#212121',12,100);
+--insert into design(desi_fundo_interface, desi_fundo2_interface, desi_fonte_interface, desi_fonte_botao,
+--	desi_fundo_botao, desi_preenchimento_botao, desi_tamanho_botao, desi_fonte_entrada,
+--	desi_foco_entrada, desi_tamanho_entrada, desi_opacidade) 
+--	values('#FFFFFF','#E0E0E0','#212121','transparent','#212121','#000000',12,'#212121','#212121',12,100);
+--alter table funcionario add column func_funcao VARCHAR(45) NOT NULL;
 

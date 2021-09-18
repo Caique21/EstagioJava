@@ -30,6 +30,7 @@ import javafx.scene.layout.Pane;
  */
 public class CadastroUsuarioController implements Initializable
 {
+    private int acao;
 
     @FXML
     private BorderPane panePrincipal;
@@ -54,7 +55,7 @@ public class CadastroUsuarioController implements Initializable
     @FXML
     private JFXTextField tfUsuario;
     @FXML
-    private JFXComboBox<?> cbNivel;
+    private JFXComboBox<String> cbNivel;
     @FXML
     private JFXTextField tfFuncionario;
     @FXML
@@ -112,7 +113,8 @@ public class CadastroUsuarioController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        // TODO
+        cbNivel.setDisable(false);
+        cbNivel.getItems().addAll("alto","medio","baixo");
     }    
 
     @FXML
@@ -203,6 +205,15 @@ public class CadastroUsuarioController implements Initializable
     @FXML
     private void pesquisarEnter(MouseEvent event)
     {
+    }
+
+    void setFuncionario(String nome,String nivel)
+    {
+        tfFuncionario.setText(nome);
+        tfFuncionario.setDisable(true);
+        cbNivel.getSelectionModel().select(nivel);
+        cbNivel.setDisable(true);
+        acao = 2;
     }
     
 }

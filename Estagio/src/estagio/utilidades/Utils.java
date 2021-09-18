@@ -7,6 +7,7 @@ package estagio.utilidades;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXRadioButton;
@@ -329,6 +330,36 @@ public class Utils
         return new SimpleDateFormat("dd/MM/yyyy").format(date);
     }
     
+    public static Date convertStringToDate(String date)
+    {
+        date = date.replace("-", "/");
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd"); 
+        try 
+        {
+            return formato.parse(date);
+        }
+        catch (ParseException ex)
+        {
+            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public static Date convertStringToDateUTC(String date)
+    {
+        date = date.replace("-", "/");
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy"); 
+        try 
+        {
+            return formato.parse(date);
+        }
+        catch (ParseException ex)
+        {
+            Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
     ////DD de MM de YYYY
     public static Date convertData(String date)
     {
@@ -547,7 +578,7 @@ public class Utils
                     
                     + ".combo-box-base .text\n"
                     + "{\n" 
-                    + "     -fx-fill: " + design.get(7) + ";\n" 
+                    + "     -fx-fill: black;\n" 
                     +"}\n\n"
                      /*       
                     + ".table-view .column-header .label \n"
@@ -729,6 +760,10 @@ public class Utils
                         node.setStyle("-fx-background-color: rgba(" + + cor.getRed() + "," + cor.getGreen() + 
                              "," + cor.getBlue() + "," + Double.parseDouble(design.get(10))/100 + ");" +
                             "-fx-background-radius:5px;");
+                    }
+                    else if(node instanceof JFXDatePicker)
+                    {
+                        node.setStyle("");
                     }
                     else if(node instanceof FontAwesomeIconView)
                     {   

@@ -122,6 +122,8 @@ public class TelaLoginController implements Initializable
         {
             tfUsuario.requestFocus();
         });
+        tfUsuario.setText("admin");
+        tfSenha.setText("admin");
     }    
 
     @FXML

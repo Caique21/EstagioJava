@@ -64,7 +64,7 @@
 
 .combo-box-base .text
 {
-     -fx-fill: #FAFAFA;
+     -fx-fill: black;
 }
 
 .table-view .column-header-background

@@ -28,6 +28,7 @@ public class Objeto
     private String param12;
     private String param13;
     private String param14;
+    private String param15;
     
     private ArrayList<Objeto>list1;
     private ArrayList<Objeto>list2;
@@ -381,5 +382,15 @@ public class Objeto
         if(this.list3 == null)
             this.list3 = new ArrayList<>();
         this.list3.add(obj);
+    }
+
+    public String getParam15()
+    {
+        return param15;
+    }
+
+    public void setParam15(String param15)
+    {
+        this.param15 = param15;
     }
 }

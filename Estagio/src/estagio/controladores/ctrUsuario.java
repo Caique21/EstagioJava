@@ -10,6 +10,7 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import estagio.entidades.Funcionario;
 import estagio.entidades.Usuario;
+import estagio.utilidades.Banco;
 import estagio.utilidades.Objeto;
 
 /**
@@ -37,6 +38,26 @@ public class ctrUsuario
     {
         return new Usuario(new Funcionario(), nome.getText(), senha.getText(), 
                 nivel.getSelectionModel().getSelectedItem()).salvar();
+    }
+    
+    public boolean salvar(String funcionario, String nivel)
+    {
+        Usuario usuario = new Usuario();
+        usuario.setFuncionario(new Funcionario(Banco.getCon().getMaxPK("funcionario", "func_codigo")));
+        usuario.setNome(funcionario.toLowerCase());
+        usuario.setNivel(nivel);
+        
+        usuario.setSenha(usuario.getNome().substring(0, 3));
+        if(usuario.getNome().contains(" "))
+        {
+            //3 primeiras letras do primeiro nome + 3 primeras letras do ultimo nome + numero de cadastro
+            usuario.setSenha(usuario.getSenha() + 
+                usuario.getNome().substring(usuario.getNome().lastIndexOf(" ") + 1, 
+                        usuario.getNome().lastIndexOf(" ") + 4));
+        }
+        usuario.setSenha(usuario.getSenha() + usuario.getFuncionario().getCodigo());
+        
+        return usuario.salvar();
     }
     
     public boolean alterar(int codigo,JFXTextField funcionario, JFXTextField nome, JFXPasswordField senha, JFXComboBox<String> nivel)

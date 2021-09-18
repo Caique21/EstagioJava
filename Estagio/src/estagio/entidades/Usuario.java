@@ -228,8 +228,8 @@ public class Usuario
 
     public boolean salvar()
     {
-        String sql = "INSERT INTO usuario (func_codigo,user_nome, user_senha, user_nivel,user_ativo) "
-                + "values ($1,'$2','$3',$4,$5)";
+        String sql = "INSERT INTO usuario (func_codigo,user_nome, user_senha, user_nivel, user_ativo) "
+                + "values ($1,'$2','$3','$4','$5')";
         
         sql = sql.replace("$1", String.valueOf(funcionario.getCodigo()));
         sql = sql.replace("$2", nome);
@@ -242,7 +242,7 @@ public class Usuario
     
     public boolean alterar()
     {
-        String sql = "UPDATE usuario SET func_codigo = $2, user_nome = '$3', user_senha = '$4', user_nivel = $5"
+        String sql = "UPDATE usuario SET func_codigo = $2, user_nome = '$3', user_senha = '$4', user_nivel = '$5'"
                 + " WHERE user_codigo = $1";
         
         sql = sql.replace("$1", String.valueOf(codigo));

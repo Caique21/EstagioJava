@@ -87,6 +87,42 @@ public class Funcionario
         this.endereco = endereco;
         this.vencimento = vencimento;
     }
+    
+    public Funcionario(int codigo, String nome, String cpf, String rg, String email, String funcao, Date data, Endereco endereco, Date vencimento)
+    {
+        this.codigo = codigo;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.rg = rg;
+        this.email = email;
+        this.funcao = funcao;
+        this.data = data;
+        this.endereco = endereco;
+        this.vencimento = vencimento;
+    }
+    
+    public Funcionario(String nome, String cpf, String rg, String email, String funcao, Date data, Endereco endereco)
+    {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.rg = rg;
+        this.email = email;
+        this.funcao = funcao;
+        this.data = data;
+        this.endereco = endereco;
+    }
+    
+    public Funcionario(int codigo, String nome, String cpf, String rg, String email, String funcao, Date data, Endereco endereco)
+    {
+        this.codigo = codigo;
+        this.nome = nome;
+        this.cpf = cpf;
+        this.rg = rg;
+        this.email = email;
+        this.funcao = funcao;
+        this.data = data;
+        this.endereco = endereco;
+    }
 
     public int getCodigo()
     {
@@ -287,7 +323,7 @@ public class Funcionario
                     new Endereco(rs.getInt("ender_codigo")),rs.getDate("func_vencimento_cnh"));
                 
                 rs2 = Banco.getCon().consultar("SELECT func_cnh_frente, func_cnh_verso FROM funcionario WHERE "
-                        + "func_codigo = " + this.codigo + " AND func_cnh_frente IS NOT NULL AND "
+                        + "func_codigo = " + funcionario.getCodigo() + " AND func_cnh_frente IS NOT NULL AND "
                                 + "func_cnh_verso IS NOT NULL");
                 if(rs2 != null && rs2.next())
                 {
@@ -306,10 +342,12 @@ public class Funcionario
 
     public Funcionario getByCpf(String cpf)
     {
-        return le(Banco.getCon().consultar("SELECT * FROM funcionario WHERE func_cpf = '" + cpf + "'")).get(0);
+        ArrayList<Funcionario>funcionarios = 
+                le(Banco.getCon().consultar("SELECT * FROM funcionario WHERE func_cpf = '" + cpf + "'"));
+        return funcionarios.isEmpty() ? null : funcionarios.get(0);
     }
 
-    public ArrayList<Funcionario> getByName(String nome, boolean b)
+    public ArrayList<Funcionario> getByName(String nome, boolean ativo)
     {
         return le(Banco.getCon().consultar("SELECT * FROM funcionario WHERE func_nome Ilike '%" + nome + "%' AND "
             + "func_ativo = '" + ativo + "'"));
@@ -337,6 +375,37 @@ public class Funcionario
         return Banco.getCon().manipular("UPDATE funcionario SET func_ativo = 'false' WHERE func_codigo = "
             + this.codigo);
     }
+    
+    public boolean salvar()
+    {
+        PreparedStatement statement;
+        try
+        {
+            boolean flag;
+            statement = Banco.getCon().getConnection().prepareStatement("INSERT INTO funcionario (func_nome,func_cpf,"
+                    + "func_rg,func_email,func_funcao,func_datacadastro,func_ativo,func_alteracao,ender_codigo,"
+                    + "func_vencimento_cnh) VALUES (?,?,?,?,?,?,?,?,?,?)");
+            statement.setString(1, this.nome);
+            statement.setString(2, this.cpf);
+            statement.setString(3, this.rg);
+            statement.setString(4, this.email);
+            statement.setString(5, this.funcao);
+            statement.setDate(6, (java.sql.Date) this.data);
+            statement.setBoolean(7, true);
+            statement.setTimestamp(8, new Timestamp(new java.util.Date().getTime()));
+            statement.setInt(9, this.endereco.getCodigo());
+            statement.setDate(10, (java.sql.Date) this.vencimento);
+
+            flag = statement.executeUpdate() == 1;
+            statement.close();
+            return flag;
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Funcionario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
 
     public boolean salvar(String frente, String verso)
     {
@@ -361,7 +430,7 @@ public class Funcionario
             statement.setString(5, this.funcao);
             statement.setDate(6, (java.sql.Date) this.data);
             statement.setBoolean(7, true);
-            statement.setTimestamp(8, this.alteracao);
+            statement.setTimestamp(8, new Timestamp(new java.util.Date().getTime()));
             statement.setInt(9, this.endereco.getCodigo());
             statement.setDate(10, (java.sql.Date) this.vencimento);
             statement.setBinaryStream(11, fGrande, (int) logoG.length());
@@ -385,46 +454,12 @@ public class Funcionario
         PreparedStatement statement = null;
 
         connection = Banco.getCon().getConnection();
-        //nome,fantasia,logoGrande,logoPequeno,email,razaoSocial
+        boolean flag;
         try
         {
-            if(frente !=null && verso !=null)
-            {
-                File arq = new File(frente);
-                File arq2 = new File(verso);
-                FileInputStream f = new FileInputStream(arq);
-                FileInputStream f2 = new FileInputStream(arq2);
-                statement = connection.prepareStatement("UPDATE funcionario SET func_nome = ?,func_cpf = ? ,"
-                    + "func_rg = ?, func_email = ?, func_funcao = ?, func_datacadastro = ?, func_alteracao = ?,"
-                    + "ender_codigo = ?, func_vencimento = ?, func_cnh_frente = ?, func_cnh_verso = ? "
-                    + "WHERE func_codigo = " + this.codigo);
-                statement.setBinaryStream(10, f, (int) arq.length());
-                statement.setBinaryStream(11, f2, (int) arq2.length());
-            }
-            else if(frente !=null)
-            {
-                File arq = new File(frente);
-                FileInputStream f = new FileInputStream(arq);
-                statement = connection.prepareStatement("UPDATE funcionario SET func_nome = ?,func_cpf = ? ,"
-                    + "func_rg = ?, func_email = ?, func_funcao = ?, func_datacadastro = ?, func_alteracao = ?,"
-                    + "ender_codigo = ?, func_vencimento = ?, func_cnh_frente = ? WHERE func_codigo = " + this.codigo);
-                statement.setBinaryStream(10, f, (int) arq.length());
-            }
-            else if(verso !=null)
-            {
-                File arq2 = new File(verso);
-                FileInputStream f2 = new FileInputStream(arq2);
-                statement = connection.prepareStatement("UPDATE funcionario SET func_nome = ?,func_cpf = ? ,"
-                    + "func_rg = ?, func_email = ?, func_funcao = ?, func_datacadastro = ?, func_alteracao = ?,"
-                    + "ender_codigo = ?, func_vencimento = ?, func_cnh_verso = ? WHERE func_codigo = " + this.codigo);
-                statement.setBinaryStream(10, f2, (int) arq2.length());
-            }
-            else
-            {
-                statement = connection.prepareStatement("UPDATE funcionario SET func_nome = ?,func_cpf = ? ,"
+            statement = connection.prepareStatement("UPDATE funcionario SET func_nome = ?,func_cpf = ? ,"
                     + "func_rg = ?, func_email = ?, func_funcao = ?, func_datacadastro = ?, func_alteracao = ?,"
                     + "ender_codigo = ?, func_vencimento = ? WHERE func_codigo = " + this.codigo);
-            }
 
             statement.setString(1, this.nome);
             statement.setString(2, this.cpf);
@@ -432,26 +467,114 @@ public class Funcionario
             statement.setString(4, this.email);
             statement.setString(5, this.funcao);
             statement.setDate(6, (java.sql.Date) this.data);
-            statement.setTimestamp(7, this.alteracao);
+            statement.setTimestamp(7, new Timestamp(new java.util.Date().getTime()));
             statement.setInt(8, this.endereco.getCodigo());
             statement.setDate(9, (java.sql.Date) this.vencimento);
             
             try
             {
-                statement.executeUpdate();
+                flag = statement.executeUpdate() == 1;
+                
+                if(!"atualizando".equals(frente))
+                    flag = flag && atualizaFrenteCNH(frente);
+                if(!"atualizando".equals(verso))
+                    flag = flag && atualizaVersoCNH(verso);
                 statement.close();
-                return true;
-
-            } catch (SQLException e)
+                return flag;
+            } 
+            catch (SQLException e)
             {
                 System.out.println(e);
             }
         }
-        catch (SQLException | FileNotFoundException ex)
+        catch (SQLException ex)
         {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
         return false;
+    }
+    
+    private boolean atualizaFrenteCNH(String caminho)
+    {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        connection = Banco.getCon().getConnection();
+        boolean flag = false;
+        try
+        {
+            File arq = new File(caminho);
+            FileInputStream f = new FileInputStream(arq);
+            statement = connection.prepareStatement("UPDATE funcionario SET func_cnh_frente = ? "
+                    + "WHERE func_codigo = " + this.codigo);
+            statement.setBinaryStream(10, f, (int) arq.length());
+            statement.executeUpdate();
+            flag = statement.executeUpdate() == 1;
+            statement.close();
+            return flag;
+        }
+        catch (SQLException | FileNotFoundException ex)
+        {
+            Logger.getLogger(Funcionario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return flag;   
+    }
+
+    public ByteArrayInputStream carregaFrente(int codigo)
+    {
+        ResultSet rs = Banco.getCon().consultar("SELECT func_cnh_frente FROM funcionario WHERE func_cnh_frente"
+             + " IS NOT NULL AND func_codigo = " + codigo);
+        try
+        {
+            if(rs != null && rs.next())
+                return new ByteArrayInputStream(rs.getBytes("func_cnh_frente"));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Parametrizacao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    private boolean atualizaVersoCNH(String caminho)
+    {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        connection = Banco.getCon().getConnection();
+        boolean flag = false;
+        try
+        {
+            File arq = new File(caminho);
+            FileInputStream f = new FileInputStream(arq);
+            statement = connection.prepareStatement("UPDATE funcionario SET func_cnh_verso = ? "
+                    + "WHERE func_codigo = " + this.codigo);
+            statement.setBinaryStream(10, f, (int) arq.length());
+            statement.executeUpdate();
+            flag = statement.executeUpdate() == 1;
+            statement.close();
+            return flag;
+        }
+        catch (SQLException | FileNotFoundException ex)
+        {
+            Logger.getLogger(Funcionario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return flag;   
+    }
+    
+    public ByteArrayInputStream carregaVerso(int codigo)
+    {
+        ResultSet rs = Banco.getCon().consultar("SELECT func_cnh_verso FROM funcionario WHERE func_cnh_verso"
+             + " IS NOT NULL AND func_codigo = " + codigo);
+        try
+        {
+            if(rs != null && rs.next())
+                return new ByteArrayInputStream(rs.getBytes("func_cnh_verso"));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Parametrizacao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 }
