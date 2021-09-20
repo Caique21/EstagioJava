@@ -135,4 +135,9 @@ public class Conexao
     {
         return connect;
     }
+
+    public void setErro(String erro)
+    {
+        this.erro = erro;
+    }
 }

@@ -329,4 +329,10 @@ public class Usuario
         return !ler(Banco.getCon().consultar("SELECT * FROM usuario WHERE user_nome = '" + nome + "'"
                 + " AND user_senha = '" + senha + "'")).isEmpty();
     }
+
+    public boolean inativar()
+    {
+        return funcionario != null? Banco.getCon().manipular("UPDATE usuario SET user_ativo = 'false' "
+            + "WHERE func_codigo = " + this.funcionario.getCodigo()) : false;
+    }
 }

@@ -178,15 +178,16 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="tfNomePesquisa" labelFloat="true" layoutX="79.0" layoutY="13.0" prefHeight="25.0" prefWidth="174.0" promptText="Digite o Nome para pesquisar" />
-                  <JFXTextField fx:id="tfCpfPesquisa" labelFloat="true" layoutX="65.0" layoutY="24.0" prefHeight="25.0" prefWidth="174.0" promptText="Digite o CPF para pesquisar" visible="false" />
-                  <HBox layoutX="280.0" layoutY="17.0" prefHeight="17.0" prefWidth="140.0" spacing="20.0">
+                  <JFXTextField fx:id="tfNomePesquisa" labelFloat="true" layoutX="79.0" layoutY="13.0" onKeyPressed="#keyPressedPesquisar" prefHeight="25.0" prefWidth="174.0" promptText="Digite o Nome para pesquisar" />
+                  <JFXTextField fx:id="tfCpfPesquisa" labelFloat="true" layoutX="79.0" layoutY="13.0" onKeyPressed="#keyPressedPesquisar" prefHeight="25.0" prefWidth="174.0" promptText="Digite o CPF para pesquisar" visible="false" />
+                  <HBox layoutX="266.0" layoutY="17.0" prefHeight="17.0" prefWidth="247.0" spacing="20.0">
                      <children>
-                        <JFXRadioButton fx:id="rbNome" text="Nome" />
-                        <JFXRadioButton fx:id="rbCPF" text="CPF" />
+                        <JFXRadioButton fx:id="rbTodos" onAction="#clickTodos" text="Listar Todos" />
+                        <JFXRadioButton fx:id="rbNome" onAction="#clickNome" text="Nome" />
+                        <JFXRadioButton fx:id="rbCPF" onAction="#clickCPF" text="CPF" />
                      </children>
                   </HBox>
-                  <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="435.0" layoutY="13.0" onAction="#clickPesquisar" onMouseEntered="#pesquisarEnter" onMouseExited="#pesquisarExit" text="PESQUISAR">
+                  <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="514.0" layoutY="13.0" onAction="#clickPesquisar" onMouseEntered="#pesquisarEnter" onMouseExited="#pesquisarExit" text="PESQUISAR">
                      <graphic>
                         <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
                      </graphic>
@@ -201,7 +202,7 @@
                         <TableColumn fx:id="tcVencimento" prefWidth="116.0" text="Vencimento CNH" />
                     </columns>
                   </TableView>
-                  <Label fx:id="lbAlteracao" layoutX="564.0" layoutY="16.0" text="Data da Última Alteração: ">
+                  <Label fx:id="lbAlteracao" layoutX="643.0" layoutY="16.0" text="Data da Última Alteração: ">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>

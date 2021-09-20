@@ -378,33 +378,21 @@ public class Funcionario
     
     public boolean salvar()
     {
-        PreparedStatement statement;
-        try
-        {
-            boolean flag;
-            statement = Banco.getCon().getConnection().prepareStatement("INSERT INTO funcionario (func_nome,func_cpf,"
+        String sql = "INSERT INTO funcionario (func_nome,func_cpf,"
                     + "func_rg,func_email,func_funcao,func_datacadastro,func_ativo,func_alteracao,ender_codigo,"
-                    + "func_vencimento_cnh) VALUES (?,?,?,?,?,?,?,?,?,?)");
-            statement.setString(1, this.nome);
-            statement.setString(2, this.cpf);
-            statement.setString(3, this.rg);
-            statement.setString(4, this.email);
-            statement.setString(5, this.funcao);
-            statement.setDate(6, (java.sql.Date) this.data);
-            statement.setBoolean(7, true);
-            statement.setTimestamp(8, new Timestamp(new java.util.Date().getTime()));
-            statement.setInt(9, this.endereco.getCodigo());
-            statement.setDate(10, (java.sql.Date) this.vencimento);
-
-            flag = statement.executeUpdate() == 1;
-            statement.close();
-            return flag;
-        }
-        catch (SQLException ex)
-        {
-            Logger.getLogger(Funcionario.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return false;
+                    + "func_vencimento_cnh) VALUES ('$1','$2','$3','$4','$5','$6','$7','$8',$9,'$10')";
+        sql = sql.replace("$10", String.valueOf((java.sql.Date) this.vencimento));
+        sql = sql.replace("$1", this.nome);
+        sql = sql.replace("$2", this.cpf);
+        sql = sql.replace("$3", this.rg);
+        sql = sql.replace("$4", this.email);
+        sql = sql.replace("$5", this.funcao);
+        sql = sql.replace("$6", String.valueOf(this.data));
+        sql = sql.replace("$7", String.valueOf(this.ativo));
+        sql = sql.replace("$8", String.valueOf(new Timestamp(new java.util.Date().getTime())));
+        sql = sql.replace("$9", String.valueOf(this.endereco.getCodigo()));
+        
+        return Banco.getCon().manipular(sql);
     }
 
     public boolean salvar(String frente, String verso)
@@ -442,10 +430,44 @@ public class Funcionario
         }
         catch (SQLException | FileNotFoundException ex)
         {
-            flag = false;
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
         }
-        return flag;
+        return false;
+    }
+    
+    public boolean alterar()
+    {
+        PreparedStatement statement = null;
+        boolean flag;
+        try
+        {
+            statement = Banco.getCon().getConnection().prepareStatement("UPDATE funcionario SET func_nome = ?,func_cpf = ? ,"
+                    + "func_rg = ?, func_email = ?, func_funcao = ?, func_datacadastro = ?, func_alteracao = ?,"
+                    + "ender_codigo = ?, func_vencimento_cnh = ?, func_cnh_frente = ?, func_cnh_verso = ? "
+                    + "WHERE func_codigo = " + this.codigo);
+            statement.setString(1, this.nome);
+            statement.setString(2, this.cpf);
+            statement.setString(3, this.rg);
+            statement.setString(4, this.email);
+            statement.setString(5, this.funcao);
+            statement.setDate(6, (java.sql.Date) this.data);
+            statement.setTimestamp(7, new Timestamp(new java.util.Date().getTime()));
+            statement.setInt(8, this.endereco.getCodigo());
+            statement.setDate(9, (java.sql.Date) this.vencimento);
+            statement.setBinaryStream(10, null, 0);
+            statement.setBinaryStream(11, null, 0);
+
+            flag = statement.executeUpdate() == 1;
+            statement.close();
+            return flag;
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Funcionario.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return false;
     }
 
     public boolean alterar(String frente, String verso)
@@ -457,9 +479,16 @@ public class Funcionario
         boolean flag;
         try
         {
+            File arq = new File(frente);
+            File arq2 = new File(verso);
+            FileInputStream f = new FileInputStream(arq);
+            FileInputStream f2 = new FileInputStream(arq2);
+            
             statement = connection.prepareStatement("UPDATE funcionario SET func_nome = ?,func_cpf = ? ,"
                     + "func_rg = ?, func_email = ?, func_funcao = ?, func_datacadastro = ?, func_alteracao = ?,"
-                    + "ender_codigo = ?, func_vencimento = ? WHERE func_codigo = " + this.codigo);
+                    + "ender_codigo = ?, func_vencimento_cnh = ?, func_cnh_frente = ?, func_cnh_verso = ? "
+                    + "WHERE func_codigo = " + this.codigo);
+            
 
             statement.setString(1, this.nome);
             statement.setString(2, this.cpf);
@@ -470,26 +499,25 @@ public class Funcionario
             statement.setTimestamp(7, new Timestamp(new java.util.Date().getTime()));
             statement.setInt(8, this.endereco.getCodigo());
             statement.setDate(9, (java.sql.Date) this.vencimento);
+            statement.setBinaryStream(10, f, (int) arq.length());
+            statement.setBinaryStream(11, f2, (int) arq2.length());
             
             try
             {
                 flag = statement.executeUpdate() == 1;
-                
-                if(!"atualizando".equals(frente))
-                    flag = flag && atualizaFrenteCNH(frente);
-                if(!"atualizando".equals(verso))
-                    flag = flag && atualizaVersoCNH(verso);
                 statement.close();
                 return flag;
             } 
             catch (SQLException e)
             {
                 System.out.println(e);
+                Banco.getCon().setErro(e.getMessage());
             }
         }
-        catch (SQLException ex)
+        catch (SQLException | FileNotFoundException ex)
         {
             Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
         }
         return false;
     }
@@ -507,7 +535,7 @@ public class Funcionario
             FileInputStream f = new FileInputStream(arq);
             statement = connection.prepareStatement("UPDATE funcionario SET func_cnh_frente = ? "
                     + "WHERE func_codigo = " + this.codigo);
-            statement.setBinaryStream(10, f, (int) arq.length());
+            statement.setBinaryStream(1, f, (int) arq.length());
             statement.executeUpdate();
             flag = statement.executeUpdate() == 1;
             statement.close();
@@ -549,7 +577,7 @@ public class Funcionario
             FileInputStream f = new FileInputStream(arq);
             statement = connection.prepareStatement("UPDATE funcionario SET func_cnh_verso = ? "
                     + "WHERE func_codigo = " + this.codigo);
-            statement.setBinaryStream(10, f, (int) arq.length());
+            statement.setBinaryStream(1, f, (int) arq.length());
             statement.executeUpdate();
             flag = statement.executeUpdate() == 1;
             statement.close();
@@ -576,5 +604,24 @@ public class Funcionario
             Logger.getLogger(Parametrizacao.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public ArrayList<String> getAllNames(String nome)
+    {
+        ArrayList<String>funcionarios = new ArrayList<>();
+        
+        ResultSet rs = Banco.getCon().consultar("SELECT func_nome FROM funcionario WHERE func_nome Ilike '%" + nome + "%' AND "
+            + "func_ativo = 'true'");
+        
+        try
+        {
+            while(rs != null && rs.next())            
+                funcionarios.add(rs.getString("func_nome"));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Funcionario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return funcionarios;
     }
 }

@@ -12,7 +12,6 @@ import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.TelaPrincipalController;
 import estagio.controladores.ctrEndereco;
@@ -24,18 +23,13 @@ import estagio.utilidades.Objeto;
 import estagio.utilidades.ToolTip;
 import estagio.utilidades.TooltippedTableCell;
 import estagio.utilidades.Utils;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -66,7 +60,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javax.imageio.ImageIO;
 import static json.Json.consultaCep;
 import org.controlsfx.control.PopOver;
 import org.json.JSONObject;
@@ -83,8 +76,8 @@ public class CadastroFuncionarioController implements Initializable
     private String frente;
     private String verso;
     
-    private ctrFuncionario ctrFunc = ctrFuncionario.instancia();
-    private ctrUsuario ctrUsu = ctrUsuario.instancia();
+    private final ctrFuncionario ctrFunc = ctrFuncionario.instancia();
+    private final ctrUsuario ctrUsu = ctrUsuario.instancia();
     private final ctrEndereco ctrEnder = ctrEndereco.instancia();
     
     private Objeto funcionario;
@@ -190,6 +183,8 @@ public class CadastroFuncionarioController implements Initializable
     private JFXRadioButton rbNome;
     @FXML
     private JFXRadioButton rbCPF;
+    @FXML
+    private JFXRadioButton rbTodos;
     @FXML
     private JFXButton btNovo;
     @FXML
@@ -383,6 +378,7 @@ public class CadastroFuncionarioController implements Initializable
         
         nodes.add(rbCPF);
         nodes.add(rbNome);
+        nodes.add(rbTodos);
         
         nodes.add(faCheck);
         nodes.add(faClose);
@@ -476,9 +472,9 @@ public class CadastroFuncionarioController implements Initializable
             }
         });
         
-        dpVencimento.valueProperty().addListener((observable, oldValue, newValue) ->
+        dpVencimento.getEditor().textProperty().addListener((observable, oldValue, newValue) ->
         {
-            if(newValue != null && newValue.compareTo(LocalDate.now()) <= 0)
+            if(!newValue.equals("") && dpVencimento.getValue().compareTo(LocalDate.now()) <= 0)
                 lbErroVencimento.setText("CNH vencida");
             else
                 lbErroVencimento.setText("");
@@ -663,7 +659,8 @@ public class CadastroFuncionarioController implements Initializable
         
         rbCPF.setToggleGroup(goup);
         rbNome.setToggleGroup(goup);
-        rbNome.setSelected(true);
+        rbTodos.setToggleGroup(goup);
+        rbTodos.setSelected(true);
         
         MaskFieldUtil.cepField(tfCEP);
         MaskFieldUtil.cpfField(tfCPF);
@@ -953,23 +950,38 @@ public class CadastroFuncionarioController implements Initializable
     @FXML
     private void clickRemover(ActionEvent event)
     {
+        Alert alerta;
         if(!tvFuncionarios.getItems().isEmpty() && tvFuncionarios.getSelectionModel().getFocusedIndex() >= 0)
         {
             funcionario = tvFuncionarios.getSelectionModel().getSelectedItem();
-            if(ctrFunc.inativar(Integer.parseInt(funcionario.getParam1())))
+            alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja remover funcionário " + funcionario.getParam2()
+                + "?", ButtonType.YES,ButtonType.NO);
+            alerta.showAndWait();
+            
+            if(alerta.getResult() == ButtonType.YES)
             {
-                new Alert(Alert.AlertType.INFORMATION, "Funcionário removido com sucesso!!!", ButtonType.OK).showAndWait();
-                inicializa();
+                if(ctrFunc.inativar(Integer.parseInt(funcionario.getParam1())))
+                {
+                    alerta = new Alert(Alert.AlertType.INFORMATION, "Funcionário removido com sucesso!!!", 
+                        ButtonType.OK);
+                    inicializa();
+                }
+                else
+                    alerta = new Alert(Alert.AlertType.ERROR, "Erro na remoção do funcionário", ButtonType.OK);
             }
-            else
-                new Alert(Alert.AlertType.ERROR, "Erro na remoção do funcionário", ButtonType.OK).showAndWait();
         }
         else if(tvFuncionarios.getItems().isEmpty())
-            new Alert(Alert.AlertType.ERROR, "Não há funcionários cadastrados para ser alterado", ButtonType.OK)
-                    .showAndWait();
+        {
+            alerta = new Alert(Alert.AlertType.ERROR, "Não há funcionários cadastrados para ser alterado", 
+                ButtonType.OK);
+            funcionario = null;
+        }
         else
-            new Alert(Alert.AlertType.ERROR, "Selecione um funcionário para ser alterado", ButtonType.OK)
-                    .showAndWait();
+        {
+            alerta = new Alert(Alert.AlertType.ERROR, "Selecione um funcionário para ser alterado", ButtonType.OK);
+            funcionario = null;
+        }
+        alerta.showAndWait();
     }
 
     @FXML
@@ -982,10 +994,10 @@ public class CadastroFuncionarioController implements Initializable
     private void clickPesquisar(ActionEvent event)
     {
         tvFuncionarios.getItems().clear();
+        if(rbTodos.isSelected())
+            tvFuncionarios.setItems(FXCollections.observableArrayList(ctrFunc.getByName("")));
         if(rbNome.isSelected())
-        {
             tvFuncionarios.setItems(FXCollections.observableArrayList(ctrFunc.getByName(tfNomePesquisa.getText())));
-        }
         else if(rbCPF.isSelected())
         {
             if(tfCpfPesquisa.getText().equals(""))
@@ -1008,6 +1020,8 @@ public class CadastroFuncionarioController implements Initializable
             endereco_pesquisado = my_obj;
             if(!my_obj.getString("tipo_logradouro").equals("") && !my_obj.getString("logradouro").equals(""))
                 tfRua.setText(my_obj.getString("tipo_logradouro") + " " + my_obj.getString("logradouro"));
+            else
+                tfRua.setText("");
             tfCidade.setText(my_obj.getString("cidade"));
             tfBairro.setText(my_obj.getString("bairro"));
             cbEstado.getSelectionModel().select(my_obj.getString("uf"));
@@ -1113,12 +1127,6 @@ public class CadastroFuncionarioController implements Initializable
                 alerta.showAndWait();
             }
         }
-        if(event.getClickCount() == 2 && !lvTelefones.getItems().isEmpty() 
-            && lvTelefones.getSelectionModel().getSelectedIndex() >= 0)
-        {
-            tfTelefone.setText(lvTelefones.getSelectionModel().getSelectedItem());
-            lvTelefones.getItems().remove(lvTelefones.getSelectionModel().getSelectedItem());
-        }
     }
 
     @FXML
@@ -1143,6 +1151,8 @@ public class CadastroFuncionarioController implements Initializable
         lbAlteracao.setText("Data da Última Alteração: " + funcionario.getParam9());
         if(!funcionario.getParam15().equals("CNH não cadastrada"))
             dpVencimento.setValue(Utils.convertToLocalDate(Utils.convertStringToDate(funcionario.getParam12())));
+        else
+            dpVencimento.getEditor().clear();
         
         if(funcionario.getParam13() != null && funcionario.getParam14() != null)
         {
@@ -1451,6 +1461,13 @@ public class CadastroFuncionarioController implements Initializable
             clickConfirmar(new ActionEvent());
     }
 
+    @FXML
+    private void keyPressedPesquisar(KeyEvent event)
+    {
+        if(event.getCode() == KeyCode.ENTER)
+            clickPesquisar(new ActionEvent());
+    }
+
     private void abrirCadastroUsuario()
     {
         try
@@ -1478,5 +1495,27 @@ public class CadastroFuncionarioController implements Initializable
             System.out.println(er.getMessage());
             a.showAndWait();
         }
+    }
+
+    @FXML
+    private void clickTodos(ActionEvent event)
+    {
+        clickPesquisar(new ActionEvent());
+    }
+
+    @FXML
+    private void clickNome(ActionEvent event)
+    {
+        tfNomePesquisa.setVisible(true);
+        tfCpfPesquisa.setVisible(false);
+        tfNomePesquisa.clear();
+    }
+
+    @FXML
+    private void clickCPF(ActionEvent event)
+    {
+        tfNomePesquisa.setVisible(false);
+        tfCpfPesquisa.setVisible(true);
+        tfCpfPesquisa.clear();
     }
 }

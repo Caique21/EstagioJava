@@ -12,6 +12,7 @@ import com.jfoenix.controls.JFXTextField;
 import estagio.entidades.Endereco;
 import estagio.entidades.Funcionario;
 import estagio.entidades.Telefone;
+import estagio.entidades.Usuario;
 import estagio.utilidades.Banco;
 import estagio.utilidades.Objeto;
 import estagio.utilidades.Utils;
@@ -180,12 +181,19 @@ public class ctrFuncionario
             endereco.existe();
         }
         
-        boolean flag = funcionario.alterar(frente, verso);
+        
+        boolean flag;
+        if(frente != null && !"atualizando".equals(frente) && verso != null && !"atualizando".equals(verso))
+            flag = funcionario.alterar(frente, verso);
+        else
+            flag = funcionario.alterar();
+        
         if(flag)
         {
             Banco.getCon().manipular("DELETE FROM telefone WHERE func_codigo = " + funcionario.getCodigo());
             for (int i = 0; i < telefones.getItems().size() && flag; i++)
-                flag = flag && new Telefone(telefones.getItems().get(i), funcionario).salvar();
+                flag = flag && new Telefone(telefones.getItems().get(i).replace("(", "").replace(")", "")
+                    .replace("-", ""), funcionario).salvar();
         }
         return flag;
     }
@@ -194,7 +202,7 @@ public class ctrFuncionario
     {
         Funcionario funcionario = new Funcionario();
         funcionario.setCodigo(codigo);
-        return funcionario.inativar();
+        return funcionario.inativar() && new Usuario(funcionario).inativar();
     }
 
     public BufferedImage carregaFrenteCNH(int codigo)
@@ -221,5 +229,10 @@ public class ctrFuncionario
             Logger.getLogger(ctrParametrizacao.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public ArrayList<String> getAllNames(String nome)
+    {
+        return new Funcionario().getAllNames(nome);
     }
 }
