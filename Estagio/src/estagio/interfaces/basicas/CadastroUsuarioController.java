@@ -12,27 +12,37 @@ import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import estagio.TelaPrincipalController;
 import estagio.controladores.ctrFuncionario;
 import estagio.controladores.ctrUsuario;
+import estagio.utilidades.Banco;
 import estagio.utilidades.Objeto;
+import estagio.utilidades.ToolTip;
 import estagio.utilidades.Utils;
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 /**
  * FXML Controller class
@@ -42,10 +52,15 @@ import javafx.scene.layout.Pane;
 public class CadastroUsuarioController implements Initializable
 {
     private int acao;
+    private Objeto usuario; 
     private ArrayList<String>funcionarios = new ArrayList<>();
+    JFXAutoCompletePopup<String> autoCompletePopup;
     
     private ctrFuncionario ctrFunc = ctrFuncionario.instancia();
     private ctrUsuario ctrUsu = ctrUsuario.instancia();
+    
+    private final Tooltip tooltip = new Tooltip();
+    private final ToggleGroup goup = new ToggleGroup();
 
     @FXML
     private BorderPane panePrincipal;
@@ -61,6 +76,8 @@ public class CadastroUsuarioController implements Initializable
     private Label lbPesquisa;
     @FXML
     private Label lbErroFuncionario;
+    @FXML
+    private Label lbErroUsuario;
     @FXML
     private Label lbErroNivel;
     @FXML
@@ -121,6 +138,8 @@ public class CadastroUsuarioController implements Initializable
     private FontAwesomeIconView faClose;
     @FXML
     private FontAwesomeIconView faSearch;
+    @FXML
+    private JFXRadioButton rbTodos;
 
     /**
      * Initializes the controller class.
@@ -128,6 +147,7 @@ public class CadastroUsuarioController implements Initializable
     private void inicializaLabels()
     {
         lbErroConfirmarSenha.setText("");
+        lbErroUsuario.setText("");
         lbErroFuncionario.setText("");
         lbErroNivel.setText("");
         lbErroSenha.setText("");
@@ -136,6 +156,7 @@ public class CadastroUsuarioController implements Initializable
     public void setEstado(Boolean b1,Boolean b2,Boolean b3,Boolean b4,Boolean b5,Boolean b6,Boolean b7)
     {
         paneInfo.setDisable(b1);
+        tfFuncionario.setDisable(b1);
         panePesquisa.setDisable(b2);
         btNovo.setDisable(b3);
         btConfirmar.setDisable(b4);
@@ -181,6 +202,7 @@ public class CadastroUsuarioController implements Initializable
         nodes.add(rbFuncionario);
         nodes.add(rbNivel);
         nodes.add(rbUsuario);
+        nodes.add(rbTodos);
         
         nodes.add(faCheck);
         nodes.add(faClose);
@@ -193,30 +215,18 @@ public class CadastroUsuarioController implements Initializable
         nodes.add(cbNivelPesquisa);
         
         Utils.setDesign(1, nodes);
+        lbErroConfirmarSenha.setStyle(lbErroConfirmarSenha.getStyle() + ";-fx-text-fill: red;");
+        lbErroFuncionario.setStyle(lbErroFuncionario.getStyle() + ";-fx-text-fill: red;");
+        lbErroNivel.setStyle(lbErroNivel.getStyle() + ";-fx-text-fill: red;");
+        lbErroSenha.setStyle(lbErroSenha.getStyle() + ";-fx-text-fill: red;");
         faSearch.setSize("18");
     }
     
-    private void inicializa()
+    private void setListeners()
     {
-        cbNivel.setDisable(false);
-        limparCampos();
-        inicializaLabels();
-        setEstado(true, false, false, true, true, true, true);
-    }
-    
-    @Override
-    public void initialize(URL url, ResourceBundle rb)
-    {
-        cbNivel.getItems().addAll("alto","medio","baixo");
-        inicializa();
-        
-        carregaDesign();
-        
-        funcionarios = ctrFunc.getAllNames("");
-        
-        JFXAutoCompletePopup<String> autoCompletePopup = new JFXAutoCompletePopup<>();
+        autoCompletePopup = new JFXAutoCompletePopup<>();
         autoCompletePopup.getSuggestions().add("Novo Funcionário");
-        autoCompletePopup.getSuggestions().addAll("");
+        autoCompletePopup.getSuggestions().addAll(funcionarios);
 
         autoCompletePopup.setSelectionHandler(event ->
         {
@@ -241,26 +251,19 @@ public class CadastroUsuarioController implements Initializable
             }
         });
         
+        tfFuncionario.focusedProperty().addListener((ov, oldV, newV) ->
+        {
+            if(newV)
+                autoCompletePopup.show(tfFuncionario);
+            else
+                autoCompletePopup.hide();
+        });
+        
         tfFuncionario.textProperty().addListener((observable, oldValue, newValue) ->
         {
-            if(funcionarios.contains(newValue))
+            if(tfFuncionario.getText().equals("Novo Funcionário"))
             {
-                if(acao == 0)
-                {
-                    Alert a = new Alert(Alert.AlertType.WARNING, "Funcionário já possui usuário cadastrado\n"
-                        + "Deseja selecionar funcionário para alteração/remoção?", ButtonType.YES,ButtonType.NO);
-                    a.showAndWait();
-                    
-                    if(a.getResult() == ButtonType.YES)
-                    {
-                        rbFuncionario.setSelected(true);
-                        tfFuncionarioPesquisa.setVisible(true);
-                        tfFuncionarioPesquisa.setText(tfFuncionario.getText());
-                        clickPesquisar(new ActionEvent());
-                    }
-                    else
-                        lbErroFuncionario.setText("Funcionário já possui usuário cadastrado");
-                }
+                //abrir janela
             }
         });
         
@@ -268,109 +271,371 @@ public class CadastroUsuarioController implements Initializable
         {
             if(!newValue)
             {
-                if(acao == 0)
-                    lbErroFuncionario.setText("Funcionário já possui usuário cadastrado");
+                if(!tfFuncionario.getText().trim().equals("") && !funcionarios.contains(tfFuncionario.getText()))
+                {
+                    Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Funcionário não cadastrado, deseja "
+                         + "cadastrar?", ButtonType.YES,ButtonType.NO);
+                    a.showAndWait();
+                    
+                    if(a.getResult() == ButtonType.YES)
+                    {
+                        //abrir janela
+                    }
+                    else
+                        tfFuncionario.clear();
+                }
                 else
-                    lbErroFuncionario.setText("");
+                {
+                    if(ctrUsu.getUsuarioByFuncionario(tfFuncionario.getText()) != null)
+                    {
+                        if(acao == 0)
+                            lbErroFuncionario.setText("Funcionário já possui usuário cadastrado");
+                    }
+                    else
+                        lbErroFuncionario.setText("");
+                }
             }
             else
                 lbErroFuncionario.setText("");
         });
+    }
+    
+    private void inicializa()
+    {
+        cbNivel.setDisable(false);
+        limparCampos();
+        inicializaLabels();
+        setEstado(true, false, false, true, true, true, true);
+        acao = -1;
+        usuario = null;
+        funcionarios = ctrFunc.getAllNames("");
+        clickPesquisar(new ActionEvent());
+        tfFuncionario.setDisable(false);
+    }
+    
+    @Override
+    public void initialize(URL url, ResourceBundle rb)
+    {
+        cbNivel.getItems().addAll("alto","medio","baixo");
+        cbNivelPesquisa.getItems().addAll("alto","medio","baixo");
+        rbFuncionario.setToggleGroup(goup);
+        rbNivel.setToggleGroup(goup);
+        rbTodos.setToggleGroup(goup);
+        rbUsuario.setToggleGroup(goup);
+        rbTodos.setSelected(true);
+        tcFuncionario.setCellValueFactory(new PropertyValueFactory<>("param7"));
+        tcNivel.setCellValueFactory(new PropertyValueFactory<>("param4"));
+        tcUsuario.setCellValueFactory(new PropertyValueFactory<>("param2"));
+        
+        inicializa();
+        
+        carregaDesign();
+        
+        setListeners();
+        
+        if(!TelaPrincipalController.usuario_logado.getParam4().equals("alto"))
+            Notifications.create()
+                .darkStyle()
+                //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
+                .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
+                .text("Usuário logado não possui permissão de alterar dados dos usuário além do seu próprio")
+                .showWarning();
+        
     }    
 
     @FXML
     private void clickNovo(ActionEvent event)
     {
+        inicializa();
+        acao = 0;
+        setEstado(false, true, true, false, true, true, false);
     }
 
     @FXML
     private void clickConfirmar(ActionEvent event)
     {
+        if(validaUsuario())
+        {
+            Alert alerta = null;
+            if(acao == 0 || acao == 2)
+            {
+                alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja cadastrar usuário " + tfUsuario.getText() + 
+                    "?", ButtonType.YES,ButtonType.NO);
+                alerta.showAndWait();
+                
+                if(alerta.getResult() == ButtonType.YES)
+                {
+                    if(ctrUsu.salvar(tfFuncionario, tfUsuario, tfSenha, cbNivel))
+                    {
+                        alerta = new Alert(Alert.AlertType.INFORMATION, "Usuário cadastrado com sucesso!!!", 
+                                ButtonType.YES);
+                        if(acao == 0)
+                            inicializa();
+                        else
+                        {
+                            Stage stage = (Stage) btConfirmar.getScene().getWindow();
+                            stage.close();
+                        }
+                    }
+                    else
+                        alerta = new Alert(Alert.AlertType.ERROR, "Erro no cadastro do usuário\n" + 
+                            Banco.getCon().getMensagemErro(), ButtonType.OK);
+                }
+            }
+            else if(acao == 1 && usuario != null)
+            {
+                alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja alterar usuário " + tfUsuario.getText() + 
+                    "?", ButtonType.YES,ButtonType.NO);
+                alerta.showAndWait();
+                
+                if(alerta.getResult() == ButtonType.YES)
+                {
+                    if(ctrUsu.alterar(Integer.parseInt(usuario.getParam1()), tfFuncionario, tfUsuario, tfSenha, cbNivel))
+                    {
+                        alerta = new Alert(Alert.AlertType.INFORMATION, "Usuário alterado com sucesso!!!", 
+                                ButtonType.YES);
+                        inicializa();
+                    }
+                    else
+                        alerta = new Alert(Alert.AlertType.ERROR, "Erro na alteração do usuário\n" + 
+                            Banco.getCon().getMensagemErro(), ButtonType.OK);
+                }
+            }
+            alerta.showAndWait();
+        }
+    }
+
+    private boolean validaUsuario()
+    {
+        String erros = "";
+        inicializaLabels();
+        
+        if(tfUsuario.getText().equals(""))
+        {
+            lbErroUsuario.setText("Campo requerido");
+            erros += "Usuário inválido\n";
+        }
+        
+        if(tfSenha.getText().equals(""))
+        {
+            lbErroSenha.setText("Campo requerido");
+            erros += "Senha inválido\n";
+        }
+        
+        if(tfConfirmarSenha.getText().equals(""))
+        {
+            lbErroConfirmarSenha.setText("Repita a senha");
+            erros += "Repita a senha\n";
+        }
+        
+        if(!tfSenha.getText().equals(tfConfirmarSenha.getText()))
+        {
+            lbErroConfirmarSenha.setText("Senha incorreta");
+            erros += "Repita a senha corretamente\n";
+        }
+        
+        if(cbNivel.getSelectionModel().getSelectedIndex() < 0)
+        {
+            lbErroNivel.setText("Selecione o nível");
+            erros += "Selecione o nível de acesso do usuário\n";
+        }
+        
+        if(tfFuncionario.getText().trim().equals(""))
+        {
+            lbErroFuncionario.setText("Campo requerido");
+            erros += "Digite o nome do Funcionário\n";
+        }
+        else if(!funcionarios.contains(tfFuncionario.getText()))
+        {
+            lbErroFuncionario.setText("Funcionário não cadastrado");
+            erros += "Funcionário não cadastrado\n";
+        }
+        else
+        {
+            if(acao == 0)
+            {
+                if(ctrUsu.getUsuarioByFuncionario(tfFuncionario.getText()) != null)
+                {
+                    lbErroFuncionario.setText("Funcionário já possui usuário cadastrado");
+                    erros += "Funcionário já possui usuário cadastrado\n";
+                }
+            }
+        }
+        
+        if(!erros.trim().equals(""))
+            new Alert(Alert.AlertType.ERROR, erros, ButtonType.OK).showAndWait();
+        
+        return erros.trim().equals("");
     }
 
     @FXML
     private void clickAlterar(ActionEvent event)
     {
+        if(!tvUsuarios.getItems().isEmpty() && tvUsuarios.getSelectionModel().getSelectedIndex() >= 0)
+        {
+            if(TelaPrincipalController.usuario_logado.getParam4().equals("alto") || 
+                TelaPrincipalController.usuario_logado.getParam2().equals(
+                    tvUsuarios.getSelectionModel().getSelectedItem().getParam2()))
+            {
+                setEstado(false, true, true, false, true, true, false);
+                acao = 1;
+                usuario = tvUsuarios.getSelectionModel().getSelectedItem();
+                tfFuncionario.setDisable(true);
+            }
+            else if(!TelaPrincipalController.usuario_logado.getParam2().equals(
+                    tvUsuarios.getSelectionModel().getSelectedItem().getParam2()))
+                new Alert(Alert.AlertType.ERROR, "Usuário não possui permissão para alterar este usuário", ButtonType.OK)
+                    .showAndWait();
+        }
     }
 
     @FXML
     private void clickRemover(ActionEvent event)
     {
+        if(!tvUsuarios.getItems().isEmpty() && tvUsuarios.getSelectionModel().getSelectedIndex() >= 0)
+        {
+            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja remover usuário " + tfUsuario.getText() + "?", 
+                ButtonType.YES,ButtonType.NO);
+            alerta.showAndWait();
+
+            if(alerta.getResult() == ButtonType.YES)
+            {
+                usuario = tvUsuarios.getSelectionModel().getSelectedItem();
+                if(ctrUsu.inativar(Integer.parseInt(usuario.getParam1())))
+                {
+                    new Alert(Alert.AlertType.INFORMATION, "Usuário removido com sucesso!!!", ButtonType.OK).showAndWait();
+                    inicializa();
+                }
+                else
+                    new Alert(Alert.AlertType.ERROR, "Erro na remoção do usário\n" + Banco.getCon().getMensagemErro(),
+                            ButtonType.OK).showAndWait();
+            }
+        }
     }
 
     @FXML
     private void clickCancelar(ActionEvent event)
     {
+        inicializa();
     }
 
     @FXML
     private void clickPesquisar(ActionEvent event)
     {
+        tvUsuarios.getItems().clear();
+        if(rbTodos.isSelected())
+            tvUsuarios.setItems(FXCollections.observableArrayList(ctrUsu.getAll()));
+        else if(rbFuncionario.isSelected())
+            tvUsuarios.setItems(FXCollections.observableArrayList(ctrUsu.getByFuncionario(tfFuncionarioPesquisa.getText())));
+        else if(rbUsuario.isSelected())
+            tvUsuarios.setItems(FXCollections.observableArrayList(ctrUsu.getByName(tfUsuarioPesquisa.getText())));
+        else
+            tvUsuarios.setItems(FXCollections.observableArrayList(ctrUsu.getByNivel(cbNivelPesquisa.getSelectionModel().getSelectedItem())));
     }
 
     @FXML
     private void selecionaUsuario(MouseEvent event)
     {
+        if(!tvUsuarios.getItems().isEmpty() && tvUsuarios.getSelectionModel().getFocusedIndex() >= 0)
+        {
+            fillFields(tvUsuarios.getSelectionModel().getSelectedItem());
+            setEstado(true, false, false, true, false, false, false);
+        }
+    }
+
+    private void fillFields(Objeto user)
+    {
+        if(user != null)
+        {
+            tfUsuario.setText(user.getParam2());
+            cbNivel.getSelectionModel().select(user.getParam4());
+            tfFuncionario.setText(ctrFunc.getNameByCode(Integer.parseInt(user.getParam6())));
+            autoCompletePopup.hide();
+        }
     }
 
     @FXML
     private void novoExit(MouseEvent event)
     {
+        btNovo.setStyle(btNovo.getStyle() + ";-fx-cursor: default;");
     }
 
     @FXML
     private void novoEnter(MouseEvent event)
     {
+        btNovo.setStyle(btNovo.getStyle() + ";-fx-cursor: hand;");
+        tooltip.setText("Iniciar Novo Cadastro");
+        ToolTip.bindTooltip(btNovo, tooltip);
     }
 
     @FXML
     private void confirmarExit(MouseEvent event)
     {
+        btConfirmar.setStyle(btConfirmar.getStyle() + ";-fx-cursor: default;");
     }
 
     @FXML
     private void confirmarEnter(MouseEvent event)
     {
+        btConfirmar.setStyle(btConfirmar.getStyle() + ";-fx-cursor: hand;");
+        tooltip.setText("Confirmar Ação");
+        ToolTip.bindTooltip(btConfirmar, tooltip);
     }
 
     @FXML
     private void alterarExit(MouseEvent event)
     {
+        btAlterar.setStyle(btAlterar.getStyle() + ";-fx-cursor: default;");
     }
 
     @FXML
     private void alterarEnter(MouseEvent event)
     {
+        btAlterar.setStyle("-fx-cursor: hand;" + btAlterar.getStyle());
+        tooltip.setText("Alterar Usuário");
+        ToolTip.bindTooltip(btAlterar, tooltip);
     }
-
+    
     @FXML
     private void removerExit(MouseEvent event)
     {
+        btRemover.setStyle("-fx-cursor: default;" + btRemover.getStyle());
     }
 
     @FXML
     private void removerEnter(MouseEvent event)
     {
+        btRemover.setStyle("-fx-cursor: hand;" + btRemover.getStyle());
+        tooltip.setText("Remover Usuário");
+        ToolTip.bindTooltip(btRemover, tooltip);
     }
 
     @FXML
     private void cancelarExit(MouseEvent event)
     {
+        btCancelar.setStyle("-fx-cursor: default;" + btCancelar.getStyle());
     }
 
     @FXML
     private void cancelarEnter(MouseEvent event)
     {
+        btCancelar.setStyle("-fx-cursor: hand;" + btCancelar.getStyle());
+        tooltip.setText("Cancelar Ação");
+        ToolTip.bindTooltip(btCancelar, tooltip);
     }
 
     @FXML
     private void pesquisarExit(MouseEvent event)
     {
+        btPesquisar.setStyle("-fx-cursor: default;" + btPesquisar.getStyle());
     }
 
     @FXML
     private void pesquisarEnter(MouseEvent event)
     {
+        btPesquisar.setStyle("-fx-cursor: hand;" + btPesquisar.getStyle());
+        tooltip.setText("Buscar Usuário");
+        ToolTip.bindTooltip(btPesquisar, tooltip);
     }
 
     void setFuncionario(String nome,String nivel)
@@ -380,6 +645,38 @@ public class CadastroUsuarioController implements Initializable
         cbNivel.getSelectionModel().select(nivel);
         cbNivel.setDisable(true);
         acao = 2;
+    }
+
+    @FXML
+    private void clickTodos(ActionEvent event)
+    {
+        clickPesquisar(new ActionEvent());
+    }
+
+    @FXML
+    private void clickFuncionarioRadio(ActionEvent event)
+    {
+        tfFuncionarioPesquisa.setVisible(true);
+        tfFuncionarioPesquisa.clear();
+        tfUsuarioPesquisa.setVisible(false);
+        cbNivelPesquisa.setVisible(false);
+    }
+
+    @FXML
+    private void clickUsuarioRadio(ActionEvent event)
+    {
+        tfFuncionarioPesquisa.setVisible(false);
+        tfUsuarioPesquisa.clear();
+        tfUsuarioPesquisa.setVisible(true);
+        cbNivelPesquisa.setVisible(false);
+    }
+
+    @FXML
+    private void clickNivelRadio(ActionEvent event)
+    {
+        tfFuncionarioPesquisa.setVisible(false);
+        tfUsuarioPesquisa.setVisible(false);
+        cbNivelPesquisa.setVisible(true);
     }
     
 }

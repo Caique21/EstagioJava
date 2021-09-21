@@ -335,4 +335,21 @@ public class Usuario
         return funcionario != null? Banco.getCon().manipular("UPDATE usuario SET user_ativo = 'false' "
             + "WHERE func_codigo = " + this.funcionario.getCodigo()) : false;
     }
+
+    public ArrayList<Usuario> getAll()
+    {
+        return ler(Banco.getCon().consultar("SELECT * FROM usuario WHERE user_nome <> 'admin'"));
+    }
+
+    public ArrayList<Usuario> getByName(String nome)
+    {
+        return ler(Banco.getCon().consultar("SELECT * FROM usuario WHERE user_nome Ilike '%" + nome + "%' "
+            + "AND user_nome <> 'admin'"));
+    }
+
+    public ArrayList<Usuario> getByNivel(String nivel)
+    {
+        return ler(Banco.getCon().consultar("SELECT * FROM usuario WHERE user_nivel = '" + nivel + "'"
+            + " AND user_nome <> 'admin'"));
+    }
 }

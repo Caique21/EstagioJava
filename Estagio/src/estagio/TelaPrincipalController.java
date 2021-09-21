@@ -7,6 +7,7 @@ package estagio;
  */
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDecorator;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.controladores.ctrAcesso;
 import estagio.controladores.ctrParametrizacao;
@@ -36,6 +37,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -196,7 +198,7 @@ public class TelaPrincipalController implements Initializable
          + " de " + LocalDate.now().getYear());
         
         inicializaHora();
-        lbUsuario.setText(lbUsuario.getText() + usuario_logado.getParam2());  
+        lbUsuario.setText(lbUsuario.getText() + usuario_logado.getParam3());  
         //VERIFICAR SE DATA É ULTIMA DO MES PARA GERAR CONTAS A PAGAR DAS DESPESAS
         
         if(!usuario_logado.getParam4().equals("alto"))
@@ -369,6 +371,38 @@ public class TelaPrincipalController implements Initializable
     @FXML
     private void clickLogout(MouseEvent event)
     {
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Deseja voltar para tela de Login?", ButtonType.YES,ButtonType.NO);
+        a.showAndWait();
+        
+        if(a.getResult() == ButtonType.YES)
+        {
+            timerThread.stop();
+            ctr_acessos.salvar(TelaPrincipalController.data_login,new Timestamp(new java.util.Date().getTime()), 
+                                TelaPrincipalController.usuario_logado);
+            
+            Stage stage = (Stage) btFinancas.getScene().getWindow();
+            stage.close();
+            
+            stage = new Stage();
+            Parent root;
+            try 
+            {
+                root = FXMLLoader.load(getClass().getResource("/estagio/TelaLogin.fxml"));
+                JFXDecorator decorator = new JFXDecorator(stage , root);
+                decorator.setStyle("-fx-decorator-color: #040921;");
+
+                Scene scene = new Scene(decorator);
+
+                stage.setScene(scene);
+                stage.setTitle("Login");
+
+                stage.show();
+            }
+            catch (IOException ex) 
+            {
+                Logger.getLogger(TelaPrincipalController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     @FXML

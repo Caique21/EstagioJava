@@ -235,4 +235,9 @@ public class ctrFuncionario
     {
         return new Funcionario().getAllNames(nome);
     }
+
+    public String getNameByCode(int codigo)
+    {
+        return new Funcionario(codigo).getNome();
+    }
 }

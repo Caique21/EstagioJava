@@ -12,6 +12,7 @@ import estagio.entidades.Funcionario;
 import estagio.entidades.Usuario;
 import estagio.utilidades.Banco;
 import estagio.utilidades.Objeto;
+import java.util.ArrayList;
 
 /**
  *
@@ -36,7 +37,7 @@ public class ctrUsuario
     
     public boolean salvar(JFXTextField funcionario, JFXTextField nome, JFXPasswordField senha, JFXComboBox<String> nivel)
     {
-        return new Usuario(new Funcionario(), nome.getText(), senha.getText(), 
+        return new Usuario(new Funcionario(funcionario.getText()), nome.getText(), senha.getText(), 
                 nivel.getSelectionModel().getSelectedItem()).salvar();
     }
     
@@ -62,7 +63,7 @@ public class ctrUsuario
     
     public boolean alterar(int codigo,JFXTextField funcionario, JFXTextField nome, JFXPasswordField senha, JFXComboBox<String> nivel)
     {
-        return new Usuario(codigo,new Funcionario(), nome.getText(), senha.getText(), 
+        return new Usuario(codigo,new Funcionario(funcionario.getText()), nome.getText(), senha.getText(), 
                 nivel.getSelectionModel().getSelectedItem()).alterar();
     }
     
@@ -101,5 +102,76 @@ public class ctrUsuario
             return new Objeto(String.valueOf(usuario.getCodigo()), usuario.getNome(), usuario.getSenha(), 
                         usuario.getNivel(),String.valueOf(usuario.isAtivo()));
         }
+    }
+
+    public Objeto getUsuarioByFuncionario(String nome)
+    {
+        Funcionario funcionario = new Funcionario(nome);
+        Usuario usuario = new Usuario(funcionario);
+        if(usuario != null && usuario.getCodigo() > 0)
+            return convertToObjeto(usuario);
+        return null;
+    }
+
+    public ArrayList<Objeto> getAll()
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        ArrayList<Usuario>usuarios = new Usuario().getAll();
+        
+        for(Usuario u : usuarios)
+            if(u.isAtivo())
+                ret.add(convertToObjeto(u));
+        return ret;
+    }
+
+    public ArrayList<Objeto> getByFuncionario(String funcionario)
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        ArrayList<Funcionario> funcionarios = new Funcionario().getByName(funcionario, true);
+        
+        for(Funcionario f : funcionarios)
+            if(f.isAtivo())
+                ret.add(convertToObjeto(new Usuario(f)));
+        return ret;
+    }
+
+    public ArrayList<Objeto> getByName(String nome)
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        ArrayList<Usuario>usuarios = new Usuario().getByName(nome);
+        
+        for(Usuario u : usuarios)
+            if(u.isAtivo())
+                ret.add(convertToObjeto(u));
+        return ret;
+    }
+
+    public ArrayList<Objeto> getByNivel(String nivel)
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        ArrayList<Usuario>usuarios = new Usuario().getByNivel(nivel);
+        
+        for(Usuario u : usuarios)
+            if(u.isAtivo())
+                ret.add(convertToObjeto(u));
+        return ret;
+    }
+
+    private Objeto convertToObjeto(Usuario u)
+    {
+        Objeto o = new Objeto();
+        o.setParam1(String.valueOf(u.getCodigo()));
+        o.setParam2(u.getNome());
+        o.setParam3(u.getSenha());
+        o.setParam4(u.getNivel());
+        o.setParam5(String.valueOf(u.isAtivo()));
+        o.setParam6(String.valueOf(u.getFuncionario().getCodigo()));
+        o.setParam7(String.valueOf(u.getFuncionario().getNome()));
+        return o;
+    }
+
+    public boolean inativar(int codigo)
+    {
+        return new Usuario(codigo).inativar();
     }
 }

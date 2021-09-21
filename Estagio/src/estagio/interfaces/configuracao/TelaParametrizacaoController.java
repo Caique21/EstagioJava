@@ -624,8 +624,8 @@ public class TelaParametrizacaoController implements Initializable
         
         if(alerta.getResult() == ButtonType.YES)
         {
-                Stage stage = (Stage) painel_central.getScene().getWindow();
-                stage.close();
+            Stage stage = (Stage) painel_central.getScene().getWindow();
+            stage.close();
         }
     }
 

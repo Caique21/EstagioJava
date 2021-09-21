@@ -144,7 +144,7 @@ public class TelaLoginController implements Initializable
             if(ctr.matchPassword(tfUsuario.getText(), tfSenha.getText()))//senha bate
             {
                 alert = null;
-                TelaPrincipalController.usuario_logado = ctr.get(tfUsuario.getText(),tfSenha.getText());;
+                TelaPrincipalController.usuario_logado = ctr.get(tfUsuario.getText(),tfSenha.getText());
                 TelaPrincipalController.data_login = new Timestamp(new java.util.Date().getTime());
                 abrirTela();
             }

@@ -147,12 +147,18 @@ public class TelaGerenciamentoController implements Initializable
     {
         try
         {
-            Stage stage = (Stage) panePrincipal.getScene().getWindow();
-            stage.setResizable(false);
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/basicas/CadastroUsuario.fxml"));
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            JFXDecorator decorator = new JFXDecorator(stage, root);
 
-            Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/basicas/CadastroUsuario.fxml"));
-            panePrincipal.getChildren().clear();
-            panePrincipal.getChildren().add(root);
+            decorator.setStyle("-fx-decorator-color: #040921;");
+
+            Scene scene = new Scene(decorator);
+            stage.setTitle("Cadastro de Usuários");
+            stage.setScene(scene);
+            //stage.setAlwaysOnTop(true);
+            stage.showAndWait();
         }
         catch (IOException er)
         {
