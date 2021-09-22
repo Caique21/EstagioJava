@@ -8,6 +8,7 @@ package estagio.interfaces.basicas;
 import com.jfoenix.controls.JFXAutoCompletePopup;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
@@ -15,20 +16,28 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.TelaPrincipalController;
 import estagio.controladores.ctrFuncionario;
 import estagio.controladores.ctrUsuario;
+import estagio.interfaces.TelaGerenciamentoController;
 import estagio.utilidades.Banco;
 import estagio.utilidades.Objeto;
 import estagio.utilidades.ToolTip;
 import estagio.utilidades.Utils;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -259,11 +268,24 @@ public class CadastroUsuarioController implements Initializable
                 autoCompletePopup.hide();
         });
         
+        tfFuncionario.setOnMouseClicked((event) ->
+        {
+            if(!autoCompletePopup.isShowing())
+                autoCompletePopup.show(tfFuncionario);
+        });
+        
         tfFuncionario.textProperty().addListener((observable, oldValue, newValue) ->
         {
             if(tfFuncionario.getText().equals("Novo Funcionário"))
             {
-                //abrir janela
+                 Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Cadastrar novo Funcionário?", 
+                    ButtonType.YES,ButtonType.NO);
+                a.showAndWait();
+                
+                if(a.getResult() == ButtonType.YES)
+                    abrirCadastroFuncionario();
+                else
+                    tfFuncionario.clear();
             }
         });
         
@@ -271,7 +293,8 @@ public class CadastroUsuarioController implements Initializable
         {
             if(!newValue)
             {
-                if(!tfFuncionario.getText().trim().equals("") && !funcionarios.contains(tfFuncionario.getText()))
+                if(!tfFuncionario.getText().trim().equals("") && !funcionarios.contains(tfFuncionario.getText())
+                        && !tfFuncionario.getText().equals("Novo Funcionário"))
                 {
                     Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Funcionário não cadastrado, deseja "
                          + "cadastrar?", ButtonType.YES,ButtonType.NO);
@@ -279,7 +302,7 @@ public class CadastroUsuarioController implements Initializable
                     
                     if(a.getResult() == ButtonType.YES)
                     {
-                        //abrir janela
+                        abrirCadastroFuncionario(tfFuncionario.getText());
                     }
                     else
                         tfFuncionario.clear();
@@ -678,5 +701,28 @@ public class CadastroUsuarioController implements Initializable
         tfUsuarioPesquisa.setVisible(false);
         cbNivelPesquisa.setVisible(true);
     }
-    
+
+    private void abrirCadastroFuncionario(String... nome)
+    {
+        Stage stage = (Stage) btAlterar.getScene().getWindow();
+        stage.close();
+
+        try
+        {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/estagio/TelaPrincipal.fxml"));
+            Parent root = (Parent) loader.load();
+            // as soon as the load() method has been invoked, the scene graph and the 
+            // controller instance are availlable:
+            TelaPrincipalController controller = loader.getController();
+            if(nome.length == 1)
+                controller.abrirTela("/estagio/interfaces/basicas/CadastroFuncionario.fxml",nome[0]);
+            else
+                controller.abrirTela("/estagio/interfaces/basicas/CadastroFuncionario.fxml");
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(CadastroUsuarioController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

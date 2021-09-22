@@ -36,7 +36,6 @@ import javafx.stage.Stage;
  */
 public class TelaGerenciamentoController implements Initializable
 {
-
     @FXML
     private Pane folderClientes;
     @FXML

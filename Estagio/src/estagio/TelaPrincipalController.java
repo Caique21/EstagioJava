@@ -11,6 +11,7 @@ import com.jfoenix.controls.JFXDecorator;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.controladores.ctrAcesso;
 import estagio.controladores.ctrParametrizacao;
+import estagio.interfaces.basicas.CadastroFuncionarioController;
 import estagio.utilidades.Banco;
 import estagio.utilidades.Objeto;
 import estagio.utilidades.Utils;
@@ -67,6 +68,7 @@ public class TelaPrincipalController implements Initializable
     private final ctrParametrizacao ctr_para = ctrParametrizacao.instancia();
     public static Image logo;
     public static Rectangle2D screenBounds;
+    public static VBox central;
     
     @FXML
     private BorderPane painelPrincipal;
@@ -242,6 +244,11 @@ public class TelaPrincipalController implements Initializable
         {
             Logger.getLogger(TelaPrincipalController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        Platform.runLater(() ->
+        {
+            central = painelCentral;
+            central.getScene();
+        });
         
     }    
 
@@ -288,6 +295,7 @@ public class TelaPrincipalController implements Initializable
             Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/configuracao/TelaConfiguracoes.fxml"));
             painelCentral.getChildren().clear();
             painelCentral.getChildren().add(root);
+            central = painelCentral;
         }
         catch (IOException er)
         {
@@ -314,6 +322,7 @@ public class TelaPrincipalController implements Initializable
             Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/TelaGerenciamento.fxml"));
             painelCentral.getChildren().clear();
             painelCentral.getChildren().add(root);
+            central = painelCentral;
         }
         catch (IOException er)
         {
@@ -334,6 +343,7 @@ public class TelaPrincipalController implements Initializable
             Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/fundamentais/TelaTransporte.fxml"));
             painelCentral.getChildren().clear();
             painelCentral.getChildren().add(root);
+            central = painelCentral;
         }
         catch (IOException er)
         {
@@ -354,6 +364,7 @@ public class TelaPrincipalController implements Initializable
             Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/TelaFinancas.fxml"));
             painelCentral.getChildren().clear();
             painelCentral.getChildren().add(root);
+            central = painelCentral;
         }
         catch (IOException er)
         {
@@ -487,5 +498,35 @@ public class TelaPrincipalController implements Initializable
     private void configEnter(MouseEvent event)
     {
         btConfig.setStyle(btConfig.getStyle() + ";-fx-cursor: hand;");
+    }
+    
+    public void abrirTela(String caminho,String... param)
+    {
+        try
+        {
+            Stage stage = (Stage) central.getScene().getWindow();
+            stage.setResizable(false);
+            
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(caminho));  
+            Parent root = (Parent) fxmlLoader.load();
+            
+            if(caminho.contains("CadastroFuncionario"))
+            {
+                if(param.length == 1)
+                {
+                    CadastroFuncionarioController controller = fxmlLoader.getController();
+                    controller.setNome(param[0]);
+                }
+            }
+            
+            central.getChildren().clear();
+            central.getChildren().add(root);
+        }
+        catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Dashboard!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
+            a.showAndWait();
+            System.out.println(er.getMessage());
+        }
     }
 }

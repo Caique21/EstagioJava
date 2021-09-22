@@ -23,6 +23,8 @@ import estagio.utilidades.Objeto;
 import estagio.utilidades.ToolTip;
 import estagio.utilidades.TooltippedTableCell;
 import estagio.utilidades.Utils;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -75,6 +77,9 @@ public class CadastroFuncionarioController implements Initializable
     private String nivel;
     private String frente;
     private String verso;
+    public String nome;
+
+    public static final String PROP_NOME = "nome";
     
     private final ctrFuncionario ctrFunc = ctrFuncionario.instancia();
     private final ctrUsuario ctrUsu = ctrUsuario.instancia();
@@ -117,6 +122,8 @@ public class CadastroFuncionarioController implements Initializable
     private Label lbTelefone;
     @FXML
     private Label lbAlteracao;
+    @FXML
+    private Label lbPesquisa;
     @FXML
     private Label lbErroNome;
     @FXML
@@ -202,6 +209,10 @@ public class CadastroFuncionarioController implements Initializable
     @FXML
     private JFXButton btPesquisar;
     @FXML
+    private JFXButton btPesquisarCEP;
+    @FXML
+    private JFXButton btRemover;
+    @FXML
     private FontAwesomeIconView faPlus;
     @FXML
     private FontAwesomeIconView faCheck;
@@ -217,6 +228,8 @@ public class CadastroFuncionarioController implements Initializable
     private FontAwesomeIconView faSearchCEP;
     @FXML
     private FontAwesomeIconView faSearch;
+    @FXML
+    private FontAwesomeIconView faClean;
     @FXML
     private ImageView imgFrente;
     @FXML
@@ -240,7 +253,7 @@ public class CadastroFuncionarioController implements Initializable
     @FXML
     private VBox painelCentral;
     @FXML
-    private Label lbPesquisa;
+    private HBox hb;
     @FXML
     private TableView<Objeto> tvFuncionarios;
     @FXML
@@ -256,15 +269,7 @@ public class CadastroFuncionarioController implements Initializable
     @FXML
     private TableColumn<Objeto, String> tcVencimento;
     @FXML
-    private HBox hb;
-    @FXML
-    private JFXButton btPesquisarCEP;
-    @FXML
-    private JFXButton btRemover;
-    @FXML
     private JFXListView<String> lvTelefones;
-    @FXML
-    private FontAwesomeIconView faClean;
 
     /**
      * Initializes the controller class.
@@ -638,6 +643,8 @@ public class CadastroFuncionarioController implements Initializable
         lvTelefones.getItems().clear();
         funcionario = null;
     }
+
+
     
     @Override
     public void initialize(URL url, ResourceBundle rb)
@@ -1518,4 +1525,51 @@ public class CadastroFuncionarioController implements Initializable
         tfCpfPesquisa.setVisible(true);
         tfCpfPesquisa.clear();
     }
+
+        /**
+     * Get the value of nome
+     *
+     * @return the value of nome
+     */
+    public String getNome()
+    {
+        return nome;
+    }
+
+    /**
+     * Set the value of nome
+     *
+     * @param nome new value of nome
+     */
+    public void setNome(String nome)
+    {
+        clickNovo(new ActionEvent());
+        String oldNome = this.nome;
+        this.nome = nome;
+        propertyChangeSupport.firePropertyChange(PROP_NOME, oldNome, nome);
+        tfNome.setText(nome);
+    }
+
+    private transient final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+
+    /**
+     * Add PropertyChangeListener.
+     *
+     * @param listener
+     */
+    public void addPropertyChangeListener(PropertyChangeListener listener)
+    {
+        propertyChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    /**
+     * Remove PropertyChangeListener.
+     *
+     * @param listener
+     */
+    public void removePropertyChangeListener(PropertyChangeListener listener)
+    {
+        propertyChangeSupport.removePropertyChangeListener(listener);
+    }
+
 }
