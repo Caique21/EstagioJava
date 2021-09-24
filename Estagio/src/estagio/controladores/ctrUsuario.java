@@ -99,7 +99,7 @@ public class ctrUsuario
                     String.valueOf(usuario.getFuncionario().getCodigo()),usuario.getNome(), usuario.getSenha(), 
                         usuario.getNivel(),String.valueOf(usuario.isAtivo()));
             
-            return new Objeto(String.valueOf(usuario.getCodigo()), usuario.getNome(), usuario.getSenha(), 
+            return new Objeto(String.valueOf(usuario.getCodigo()),"", usuario.getNome(), usuario.getSenha(), 
                         usuario.getNivel(),String.valueOf(usuario.isAtivo()));
         }
     }
@@ -173,5 +173,11 @@ public class ctrUsuario
     public boolean inativar(int codigo)
     {
         return new Usuario(codigo).inativar();
+    }
+
+   public Objeto get(int codigo)
+    {
+        Usuario usuario = new Usuario(codigo);
+        return usuario.getCodigo() > 1? convertToObjeto(usuario) : null;
     }
 }

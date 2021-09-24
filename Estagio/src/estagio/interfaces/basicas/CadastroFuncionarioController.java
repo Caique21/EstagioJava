@@ -28,6 +28,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import static json.Json.consultaCep;
+import org.controlsfx.control.Notifications;
 import org.controlsfx.control.PopOver;
 import org.json.JSONObject;
 
@@ -453,10 +456,11 @@ public class CadastroFuncionarioController implements Initializable
         
         tfCPF.textProperty().addListener((observable, oldValue, newValue) ->
         {
-            if(tfCPF.getText().length() == 14)
+            lbErroCPF.setText(Utils.validadorCPF2(tfCPF.getText(), funcionario, "funcionario"));
+            /*if(tfCPF.getText().length() == 14)
                 lbErroCPF.setText(validarCPF());
             else
-                lbErroCPF.setText("");
+                lbErroCPF.setText("");*/
         });
         
         tfCPF.focusedProperty().addListener((observable, oldValue, newValue) ->
@@ -464,14 +468,16 @@ public class CadastroFuncionarioController implements Initializable
             if(!newValue)
             {
                 if(tfCPF.getText().length() == 14)
-                    lbErroCPF.setText(validarCPF());
+                    //lbErroCPF.setText(validarCPF());
+                    lbErroCPF.setText(Utils.validadorCPF2(tfCPF.getText(), funcionario, "funcionario"));
                 else
                     lbErroCPF.setText("CPF incompleto");
             }
             else
             {
                 if(tfCPF.getText().length() == 14)
-                    lbErroCPF.setText(validarCPF());
+                    //lbErroCPF.setText(validarCPF());
+                    lbErroCPF.setText(Utils.validadorCPF2(tfCPF.getText(), funcionario, "funcionario"));
                 else
                     lbErroCPF.setText("");
             }
@@ -498,7 +504,7 @@ public class CadastroFuncionarioController implements Initializable
         
         tfEmail.textProperty().addListener((observable, oldValue, newValue) ->
         {
-            if(newValue.length() > 8)
+            if(newValue != null && newValue.length() > 8)
             {
                 if(!newValue.contains("@"))
                     lbErroEmail.setText("Email inválido, faltando @");
@@ -626,6 +632,12 @@ public class CadastroFuncionarioController implements Initializable
                 sep4.setVisible(false); sep5.setVisible(false); sep6.setVisible(false);
                 sep7.setVisible(false);
             }
+            else
+            {
+                sep1.setVisible(true); sep2.setVisible(true); sep3.setVisible(true);
+                sep4.setVisible(true); sep5.setVisible(true); sep6.setVisible(true);
+                sep7.setVisible(true);
+            }
         });
     }
     
@@ -651,7 +663,7 @@ public class CadastroFuncionarioController implements Initializable
     {
         cbEstado.getItems().addAll("AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", 
             "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RO", "RS", "RR", "SC", "SE", "SP", "TO");
-        cbFuncao.getItems().addAll("Gerente","T.I","Motorista");
+        cbFuncao.getItems().addAll("Proprietário","Gerente","T.I","Motorista Fixo","Motorista Free-Lancer");
         
         tcNome.setCellValueFactory(new PropertyValueFactory<>("param2"));
         tcCPF.setCellValueFactory(new PropertyValueFactory<>("param3"));
@@ -679,6 +691,7 @@ public class CadastroFuncionarioController implements Initializable
         carregaDesign();
         inicializa();
         setListeners();
+        redimensionaTela();
     }    
 
     @FXML
@@ -704,27 +717,50 @@ public class CadastroFuncionarioController implements Initializable
                 
                 if(alerta.getResult() == ButtonType.YES)
                 {
-                    if(ctrFunc.salvar(tfNome,tfCPF,tfRG,tfEmail,cbFuncao,dpCadastro,tfCEP,tfRua,tfNumero,tfBairro,
-                        tfComplemento,tfCidade,cbEstado,lvTelefones,dpVencimento,frente,verso))
+                    if(cbFuncao.getSelectionModel().getSelectedItem().equals("Motorista Free-Lancer"))
+                    {///MOTORISTA FREE-LANCER TEM CADASTRO MÍNIMO
+                        if(tfCPF.getText().length() < 14 || !validarCPF().equals(""))
+                            tfCPF.setText("");
+                        if(!Utils.validaEmail(tfEmail.getText()))
+                            tfEmail.setText("");
+                        
+                        if(ctrFunc.salvarMinimo(tfNome,tfCPF,tfRG,tfEmail,cbFuncao,dpCadastro,tfCEP,tfRua,tfNumero,
+                            tfBairro,tfComplemento,tfCidade,cbEstado,lvTelefones,dpVencimento,frente,verso))
+                        {
+                            new Alert(Alert.AlertType.INFORMATION, "Funcionáio cadastrado com sucesso!!!", 
+                                    ButtonType.OK).showAndWait();
+                            inicializa();
+                        }
+                        else
+                            new Alert(Alert.AlertType.ERROR, "Erro no cadastro do funcionário\n" + 
+                                Banco.getCon().getMensagemErro(), ButtonType.OK).showAndWait();
+                    }
+                    else if(ctrFunc.salvar(tfNome,tfCPF,tfRG,tfEmail,cbFuncao,dpCadastro,tfCEP,tfRua,tfNumero,tfBairro
+                       ,tfComplemento,tfCidade,cbEstado,lvTelefones,dpVencimento,frente,verso))
                     {
-                        alerta = new Alert(Alert.AlertType.CONFIRMATION, "Funcionário cadastrado com sucesso, deseja "
-                                + "autogerar um cadastro de usuário para este funcionário?", ButtonType.YES,ButtonType.NO);
+                        alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja autogerar um cadastro de usuário "
+                            + "para este funcionário?", ButtonType.YES,ButtonType.NO);
                         alerta.showAndWait();
                         
                         if(alerta.getResult() == ButtonType.YES)
                         {
                             if(ctrUsu.salvar(tfNome.getText(), nivel))
-                                new Alert(Alert.AlertType.INFORMATION, "Usuário autogerado com sucesso!!!",
-                                    ButtonType.OK).showAndWait();
+                                Notifications.create()
+                                    .darkStyle()
+                                    //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
+                                    .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
+                                    .text("Usuário gerado com sucesso!!!")
+                                    .showInformation();
                             else
-                            {
-                                new Alert(Alert.AlertType.ERROR, "Não foi posível autogerar usuário\n" 
-                                    + Banco.getCon().getMensagemErro(), ButtonType.OK).showAndWait();
-                                abrirCadastroUsuario();
-                            }
+                                Notifications.create()
+                                    .darkStyle()
+                                    //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
+                                    .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
+                                    .text("Erro na geração do usuário")
+                                    .showError();
                         }
-                        else
-                            abrirCadastroUsuario();
+                        new Alert(Alert.AlertType.INFORMATION, "Funcionário cadastrado com sucesso!!!", ButtonType.OK)
+                            .showAndWait();
                     }
                     else
                         new Alert(Alert.AlertType.ERROR, "Erro no cadastro do Funcionário\n" + 
@@ -781,13 +817,37 @@ public class CadastroFuncionarioController implements Initializable
             }
         }
         
-        if(tfCPF.getText().length() == 14)
-            lbErroCPF.setText(validarCPF());
-        else if(tfCPF.getText().length() > 0)
-            lbErroCPF.setText("CPF incompleto");
-        else
-            lbErroCPF.setText("Digite o CPF");
-        erros += lbErroCPF.getText() + "\n";
+         if(cbFuncao.getSelectionModel().getSelectedIndex() < 0)
+        {
+            erros += "Selecione a função do funcionário\n";
+            lbErroFuncao.setText("Seleciona a função");
+        }
+        else 
+        {
+            if(!cbFuncao.getSelectionModel().getSelectedItem().equals("Motorista Free-Lancer"))
+            {
+                if(tfCPF.getText().length() == 14)
+                    lbErroCPF.setText(validarCPF());
+                else if(tfCPF.getText().length() > 0)
+                    lbErroCPF.setText("CPF incompleto");
+                else
+                    lbErroCPF.setText("Digite o CPF");
+                erros += lbErroCPF.getText() + "\n";
+
+                validaAlteracaoEndereco();
+                if(!validaEndereco())
+                    erros += lbErroCEP.getText() + "\n" + lbErroRua.getText() + "\n" + lbErroNumero.getText() + "\n"
+                        + lbErroBairro.getText() + "\n" + lbErroCidade.getText() + "\n" + lbErroEstado.getText()+"\n";
+            }
+            else if(cbFuncao.getSelectionModel().getSelectedItem().equals("Motorista Fixo"))
+            {
+                if(dpVencimento.getEditor().getText().equals(""))
+                {
+                    erros += "Selecione o vencimento da CNH\n";
+                    lbErroVencimento.setText("Selecione o vencimento");
+                }
+            }
+        }
         
         if(!tfRG.getText().equals("") && tfRG.getText().length() < 12)
         {
@@ -799,61 +859,6 @@ public class CadastroFuncionarioController implements Initializable
         {
             erros += lbErroEmail.getText() + "\n";
         }
-        
-        erros += validaAlteracaoEndereco(a);
-        
-        if(tfRua.getText().equals(""))
-        {
-            erros += "Rua inválida\n";
-            lbErroRua.setText("Digite o nome da rua");
-        }
-
-        if(tfBairro.getText().equals(""))
-        {
-            erros += "Bairro inválido\n";
-            lbErroBairro.setText("Digite o nome do bairro");
-        }
-
-        if(tfCidade.getText().equals(""))
-        {
-            erros += "Cidade inválida\n";
-            lbErroCidade.setText("Digite o nome da Cidade");
-        }
-
-        if(cbEstado.getSelectionModel().getSelectedIndex() < 0)
-        {
-            erros += "Selecione um estado\n";
-            lbErroEstado.setText("Selecione estado");
-        }
-        
-        if(tfNumero.getText().equals(""))
-        {
-            erros += "Número inválido\n";
-            lbErroNumero.setText("Digite o número");
-        }
-        
-        if(endereco_pesquisado != null && endereco_pesquisado.getString("resultado").equals("0"))
-        {
-            erros += "CEP inválido\n";
-            lbErroCEP.setText("CEP inválido");
-        }
-        else if(tfCEP.getText().equals(""))
-        {
-            erros += "CEP inválido\n";
-            lbErroCEP.setText("Digite um CEP");
-        }
-        
-        if(cbFuncao.getSelectionModel().getSelectedIndex() <= 0)
-        {
-            erros += "Selecione a função do funcionário\n";
-            lbErroFuncao.setText("Seleciona a função");
-        }
-        else if(cbFuncao.getSelectionModel().getSelectedItem().equals("Motorista"))
-            if(dpVencimento.getEditor().getText().equals(""))
-            {
-                erros += "Selecione o vencimento da CNH\n";
-                lbErroVencimento.setText("Selecione o vencimento");
-            }
         
         if(!dpVencimento.getEditor().getText().equals(""))
         {
@@ -872,8 +877,55 @@ public class CadastroFuncionarioController implements Initializable
             new Alert(Alert.AlertType.ERROR, erros, ButtonType.OK).showAndWait();
         return erros.trim().equals("");
     }
+
+    private boolean validaEndereco()
+    {
+        boolean flag = true;
+        if(tfRua.getText().equals(""))
+        {
+            flag = false;
+            lbErroRua.setText("Digite o nome da rua");
+        }
+
+        if(tfBairro.getText().equals(""))
+        {
+            flag = false;
+            lbErroBairro.setText("Digite o nome do bairro");
+        }
+
+        if(tfCidade.getText().equals(""))
+        {
+            flag = false;
+            lbErroCidade.setText("Digite o nome da Cidade");
+        }
+
+        if(cbEstado.getSelectionModel().getSelectedIndex() < 0)
+        {
+            flag = false;
+            lbErroEstado.setText("Selecione estado");
+        }
+
+        if(tfNumero.getText().equals(""))
+        {
+            flag = false;
+            lbErroNumero.setText("Digite o número");
+        }
+
+        if(endereco_pesquisado != null && endereco_pesquisado.getString("resultado").equals("0"))
+        {
+            flag = false;
+            lbErroCEP.setText("CEP inválido");
+        }
+        else if(tfCEP.getText().equals(""))
+        {
+            flag = false;
+            lbErroCEP.setText("Digite um CEP");
+        }
+        
+        return flag;
+    }
     
-    private String validaAlteracaoEndereco(Alert a)
+    private void validaAlteracaoEndereco()
     {
         String avisos = "";
         if(funcionario == null)
@@ -894,13 +946,13 @@ public class CadastroFuncionarioController implements Initializable
         }
         if(!avisos.trim().equals(""))
         {
-            a = new Alert(Alert.AlertType.WARNING, "Aviso: " + avisos + "Deseja confirmar alterações?", 
-                    ButtonType.YES,ButtonType.NO);
-            a.showAndWait();
-            if(a.getResult() == ButtonType.YES)
-                avisos = "";
+            Notifications.create()
+                .darkStyle()
+                //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
+                .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
+                .text("Aviso:\n" + avisos)
+                .showInformation();
         }
-        return avisos;
     }
 
     @FXML
@@ -1046,9 +1098,11 @@ public class CadastroFuncionarioController implements Initializable
         if(cbFuncao.getSelectionModel().getSelectedIndex() >= 0)
         {
             lbErroFuncao.setText("");
-            if(cbFuncao.getSelectionModel().getSelectedIndex() <= 0)
+            if(cbFuncao.getSelectionModel().getSelectedIndex() == 0)
                 nivel = "alto";
-            else if(cbFuncao.getSelectionModel().getSelectedIndex() > 0)
+            else if(cbFuncao.getSelectionModel().getSelectedIndex() <= 2)
+                nivel = "medio";
+            else if(cbFuncao.getSelectionModel().getSelectedIndex() > 2)
                 nivel = "baixo";
         }
     }
@@ -1141,6 +1195,7 @@ public class CadastroFuncionarioController implements Initializable
     {
         if(!tvFuncionarios.getItems().isEmpty() && tvFuncionarios.getSelectionModel().getSelectedIndex() >= 0)
         {
+            limparCampos();
             funcionario = tvFuncionarios.getSelectionModel().getSelectedItem();
             fillFields(funcionario);
             setEstado(true, true, true, false, false, true, false, false, false);
@@ -1191,13 +1246,16 @@ public class CadastroFuncionarioController implements Initializable
         private BufferedImage cnh_verso;*/
         
         Objeto ender = ctrEnder.getByCodigo(Integer.parseInt(funcionario.getParam10()));
-        tfCEP.setText(ender.getParam2());
-        tfRua.setText(ender.getParam3());
-        tfNumero.setText(ender.getParam4());
-        tfBairro.setText(ender.getParam5());
-        tfComplemento.setText(ender.getParam6());
-        tfCidade.setText(ender.getParam7());
-        cbEstado.getSelectionModel().select(ender.getParam8());
+        if(!ender.getParam1().equals("0"))
+        {
+            tfCEP.setText(ender.getParam2());
+            tfRua.setText(ender.getParam3());
+            tfNumero.setText(ender.getParam4());
+            tfBairro.setText(ender.getParam5());
+            tfComplemento.setText(ender.getParam6());
+            tfCidade.setText(ender.getParam7());
+            cbEstado.getSelectionModel().select(ender.getParam8());
+        }
         
         lvTelefones.getItems().clear();
         for(String telefone : ctrFunc.getTelefones(Integer.parseInt(funcionario.getParam1())))
@@ -1345,10 +1403,6 @@ public class CadastroFuncionarioController implements Initializable
     private void cleanClicked(MouseEvent event)
     {
         imgFrente.setImage(null);
-        imgVerso.setImage(null);
-        sep1.setVisible(true); sep2.setVisible(true); sep3.setVisible(true);
-        sep4.setVisible(true); sep5.setVisible(true); sep6.setVisible(true);
-        sep7.setVisible(true);
     }
 
     @FXML
@@ -1400,6 +1454,20 @@ public class CadastroFuncionarioController implements Initializable
     {
         btRemover.setStyle("-fx-cursor: hand;" + btRemover.getStyle());
     }
+
+    @FXML
+    private void alteracaoExit(MouseEvent event)
+    {
+        lbAlteracao.setStyle("-fx-cursor: default;" + lbAlteracao.getStyle());
+    }
+
+    @FXML
+    private void alteracaoEnter(MouseEvent event)
+    {
+        lbAlteracao.setStyle(lbAlteracao.getStyle() + ";-fx-cursor: hand;");
+        tooltip.setText("Pesquisar data");
+        ToolTip.bindTooltip(lbAlteracao, tooltip);
+    }
     
     private String validarCPF()
     {
@@ -1441,9 +1509,7 @@ public class CadastroFuncionarioController implements Initializable
         {
             frente = "";
             verso = "";
-            sep1.setVisible(true); sep2.setVisible(true); sep3.setVisible(true);
-            sep4.setVisible(true); sep5.setVisible(true); sep6.setVisible(true);
-            sep7.setVisible(true); sep8.setVisible(true);
+            imgFrente = null;
         }
     }
 
@@ -1499,7 +1565,6 @@ public class CadastroFuncionarioController implements Initializable
         catch (IOException er)
         {
             Alert a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Usuários! \nErro: " + er.getMessage(), ButtonType.OK);
-            System.out.println(er.getMessage());
             a.showAndWait();
         }
     }
@@ -1572,4 +1637,42 @@ public class CadastroFuncionarioController implements Initializable
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
+    @FXML
+    private void pesquisarAlteracao(MouseEvent event)
+    {
+        if(lbAlteracao.getText().substring(lbAlteracao.getText().indexOf(":") + 1).length() > 1)
+        {
+            
+            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja pesquisar data de acesso?", ButtonType.YES,ButtonType.NO);
+            alerta.showAndWait();
+
+            if(alerta.getResult() == ButtonType.YES)
+            {
+                try
+                {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/basicas/CadastroUsuario.fxml"));     
+                    Parent root = (Parent) fxmlLoader.load();
+                    Stage stage = new Stage();
+                    JFXDecorator decorator = new JFXDecorator(stage, root);
+
+                    decorator.setStyle("-fx-decorator-color: #040921;");
+
+                    Scene scene = new Scene(decorator);
+                    CadastroUsuarioController controller = fxmlLoader.<CadastroUsuarioController>getController();
+                    controller.pesquisarData(lbAlteracao.getText().substring(lbAlteracao.getText().indexOf(":") + 1).trim());
+
+                    stage.setTitle("Cadastro de Usuário");
+                    stage.setScene(scene);
+                    stage.setAlwaysOnTop(true);
+                    stage.showAndWait();
+
+                } 
+                catch (IOException er)
+                {
+                    Alert a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Usuários! \nErro: " + er.getMessage(), ButtonType.OK);
+                    a.showAndWait();
+                }
+            }
+        }
+    }
 }

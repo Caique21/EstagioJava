@@ -129,7 +129,8 @@ public class Acesso
     {
         ArrayList<Acesso>acessos = new ArrayList<>();
         
-        ResultSet rs = Banco.getCon().consultar("select * from acessos where DATE(acess_data_login) = '" + data + "'");
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM acessos WHERE DATE(acess_data_login) = '" + data + "'"
+            + " AND user_codigo <> 1");
         
         try
         {
@@ -145,8 +146,46 @@ public class Acesso
         }
         return acessos;
     }
+
+    public Acesso get(Timestamp ts)
+    {
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM acessos WHERE timestamp '" + ts + "' >= "
+             + "acess_data_login AND timestamp '" + ts + "' <= acess_data_logout AND user_codigo <> 1");
+        
+        try
+        {
+            return new Acesso(rs.getInt("acess_codigo"), rs.getTimestamp("acess_data_login"), 
+                        rs.getTimestamp("acess_data_logout"), new Usuario(rs.getInt("user_codigo")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Acesso.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
     
     public ArrayList<Acesso> getAcessoUsuario(int cod)
+    {
+        ArrayList<Acesso>acessos = new ArrayList<>();
+        
+        ResultSet rs = Banco.getCon().consultar("select * from acessos where user_codigo = " + cod);
+        
+        try
+        {
+            while(rs != null && rs.next())            
+            {
+                acessos.add(new Acesso(rs.getInt("acess_codigo"), rs.getTimestamp("acess_data_login"), 
+                        rs.getTimestamp("acess_data_logout"), new Usuario(rs.getInt("user_codigo"))));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Acesso.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return acessos;
+    }
+
+    public ArrayList<Acesso> getAcessosUsuario(int cod)
     {
         ArrayList<Acesso>acessos = new ArrayList<>();
         

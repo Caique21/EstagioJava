@@ -8,9 +8,11 @@ package estagio.controladores;
 import estagio.entidades.Acesso;
 import estagio.entidades.Usuario;
 import estagio.utilidades.Objeto;
+import estagio.utilidades.Utils;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -51,7 +53,8 @@ public class ctrAcesso
     public String TimestamptoDate(Timestamp ts)
     {
         String aux = String.valueOf(ts);
-        aux = aux.substring(0, aux.indexOf(":")+3);
+        aux = Utils.convertData(new Date(ts.getTime())) + " " + 
+                aux.substring(aux.indexOf(" ") + 1,aux.lastIndexOf("."));
         return aux;
     }
     
@@ -83,6 +86,23 @@ public class ctrAcesso
         }
         return objs;
     }
+
+    public Objeto getDataCompleta(String data)
+    {
+        Timestamp ts = Timestamp.valueOf(data);
+        Acesso acesso = new Acesso().get(ts);
+        String login,logout;
+        
+        if(acesso != null)
+        {
+            login = TimestamptoDate(acesso.getLogin());
+            logout = TimestamptoDate(acesso.getLogout());
+            
+            return new Objeto(String.valueOf(acesso.getCodigo()),login,logout,
+                 String.valueOf(acesso.getUsuario().getCodigo()));
+        }
+        return null;
+    }
     
     public ArrayList<Objeto> getAcessoUsuario(int cod)
     {
@@ -105,5 +125,22 @@ public class ctrAcesso
     public boolean firstOfDay(LocalDate now)
     {
         return get(now.toString()).isEmpty();
+    }
+
+    public ArrayList<Objeto> getAcessosUsuario(int cod)
+    {
+        ArrayList<Acesso>acessos = new ArrayList<>();
+        ArrayList<Objeto>objs = new ArrayList<>();
+        String login,logout;
+        
+        acessos = new Acesso().getAcessosUsuario(cod);
+        
+        for(Acesso a : acessos)
+        {
+            login = TimestamptoDate(a.getLogin());
+            logout = TimestamptoDate(a.getLogout());
+            objs.add(new Objeto(String.valueOf(a.getCodigo()),login,logout,String.valueOf(a.getUsuario().getCodigo())));
+        }
+        return objs;
     }
 }

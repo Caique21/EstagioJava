@@ -59,6 +59,42 @@ public class Funcionario
         this.nome = nome;
         get();
     }
+    
+    public Funcionario(String nome, String funcao, Date data)
+    {
+        this.nome = nome;
+        this.funcao = funcao;
+        this.data = data;
+        this.alteracao = new Timestamp(new java.util.Date().getTime());
+    }
+    
+    public Funcionario(int codigo, String nome, String funcao, Date data)
+    {
+        this.codigo = codigo;
+        this.nome = nome;
+        this.funcao = funcao;
+        this.data = data;
+        this.alteracao = new Timestamp(new java.util.Date().getTime());
+    }
+
+    public Funcionario(String nome, String funcao, Date data, Date vencimento)
+    {
+        this.nome = nome;
+        this.funcao = funcao;
+        this.data = data;
+        this.vencimento = vencimento;
+        this.alteracao = new Timestamp(new java.util.Date().getTime());
+    }
+    
+    public Funcionario(String nome, String cpf,String funcao, Date data, Date vencimento)
+    {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.funcao = funcao;
+        this.data = data;
+        this.vencimento = vencimento;
+        this.alteracao = new Timestamp(new java.util.Date().getTime());
+    }
 
     public Funcionario(int codigo, String nome, String cpf, String rg, String email, String funcao,Date data, boolean ativo, Timestamp alteracao, Endereco endereco, Date vencimento)
     {
@@ -222,6 +258,7 @@ public class Funcionario
     public void setEndereco(Endereco endereco)
     {
         this.endereco = endereco;
+        this.endereco_completo = endereco.toString();
     }
 
     public String getEndereco_completo()
@@ -378,21 +415,34 @@ public class Funcionario
     
     public boolean salvar()
     {
-        String sql = "INSERT INTO funcionario (func_nome,func_cpf,"
+        boolean flag = false;
+        PreparedStatement statement = null;
+
+        try
+        {
+            statement = Banco.getCon().getConnection().prepareStatement("INSERT INTO funcionario (func_nome,func_cpf,"
                     + "func_rg,func_email,func_funcao,func_datacadastro,func_ativo,func_alteracao,ender_codigo,"
-                    + "func_vencimento_cnh) VALUES ('$1','$2','$3','$4','$5','$6','$7','$8',$9,'$10')";
-        sql = sql.replace("$10", String.valueOf((java.sql.Date) this.vencimento));
-        sql = sql.replace("$1", this.nome);
-        sql = sql.replace("$2", this.cpf);
-        sql = sql.replace("$3", this.rg);
-        sql = sql.replace("$4", this.email);
-        sql = sql.replace("$5", this.funcao);
-        sql = sql.replace("$6", String.valueOf(this.data));
-        sql = sql.replace("$7", String.valueOf(this.ativo));
-        sql = sql.replace("$8", String.valueOf(new Timestamp(new java.util.Date().getTime())));
-        sql = sql.replace("$9", String.valueOf(this.endereco.getCodigo()));
-        
-        return Banco.getCon().manipular(sql);
+                    + "func_vencimento_cnh) VALUES (?,?,?,?,?,?,?,?,?,?)");
+            statement.setString(1, this.nome);
+            statement.setString(2, this.cpf);
+            statement.setString(3, this.rg);
+            statement.setString(4, this.email);
+            statement.setString(5, this.funcao);
+            statement.setDate(6, (java.sql.Date) this.data);
+            statement.setBoolean(7, true);
+            statement.setTimestamp(8, new Timestamp(new java.util.Date().getTime()));
+            statement.setInt(9, this.endereco.getCodigo());
+            statement.setDate(10, (java.sql.Date) this.vencimento);
+
+            flag = statement.executeUpdate() == 1;
+            statement.close();
+            return flag;
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Funcionario.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return flag;   
     }
 
     public boolean salvar(String frente, String verso)
@@ -434,6 +484,62 @@ public class Funcionario
             Banco.getCon().setErro(ex.getMessage());
         }
         return false;
+    }
+
+    public boolean salvarMinimo(String... caminhos)
+    {
+        FileInputStream fGrande;
+        FileInputStream fPequeno;
+        File logoG;
+        File logoP;
+        boolean flag = false;
+        
+        try
+        {
+            PreparedStatement statement = null;
+            if(caminhos.length == 2)
+            {
+                logoG = new File(caminhos[0]);
+                logoP = new File(caminhos[1]);
+                fGrande = new FileInputStream(logoG);
+                fPequeno = new FileInputStream(logoP);
+                
+                statement = Banco.getCon().getConnection().prepareStatement("INSERT INTO funcionario (func_nome,"
+                    + "func_cpf,func_rg,func_email,func_funcao,func_datacadastro,func_ativo,func_alteracao,"
+                    + "func_vencimento_cnh,func_cnh_frente, func_cnh_verso) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+                
+                statement.setBinaryStream(10, fGrande, (int) logoG.length());
+                statement.setBinaryStream(11, fPequeno, (int) logoP.length());
+            }
+            else
+            {
+                statement = Banco.getCon().getConnection().prepareStatement("INSERT INTO funcionario (func_nome,"
+                    + "func_cpf,func_rg,func_email,func_funcao,func_datacadastro,func_ativo,func_alteracao,"
+                    + "func_vencimento_cnh) VALUES (?,?,?,?,?,?,?,?,?)");
+            } 
+            statement.setString(1, this.nome);
+            statement.setString(2, this.cpf);
+            statement.setString(3, this.rg);
+            statement.setString(4, this.email);
+            statement.setString(5, this.funcao);
+            statement.setDate(6, (java.sql.Date) this.data);
+            statement.setBoolean(7, true);
+            statement.setTimestamp(8, new Timestamp(new java.util.Date().getTime()));
+            statement.setDate(9, (java.sql.Date) this.vencimento);
+
+            flag = statement.executeUpdate() == 1;
+            statement.close();
+            if(this.endereco != null)
+                flag = flag && Banco.getCon().manipular("UPDATE funcionario set ender_codigo = " + 
+                    this.endereco.getCodigo() + " WHERE func_codigo = " + Banco.getCon().getMaxPK("funcionario", "func_codigo"));
+             return flag;
+        }
+        catch (SQLException | FileNotFoundException ex)
+        {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return flag;
     }
     
     public boolean alterar()
@@ -520,6 +626,65 @@ public class Funcionario
             Banco.getCon().setErro(ex.getMessage());
         }
         return false;
+    }
+
+    public boolean alterarMinimo(String... caminhos)
+    {
+        FileInputStream fGrande;
+        FileInputStream fPequeno;
+        File logoG;
+        File logoP;
+        boolean flag = false;
+        
+        try
+        {
+            PreparedStatement statement = null;
+            if(caminhos.length > 2)
+            {
+                logoG = new File(caminhos[0]);
+                logoP = new File(caminhos[1]);
+                fGrande = new FileInputStream(logoG);
+                fPequeno = new FileInputStream(logoP);
+                
+                statement = Banco.getCon().getConnection().prepareStatement("UPDATE funcionario SET func_nome = ?,"
+                    + "func_cpf = ?, func_rg = ?, func_email = ?, func_funcao = ?, funca_datacadastro = ?,"
+                    + "func_ativo = ?, func_alteracao = ?, func_vencimento = ?, func_cnh_frente = ?, "
+                    + "func_cnh_verso = ? WHERE func_codigo = " + this.codigo);
+                
+                statement.setBinaryStream(10, fGrande, (int) logoG.length());
+                statement.setBinaryStream(11, fPequeno, (int) logoP.length());
+            }
+            else
+            {
+                statement = Banco.getCon().getConnection().prepareStatement("UPDATE funcionario SET func_nome = ?,"
+                    + "func_cpf = ?, func_rg = ?, func_email = ?, func_funcao = ?, funca_datacadastro = ?,"
+                    + "func_ativo = ?, func_alteracao = ?, func_vencimento = ? WHERE func_codigo = " + this.codigo);
+            } 
+            
+            statement.setString(1, this.nome);
+            statement.setString(2, this.cpf);
+            statement.setString(3, this.rg);
+            statement.setString(4, this.email);
+            statement.setString(5, this.funcao);
+            statement.setDate(6, (java.sql.Date) this.data);
+            statement.setBoolean(7, true);
+            statement.setTimestamp(8, new Timestamp(new java.util.Date().getTime()));
+            statement.setDate(9, (java.sql.Date) this.vencimento);
+            
+            flag = statement.executeUpdate() == 1;
+            statement.close();
+                
+            if(this.endereco != null)
+                flag = flag && Banco.getCon().manipular("UPDATE funcionario SET ender_codigo = " + 
+                    this.endereco.getCodigo() + " WHERE func_codigo = " + this.codigo);
+            return flag;
+        }
+        catch (SQLException | FileNotFoundException ex)
+        {
+            Logger.getLogger(Cliente.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return flag;
     }
     
     private boolean atualizaFrenteCNH(String caminho)

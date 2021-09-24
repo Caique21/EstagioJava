@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXRadioButton?>
 <?import com.jfoenix.controls.JFXTextField?>
@@ -9,6 +10,7 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -17,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastroUsuarioController">
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.basicas.CadastroUsuarioController">
    <stylesheets>
         <!--<URL value="@/estagio/utilidades/CSS/init.css" />-->
         <URL value="@/estagio/utilidades/CSS/Style.css" />
@@ -30,7 +32,7 @@
       </Label>
    </top>
    <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="580.0" prefWidth="1130.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
             <Pane fx:id="paneInfo" prefHeight="97.0" prefWidth="1130.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                <children>
@@ -51,7 +53,7 @@
                   <Label fx:id="lbErroConfirmarSenha" layoutX="931.0" layoutY="66.0" text="ErroConfirmarSenha" textFill="RED" />
                </children>
             </Pane>
-            <Pane fx:id="panePesquisa" prefHeight="385.0" prefWidth="1130.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
+            <Pane fx:id="panePesquisa" prefHeight="438.0" prefWidth="1130.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                <children>
                   <Label fx:id="lbPesquisa" text="Pesquisa">
                      <font>
@@ -60,25 +62,56 @@
                   </Label>
                   <JFXTextField fx:id="tfFuncionarioPesquisa" labelFloat="true" layoutX="29.0" layoutY="33.0" prefHeight="25.0" prefWidth="234.0" promptText="Pesquisar Funcionário" />
                   <JFXTextField fx:id="tfUsuarioPesquisa" labelFloat="true" layoutX="29.0" layoutY="33.0" prefHeight="25.0" prefWidth="234.0" promptText="Pesquisar Usuário" visible="false" />
+                  <JFXDatePicker fx:id="dpAcesso" layoutX="29.0" layoutY="33.0" prefHeight="25.0" prefWidth="234.0" promptText="Data de Acesso" visible="false" />
                   <JFXComboBox fx:id="cbNivelPesquisa" labelFloat="true" layoutX="29.0" layoutY="33.0" prefHeight="25.0" prefWidth="234.0" promptText="Pesquisar por Nível" visible="false" />
                   <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="277.0" layoutY="33.0" onAction="#clickPesquisar" onMouseEntered="#pesquisarEnter" onMouseExited="#pesquisarExit" text="PESQUISAR">
                      <graphic>
                         <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="18" />
                      </graphic>
                   </JFXButton>
-                  <TableView fx:id="tvUsuarios" layoutX="29.0" layoutY="90.0" onMouseClicked="#selecionaUsuario" prefHeight="278.0" prefWidth="1070.0">
-                    <columns>
-                      <TableColumn fx:id="tcFuncionario" prefWidth="413.0" text="Funcionário" />
-                      <TableColumn fx:id="tcUsuario" prefWidth="408.0" text="Usuário" />
-                        <TableColumn fx:id="tcNivel" prefWidth="248.0" text="Nível de Acesso" />
-                    </columns>
-                  </TableView>
-                  <HBox layoutX="29.0" layoutY="67.0" prefHeight="19.0" prefWidth="493.0" spacing="20.0">
+                  <HBox layoutX="29.0" layoutY="67.0" prefHeight="19.0" prefWidth="582.0" spacing="20.0">
                      <children>
                         <JFXRadioButton fx:id="rbTodos" onAction="#clickTodos" text="Listar Todos" />
                         <JFXRadioButton fx:id="rbFuncionario" onAction="#clickFuncionarioRadio" text="Funcionário" />
                         <JFXRadioButton fx:id="rbUsuario" onAction="#clickUsuarioRadio" text="Usuário" />
-                        <JFXRadioButton fx:id="rbNivel" onAction="#clickNivelRadio" text="Nível de Acesso" />
+                        <JFXRadioButton fx:id="rbNivel" onAction="#clickNivelRadio" text="Nível" />
+                        <JFXRadioButton fx:id="rbAcessos" onAction="#clickAcesso" text="Acesso" />
+                     </children>
+                  </HBox>
+                  <HBox layoutX="29.0" layoutY="94.0" prefHeight="325.0" prefWidth="1082.0" spacing="10.0">
+                     <children>
+                        <VBox prefHeight="325.0" prefWidth="586.0">
+                           <children>
+                              <Label fx:id="lbUsuarios" alignment="CENTER" prefHeight="17.0" prefWidth="544.0" text="Usuários">
+                                 <font>
+                                    <Font name="System Bold Italic" size="12.0" />
+                                 </font>
+                              </Label>
+                              <TableView fx:id="tvUsuarios" onMouseClicked="#selecionaUsuario" prefHeight="307.0" prefWidth="529.0">
+                                <columns>
+                                  <TableColumn fx:id="tcFuncionario" prefWidth="256.9999885559082" text="Funcionário" />
+                                  <TableColumn fx:id="tcUsuario" prefWidth="195.0" text="Usuário" />
+                                    <TableColumn fx:id="tcNivel" prefWidth="132.0" text="Nível de Acesso" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                        <Separator orientation="VERTICAL" prefHeight="200.0" />
+                        <VBox prefHeight="325.0" prefWidth="460.0">
+                           <children>
+                              <Label fx:id="lbAcessos" alignment="CENTER" prefHeight="17.0" prefWidth="544.0" text="Acessos">
+                                 <font>
+                                    <Font name="System Bold Italic" size="12.0" />
+                                 </font>
+                              </Label>
+                              <TableView fx:id="tvAcessos" onMouseClicked="#selecionaAcesso" prefHeight="321.0" prefWidth="460.0">
+                                <columns>
+                                  <TableColumn fx:id="tcLogin" prefWidth="227.0" text="Login" />
+                                  <TableColumn fx:id="tcLogout" prefWidth="270.0" text="Logout" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
                      </children>
                   </HBox>
                </children>

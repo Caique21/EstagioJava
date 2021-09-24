@@ -8,27 +8,27 @@ package estagio.interfaces.basicas;
 import com.jfoenix.controls.JFXAutoCompletePopup;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDecorator;
+import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.TelaPrincipalController;
+import estagio.controladores.ctrAcesso;
 import estagio.controladores.ctrFuncionario;
 import estagio.controladores.ctrUsuario;
-import estagio.interfaces.TelaGerenciamentoController;
 import estagio.utilidades.Banco;
 import estagio.utilidades.Objeto;
 import estagio.utilidades.ToolTip;
 import estagio.utilidades.Utils;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,7 +37,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -67,6 +66,7 @@ public class CadastroUsuarioController implements Initializable
     
     private ctrFuncionario ctrFunc = ctrFuncionario.instancia();
     private ctrUsuario ctrUsu = ctrUsuario.instancia();
+    private ctrAcesso ctrAcc = ctrAcesso.instancia();
     
     private final Tooltip tooltip = new Tooltip();
     private final ToggleGroup goup = new ToggleGroup();
@@ -149,6 +149,20 @@ public class CadastroUsuarioController implements Initializable
     private FontAwesomeIconView faSearch;
     @FXML
     private JFXRadioButton rbTodos;
+    @FXML
+    private JFXRadioButton rbAcessos;
+    @FXML
+    private Label lbUsuarios;
+    @FXML
+    private Label lbAcessos;
+    @FXML
+    private TableView<Objeto> tvAcessos;
+    @FXML
+    private TableColumn<Objeto,String> tcLogin;
+    @FXML
+    private TableColumn<Objeto,String> tcLogout;
+    @FXML
+    private JFXDatePicker dpAcesso;
 
     /**
      * Initializes the controller class.
@@ -164,13 +178,31 @@ public class CadastroUsuarioController implements Initializable
     
     public void setEstado(Boolean b1,Boolean b2,Boolean b3,Boolean b4,Boolean b5,Boolean b6,Boolean b7)
     {
-        paneInfo.setDisable(b1);
-        tfFuncionario.setDisable(b1);
+        ///PERMISSÃO MAIOR QUE BAIXO OU FOR O PRÓPRIO USUÁRIO ALTERANDO SEUS DADOS
+        if(tvUsuarios.getSelectionModel().getSelectedIndex() >= 0 && 
+                TelaPrincipalController.usuario_logado.getParam3().equals(
+                    tvUsuarios.getSelectionModel().getSelectedItem().getParam2()) || 
+                !TelaPrincipalController.usuario_logado.getParam5().equals("baixo"))
+        {
+            paneInfo.setDisable(b1);
+            tfFuncionario.setDisable(b1);
+            btNovo.setDisable(b3);
+            btAlterar.setDisable(b5);
+            btRemover.setDisable(b6);
+        }
+        else
+        {
+            paneInfo.setDisable(true);
+            tfFuncionario.setDisable(true);
+            btNovo.setDisable(true);
+            btAlterar.setDisable(true);
+            btRemover.setDisable(true);
+        }
+       
         panePesquisa.setDisable(b2);
-        btNovo.setDisable(b3);
+        
         btConfirmar.setDisable(b4);
-        btAlterar.setDisable(b5);
-        btRemover.setDisable(b6);
+        
         btCancelar.setDisable(b7);
     }
     
@@ -200,6 +232,8 @@ public class CadastroUsuarioController implements Initializable
         nodes.add(lbInfo);
         nodes.add(lbTitulo);
         nodes.add(lbPesquisa);
+        nodes.add(lbUsuarios);
+        nodes.add(lbAcessos);
         
         nodes.add(btAlterar);
         nodes.add(btCancelar);
@@ -211,6 +245,7 @@ public class CadastroUsuarioController implements Initializable
         nodes.add(rbFuncionario);
         nodes.add(rbNivel);
         nodes.add(rbUsuario);
+        nodes.add(rbAcessos);
         nodes.add(rbTodos);
         
         nodes.add(faCheck);
@@ -325,6 +360,7 @@ public class CadastroUsuarioController implements Initializable
     
     private void inicializa()
     {
+        dpAcesso.getEditor().clear();
         cbNivel.setDisable(false);
         limparCampos();
         inicializaLabels();
@@ -345,10 +381,15 @@ public class CadastroUsuarioController implements Initializable
         rbNivel.setToggleGroup(goup);
         rbTodos.setToggleGroup(goup);
         rbUsuario.setToggleGroup(goup);
+        rbAcessos.setToggleGroup(goup);
         rbTodos.setSelected(true);
+        
         tcFuncionario.setCellValueFactory(new PropertyValueFactory<>("param7"));
         tcNivel.setCellValueFactory(new PropertyValueFactory<>("param4"));
         tcUsuario.setCellValueFactory(new PropertyValueFactory<>("param2"));
+        
+        tcLogin.setCellValueFactory(new PropertyValueFactory<>("param2"));
+        tcLogout.setCellValueFactory(new PropertyValueFactory<>("param3"));
         
         inicializa();
         
@@ -356,11 +397,11 @@ public class CadastroUsuarioController implements Initializable
         
         setListeners();
         
-        if(!TelaPrincipalController.usuario_logado.getParam4().equals("alto"))
+        if(TelaPrincipalController.usuario_logado.getParam5().equals("baixo"))
             Notifications.create()
                 .darkStyle()
                 //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
-                .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
+                .hideAfter(Duration.seconds(4)).position(Pos.BOTTOM_CENTER)
                 .text("Usuário logado não possui permissão de alterar dados dos usuário além do seu próprio")
                 .showWarning();
         
@@ -496,7 +537,7 @@ public class CadastroUsuarioController implements Initializable
     {
         if(!tvUsuarios.getItems().isEmpty() && tvUsuarios.getSelectionModel().getSelectedIndex() >= 0)
         {
-            if(TelaPrincipalController.usuario_logado.getParam4().equals("alto") || 
+            if(TelaPrincipalController.usuario_logado.getParam5().equals("alto") || 
                 TelaPrincipalController.usuario_logado.getParam2().equals(
                     tvUsuarios.getSelectionModel().getSelectedItem().getParam2()))
             {
@@ -552,8 +593,27 @@ public class CadastroUsuarioController implements Initializable
             tvUsuarios.setItems(FXCollections.observableArrayList(ctrUsu.getByFuncionario(tfFuncionarioPesquisa.getText())));
         else if(rbUsuario.isSelected())
             tvUsuarios.setItems(FXCollections.observableArrayList(ctrUsu.getByName(tfUsuarioPesquisa.getText())));
-        else
+        else if(rbNivel.isSelected())
             tvUsuarios.setItems(FXCollections.observableArrayList(ctrUsu.getByNivel(cbNivelPesquisa.getSelectionModel().getSelectedItem())));
+        else
+        {
+            if(!dpAcesso.getEditor().getText().equals("") && LocalDate.now().compareTo(dpAcesso.getValue()) >= 0)
+            {
+                String data = dpAcesso.getValue().toString();
+                tvAcessos.setItems(FXCollections.observableArrayList(ctrAcc.get(data)));
+            }
+            else
+            {
+                Notifications.create()
+                    .darkStyle()
+                    //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
+                    .hideAfter(Duration.seconds(3)).position(Pos.BOTTOM_CENTER)
+                    .text("Selecione uma data válida")
+                    .showError();
+                tvAcessos.getItems().clear();
+                tvUsuarios.getItems().clear();
+            }
+        }
     }
 
     @FXML
@@ -563,6 +623,25 @@ public class CadastroUsuarioController implements Initializable
         {
             fillFields(tvUsuarios.getSelectionModel().getSelectedItem());
             setEstado(true, false, false, true, false, false, false);
+            int cod = Integer.parseInt(tvUsuarios.getSelectionModel().getSelectedItem().getParam1());
+            tvAcessos.setItems(FXCollections.observableArrayList(ctrAcc.getAcessosUsuario(cod)));
+        }
+    }
+
+    @FXML
+    private void selecionaAcesso(MouseEvent event)
+    {
+        if(!tvAcessos.getItems().isEmpty() && tvAcessos.getSelectionModel().getFocusedIndex() >= 0 && rbAcessos.isSelected())
+        {
+            int cod = Integer.parseInt(tvAcessos.getSelectionModel().getSelectedItem().getParam4());
+            tvUsuarios.setItems(FXCollections.observableArrayList(ctrUsu.get(cod)));
+            
+            if(event.getClickCount() == 2)
+            {
+                usuario = tvUsuarios.getItems().get(0);
+                fillFields(usuario);
+                setEstado(true, false, false, true, false, false, false);
+            }
         }
     }
 
@@ -683,6 +762,7 @@ public class CadastroUsuarioController implements Initializable
         tfFuncionarioPesquisa.clear();
         tfUsuarioPesquisa.setVisible(false);
         cbNivelPesquisa.setVisible(false);
+        dpAcesso.setVisible(false);
     }
 
     @FXML
@@ -692,6 +772,7 @@ public class CadastroUsuarioController implements Initializable
         tfUsuarioPesquisa.clear();
         tfUsuarioPesquisa.setVisible(true);
         cbNivelPesquisa.setVisible(false);
+        dpAcesso.setVisible(false);
     }
 
     @FXML
@@ -700,6 +781,16 @@ public class CadastroUsuarioController implements Initializable
         tfFuncionarioPesquisa.setVisible(false);
         tfUsuarioPesquisa.setVisible(false);
         cbNivelPesquisa.setVisible(true);
+        dpAcesso.setVisible(false);
+    }
+
+    @FXML
+    private void clickAcesso(ActionEvent event)
+    {
+        tfFuncionarioPesquisa.setVisible(false);
+        tfUsuarioPesquisa.setVisible(false);
+        cbNivelPesquisa.setVisible(false);
+        dpAcesso.setVisible(true);
     }
 
     private void abrirCadastroFuncionario(String... nome)
@@ -724,5 +815,16 @@ public class CadastroUsuarioController implements Initializable
         {
             Logger.getLogger(CadastroUsuarioController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    void pesquisarData(String data)
+    {
+        dpAcesso.getEditor().setText(data);
+        dpAcesso.setValue(LocalDate.parse(data.trim().substring(0, data.indexOf(" "))));
+        rbAcessos.setSelected(true);
+        tvAcessos.getItems().clear();
+        tvUsuarios.getItems().clear();
+        clickAcesso(new ActionEvent());
+        tvAcessos.setItems(FXCollections.observableArrayList(ctrAcc.getDataCompleta(data)));
     }
 }

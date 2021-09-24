@@ -50,6 +50,7 @@ import estagio.TelaPrincipalController;
 import estagio.controladores.ctrDesign;
 import estagio.controladores.ctrUsuario;
 import estagio.controladores.ctrCliente;
+import estagio.controladores.ctrFuncionario;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -223,6 +224,39 @@ public class Utils
             if(strCpf.charAt(i) != strCpf.charAt(i + 1))
                 return true;
         return false;
+    }
+    
+    public static String validadorCPF2(String cpf, Objeto objeto, String tabela)
+    {
+        if(cpf.equals(""))
+            return "";
+        if(cpf.length() < 14)
+            return "CPF incompleto";
+        if(!Utils.validaCPF(cpf.replace(".", "").replace("-", "")))
+            return "CPF inválido";
+        else
+        {
+            if(tabela.equals("cliente"))
+            {
+                if(objeto == null && ctrCliente.instancia().cpfExists(cpf) > 0//inserção e CPF não é repetido
+                    ||objeto != null && ctrCliente.instancia().cpfExists(cpf) != Integer.parseInt(objeto.getParam1()))
+                    return "CPF já cadastrado";
+                else
+                    return "";
+            }
+            else if(tabela.equals("funcionario"))
+            {
+                if(ctrFuncionario.instancia().cpfExists(cpf) > 0)
+                {
+                    if(objeto == null || objeto != null && 
+                         ctrFuncionario.instancia().cpfExists(cpf) != Integer.parseInt(objeto.getParam1()))
+                        return "CPF já cadastrado";
+                }
+                else
+                    return "";
+            }
+        }
+        return null;
     }
 
     public static String validadorCPF(String cpf, Objeto cliente, ctrCliente ctrCli)

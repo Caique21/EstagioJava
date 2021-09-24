@@ -203,7 +203,7 @@ public class TelaPrincipalController implements Initializable
         lbUsuario.setText(lbUsuario.getText() + usuario_logado.getParam3());  
         //VERIFICAR SE DATA É ULTIMA DO MES PARA GERAR CONTAS A PAGAR DAS DESPESAS
         
-        if(!usuario_logado.getParam4().equals("alto"))
+        if(!usuario_logado.getParam5().equals("alto"))
             btConfig.setDisable(true);
         
         if(ctr_para.carregaLogoPequeno() != null)

@@ -206,8 +206,10 @@ public class Endereco
     @Override
     public String toString()
     {
-        return "CEP " + this.cep + " \n" + this.rua + " " + this.numero + ", " + this.bairro + " - " + this.complemento + "\n"
-            + this.cidade + " - " + this.estado;
+        if(this.codigo > 0)
+            return "CEP " + this.cep + " \n" + this.rua + " " + this.numero + ", " + this.bairro + " - " + 
+                this.complemento + "\n" + this.cidade + " - " + this.estado;
+        return "sem endereço cadastrado";
     }
     
     public boolean salvar()

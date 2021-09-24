@@ -230,14 +230,26 @@ public class CadastroClienteController implements Initializable
     public void setEstado(Boolean b1,Boolean b2,Boolean b3,Boolean b4,Boolean b5,Boolean b6,Boolean b7,
             Boolean b8,Boolean b9)
     {
-        paneInfoBasica.setDisable(b1);
-        paneEndereco.setDisable(b2);
-        paneContato.setDisable(b3);
+        if(TelaPrincipalController.usuario_logado.getParam5().equals("baixo"))
+        {
+            paneInfoBasica.setDisable(true);
+            paneEndereco.setDisable(true);
+            paneContato.setDisable(true);
+            btNovo.setDisable(true);
+            btAlterar.setDisable(true);
+            btRemover.setDisable(true);
+        }
+        else
+        {
+            paneInfoBasica.setDisable(b1);
+            paneEndereco.setDisable(b2);
+            paneContato.setDisable(b3);
+            btNovo.setDisable(b5);
+            btAlterar.setDisable(b7);
+            btRemover.setDisable(b8);
+        }
         panePesquisa.setDisable(b4);
-        btNovo.setDisable(b5);
         btConfirmar.setDisable(b6);
-        btAlterar.setDisable(b7);
-        btRemover.setDisable(b8);
         btCancelar.setDisable(b9);
     }
     
@@ -665,14 +677,21 @@ public class CadastroClienteController implements Initializable
     {
         if(!tvClientes.getItems().isEmpty() && tvClientes.getSelectionModel().getFocusedIndex() >= 0)
         {
-            cliente = tvClientes.getSelectionModel().getSelectedItem();
-            if(ctrCli.inativar(Integer.parseInt(cliente.getParam1())))
+            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION,"Deseja remover cliente " + 
+                 tvClientes.getSelectionModel().getSelectedItem().getParam2() + "?",ButtonType.YES,ButtonType.NO);
+            alerta.showAndWait();
+                
+            if(alerta.getResult() == ButtonType.YES)
             {
-                new Alert(Alert.AlertType.INFORMATION, "Cliente removido com sucesso!!!", ButtonType.OK).showAndWait();
-                inicializa();
+                cliente = tvClientes.getSelectionModel().getSelectedItem();
+                if(ctrCli.inativar(Integer.parseInt(cliente.getParam1())))
+                {
+                    new Alert(Alert.AlertType.INFORMATION, "Cliente removido com sucesso!!!", ButtonType.OK).showAndWait();
+                    inicializa();
+                }
+                else
+                    new Alert(Alert.AlertType.ERROR, "Erro na remoção do cliente", ButtonType.OK).showAndWait();
             }
-            else
-                new Alert(Alert.AlertType.ERROR, "Erro na remoção do cliente", ButtonType.OK).showAndWait();
         }
         else if(tvClientes.getItems().isEmpty())
             new Alert(Alert.AlertType.ERROR, "Não há clientes cadastrados para ser alterado", ButtonType.OK)

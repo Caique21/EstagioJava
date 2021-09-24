@@ -158,6 +158,53 @@ public class ctrFuncionario
         return flag;
     }
 
+    public boolean salvarMinimo(JFXTextField nome, JFXTextField cpf, JFXTextField rg, JFXTextField email, 
+        JFXComboBox<String> funcao,JFXDatePicker data, JFXTextField cep, JFXTextField rua, JFXTextField numero, 
+        JFXTextField bairro, JFXTextField complemento, JFXTextField cidade, JFXComboBox<String> estado, 
+        JFXListView<String> telefones,  JFXDatePicker vencimento,String frente,String verso)
+    {
+        Funcionario funcionario = new Funcionario(nome.getText(), funcao.getSelectionModel().getSelectedItem(), 
+            Date.valueOf(data.getValue()));
+        
+        if(!cpf.getText().equals(""))
+            funcionario.setCpf(cpf.getText());
+        if(rg.getText().length() == 12)
+            funcionario.setRg(rg.getText());
+        if(!email.getText().equals(""))
+            funcionario.setEmail(email.getText());
+        if(!vencimento.getEditor().getText().equals(""))
+            funcionario.setVencimento(Date.valueOf(vencimento.getValue()));
+        if(cep.getText().length() == 9 && !rua.getText().equals("") && !numero.getText().equals("") && 
+            !bairro.getText().equals("") && !cidade.getText().equals("") 
+                && estado.getSelectionModel().getSelectedIndex() >= 0)
+        {
+            Endereco endereco = new Endereco(cep.getText().replace("-", ""), rua.getText(), 
+                Integer.parseInt(numero.getText()), bairro.getText(), complemento.getText(), cidade.getText(), 
+                    estado.getSelectionModel().getSelectedItem());
+            if(endereco.getCodigo() <= 0)
+            {
+                endereco.salvar();
+                endereco.existe();
+            }
+            funcionario.setEndereco(endereco);
+        }
+        
+        boolean flag;
+        if(frente != null && !"atualizando".equals(frente) && verso != null && !"atualizando".equals(verso))
+            flag = funcionario.salvarMinimo(frente,verso);
+        else
+            flag = funcionario.salvarMinimo();
+        
+        if(flag && !telefones.getItems().isEmpty())
+        {
+            funcionario.setCodigo(Banco.getCon().getMaxPK("funcionario", "func_codigo"));
+            for (int i = 0; i < telefones.getItems().size() && flag; i++)
+                flag = flag && new Telefone(telefones.getItems().get(i).replace("(", "").replace(")", "")
+                    .replace("-", ""), funcionario).salvar();
+        }
+        return flag;
+    }
+
     public boolean alterar(int codigo, JFXTextField nome, JFXTextField cpf, JFXTextField rg, JFXTextField email, 
         JFXComboBox<String> funcao,JFXDatePicker data, JFXTextField cep, JFXTextField rua, JFXTextField numero, 
         JFXTextField bairro, JFXTextField complemento, JFXTextField cidade, JFXComboBox<String> estado, 
@@ -197,7 +244,53 @@ public class ctrFuncionario
         }
         return flag;
     }
-
+    
+    public boolean alterarMinimo(int codigo,JFXTextField nome, JFXTextField cpf, JFXTextField rg, JFXTextField email, 
+        JFXComboBox<String> funcao,JFXDatePicker data, JFXTextField cep, JFXTextField rua, JFXTextField numero, 
+        JFXTextField bairro, JFXTextField complemento, JFXTextField cidade, JFXComboBox<String> estado, 
+        JFXListView<String> telefones,  JFXDatePicker vencimento,String frente,String verso)
+    {
+        Funcionario funcionario = new Funcionario(codigo,nome.getText(), funcao.getSelectionModel().getSelectedItem(), 
+            Date.valueOf(data.getValue()));
+        
+        if(!cpf.getText().equals(""))
+            funcionario.setCpf(cpf.getText());
+        if(rg.getText().length() == 12)
+            funcionario.setRg(rg.getText());
+        if(!email.getText().equals(""))
+            funcionario.setEmail(email.getText());
+        if(!vencimento.getEditor().getText().equals(""))
+            funcionario.setVencimento(Date.valueOf(vencimento.getValue()));
+        if(cep.getText().length() == 9 && !rua.getText().equals("") && !numero.getText().equals("") && 
+            !bairro.getText().equals("") && !cidade.getText().equals("") 
+                && estado.getSelectionModel().getSelectedIndex() >= 0)
+        {
+            Endereco endereco = new Endereco(cep.getText().replace("-", ""), rua.getText(), 
+                Integer.parseInt(numero.getText()), bairro.getText(), complemento.getText(), cidade.getText(), 
+                    estado.getSelectionModel().getSelectedItem());
+            if(endereco.getCodigo() <= 0)
+            {
+                endereco.salvar();
+                endereco.existe();
+            }
+            funcionario.setEndereco(endereco);
+        }
+        
+        boolean flag;
+        if(frente != null && !"atualizando".equals(frente) && verso != null && !"atualizando".equals(verso))
+            flag = funcionario.alterarMinimo(frente,verso);
+        else
+            flag = funcionario.alterarMinimo();
+        
+        if(flag && !telefones.getItems().isEmpty())
+        {
+            funcionario.setCodigo(Banco.getCon().getMaxPK("funcionario", "func_codigo"));
+            for (int i = 0; i < telefones.getItems().size() && flag; i++)
+                flag = flag && new Telefone(telefones.getItems().get(i).replace("(", "").replace(")", "")
+                    .replace("-", ""), funcionario).salvar();
+        }
+        return flag;
+    }
     public boolean inativar(int codigo)
     {
         Funcionario funcionario = new Funcionario();
