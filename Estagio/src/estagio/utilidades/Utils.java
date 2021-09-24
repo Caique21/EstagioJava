@@ -612,7 +612,7 @@ public class Utils
                     
                     + ".combo-box-base .text\n"
                     + "{\n" 
-                    + "     -fx-fill: black;\n" 
+                    + "     -fx-fill: " + design.get(2) + ";\n" 
                     +"}\n\n"
                      /*       
                     + ".table-view .column-header .label \n"
@@ -638,6 +638,32 @@ public class Utils
                     + "{\n"
                     + "    -fx-background-color: #0096c9;\n"
                     + "    -fx-text-fill: " + design.get(2) + ";\n"      
+                    + "}\n\n"
+                    
+                    + ".date-cell \n"
+                    + "{\n"
+                    + "    -fx-background-color: #686868;\n"
+                    + "}\n"
+                    + "\n"
+                    + ".date-cell:hover \n"
+                    + "{\n"
+                    + "    -fx-background-color: #0096c9;\n"
+                    + "    -fx-text-fill: black;\n"
+                    + "}\n\n"
+                    
+                    + ".date-picker-popup > .month-year-pane \n"
+                    + "{\n"
+                    + "    -fx-background-color: #686868;\n"
+                    + "}\n\n"
+                    
+                    + ".date-picker-popup\n"
+                    + "{\n"
+                    + "    -fx-background-color: #686868;\n"
+                    + "}\n\n"
+                            
+                    + ".combo-box-base:hover > .arrow-button,\n"
+                    + ".date-picker:hover > .arrow-button {\n"
+                    + "    -fx-background-color: " + design.get(2) + ";\n"
                     + "}\n\n");
                 }
                 writer.close();
@@ -652,89 +678,6 @@ public class Utils
         {
             Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
         }
-        /*if(!design.isEmpty())
-        {
-            try
-            {
-                FileWriter writer = new FileWriter(file);
-                writer.write(".list-cell \n"
-                    + "{\n"
-                    + "    -fx-control-inner-background:" + design.get(1) + ";\n"
-                    + "    -fx-text-fill:" + design.get(7) + ";\n"
-                    + "}\n\n"
-                    + ".jfx-list-view \n"
-                    + "{\n"
-                    + "    -fx-background-color: " + design.get(0) + ";\n"
-                    + "}\n\n"
-                    + "list-view .list-cell:odd \n"
-                    + "{\n"
-                    + "    -fx-background-color: " + design.get(1) + ";\n"
-                    + "}\n\n"
-                    + ".list-view .list-cell:even \n"
-                    + "{\n"
-                    + "    -fx-background-color: " + design.get(0) + ";\n"
-                    + "}\n\n"
-                    + ".table-row-cell{\n" 
-                    + "   -fx-background-color: transparent;\n"
-                    + "}\n\n"
-                    + ".jfx-tab-pane .tab-header-background \n"
-                    + "{\n"
-                    + "    -fx-background-color:" +design.get(1) + "; \n"
-                    + "}\n\n"
-                    + ".jfx-tab-pane .tab-label\n "
-                    + "{\n"
-                    + "    -fx-alignment: CENTER;\n"
-                    + "    -fx-text-fill: " + design.get(2) + ";\n"
-                    + "    -fx-font-weight: bold;\n"
-                    + "}"
-                    + ".jfx-date-picker .text-field\n"
-                    + "{\n"
-                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
-                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
-                    + "    -fx-text-fill:" + design.get(7) + ";\n"
-                    + "    -fx-control-inner-background: transparent;\n"
-                    + "}\n\n"
-                    + ".text-field, .text-area\n"
-                    + "{\n"
-                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
-                    + "    -jfx-focus-color: " + design.get(8) + ";\n"
-                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
-                    + "    -fx-text-fill:" + design.get(7) + ";\n"
-                    + "    -fx-font-size: " + design.get(9) + ";\n"
-                    + "}\n\n"
-                    + ".button\n"
-                    + "{\n"
-                    + "    -fx-background-color: " + design.get(3) + ";\n"
-                    + "    -fx-text-fill: " + design.get(5) + ";\n"
-                    + "    -fx-font-size: " + design.get(6) + ";\n"
-                    + "}\n\n"
-                    + ".button .rippler{\n"
-                    + "      -fx-rippler-fill:" + design.get(4) + ";\n"
-                    + "}\n\n"
-                    + ".label, .radio-button\n"
-                    + "{\n"
-                    + "      -fx-text-fill: " + design.get(2) + ";\n"
-                    + "}\n\n"
-                    + ".combo-box \n"
-                    + "{\n"
-                    + "    -fx-background-color: transparent;\n"
-                    + "    -fx-text-fill: " + design.get(2) + ";\n"
-                    + "    -fx-cell-size: 1.66667em; \n"
-                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
-                    + "    -jfx-focus-color: " + design.get(8) + ";\n"        
-                    + "}\n\n"
-                    + ".jfx-combo-box{\n"
-                    + "    -jfx-unfocus-color: " + design.get(8) + ";\n"
-                    + "    -jfx-focus-color: " + design.get(8) + ";\n"
-                    + "    -fx-prompt-text-fill: " + design.get(7) + ";\n"
-                    +"}\n\n");
-                writer.close();
-            }
-            catch (IOException ex)
-            {
-                Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }*/
     }
     
     public static void setDesign(int paineisPrincipais, List<Node> nodes)

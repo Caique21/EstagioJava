@@ -64,7 +64,7 @@
 
 .combo-box-base .text
 {
-     -fx-fill: black;
+     -fx-fill: #FAFAFA;
 }
 
 .table-view .column-header-background
@@ -84,5 +84,31 @@
 {
     -fx-background-color: #0096c9;
     -fx-text-fill: #FAFAFA;
+}
+
+.date-cell 
+{
+    -fx-background-color: #686868;
+}
+
+.date-cell:hover 
+{
+    -fx-background-color: #0096c9;
+    -fx-text-fill: black;
+}
+
+.date-picker-popup > .month-year-pane 
+{
+    -fx-background-color: #686868;
+}
+
+.date-picker-popup
+{
+    -fx-background-color: #686868;
+}
+
+.combo-box-base:hover > .arrow-button,
+.date-picker:hover > .arrow-button {
+    -fx-background-color: #FAFAFA;
 }
 
