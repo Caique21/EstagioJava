@@ -45,18 +45,38 @@ public class ctrUsuario
     {
         Usuario usuario = new Usuario();
         usuario.setFuncionario(new Funcionario(Banco.getCon().getMaxPK("funcionario", "func_codigo")));
-        usuario.setNome(funcionario.toLowerCase());
+        
+        funcionario = funcionario.toLowerCase();
+        if(funcionario.contains(" "))
+        {
+            usuario.setNome(funcionario.substring(0, funcionario.indexOf(" ") + 1));
+            usuario.setNome(usuario.getNome() + funcionario.substring(funcionario.lastIndexOf(" ") + 1));
+        }
+        else
+            usuario.setNome(funcionario);
+        
+        usuario.setSenha(usuario.getNome().substring(0,3));
+        
+        int j = 0;
+        for (int i = usuario.getNome().indexOf(" ") + 1; i < usuario.getNome().length() && j < 3; i++)
+        {
+            usuario.setSenha(usuario.getSenha() + usuario.getNome().charAt(i));
+            j++;
+        }
+        usuario.setSenha(usuario.getSenha() + usuario.getFuncionario().getCodigo());
         usuario.setNivel(nivel);
         
-        usuario.setSenha(usuario.getNome().substring(0, 3));
+        /*usuario.setSenha(usuario.getNome().substring(0, 3));
         if(usuario.getNome().contains(" "))
         {
             //3 primeiras letras do primeiro nome + 3 primeras letras do ultimo nome + numero de cadastro
-            usuario.setSenha(usuario.getSenha() + 
-                usuario.getNome().substring(usuario.getNome().lastIndexOf(" ") + 1, 
-                        usuario.getNome().lastIndexOf(" ") + 4));
+            String aux = usuario.getNome().substring(usuario.getNome().lastIndexOf(" ") + 1);
+            if(aux.length() >= 3)
+                usuario.setSenha(usuario.getSenha() + aux.substring(0, 3));
+            else
+                usuario.setSenha(usuario.getSenha() + aux);
         }
-        usuario.setSenha(usuario.getSenha() + usuario.getFuncionario().getCodigo());
+        usuario.setSenha(usuario.getSenha() + usuario.getFuncionario().getCodigo());*/
         
         return usuario.salvar();
     }

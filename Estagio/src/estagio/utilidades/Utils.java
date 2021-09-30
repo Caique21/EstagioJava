@@ -530,6 +530,11 @@ public class Utils
                     + "    -fx-background-color: #0096c9;\n"
                     + "    -fx-text-fill: white;\n"      
                     + "}\n\n"
+                    
+                    + ".list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {\n"
+                    + "    -fx-padding: 4 0 4 5;\n"
+                    + "    -fx-background: " + design.get(1) + ";\n"
+                    + "}"
                             
                     /*+ "list-view .list-cell:odd \n"
                     + "{\n"

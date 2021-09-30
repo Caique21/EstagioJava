@@ -204,7 +204,7 @@ public class TelaGerenciamentoController implements Initializable
             
             stage.setTitle("Cadastro de Veículo");
             stage.setScene(scene);
-            stage.setAlwaysOnTop(true);
+            //stage.setAlwaysOnTop(true);
             stage.showAndWait();
 
         } catch (IOException er)

@@ -295,7 +295,12 @@ public class ctrFuncionario
     {
         Funcionario funcionario = new Funcionario();
         funcionario.setCodigo(codigo);
-        return funcionario.inativar() && new Usuario(funcionario).inativar();
+        
+        Usuario usuario = new Usuario(funcionario);
+        
+        if(usuario.getCodigo() > 0)
+            return funcionario.inativar() && new Usuario(funcionario).inativar();
+        return funcionario.inativar();
     }
 
     public BufferedImage carregaFrenteCNH(int codigo)

@@ -210,7 +210,7 @@ public class TelaPrincipalController implements Initializable
             atualizaLogo(SwingFXUtils.toFXImage(ctr_para.carregaLogoPequeno(),null));
         lbFantasia.setText(ctr_para.carregaFantasia());
         
-        Socket socket = new Socket();
+        /*Socket socket = new Socket();
         try
         {
             socket.connect(new InetSocketAddress("google.com", 80));
@@ -243,7 +243,7 @@ public class TelaPrincipalController implements Initializable
         catch (IOException ex)
         {
             Logger.getLogger(TelaPrincipalController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }*/
         Platform.runLater(() ->
         {
             central = painelCentral;

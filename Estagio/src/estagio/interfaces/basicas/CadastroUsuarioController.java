@@ -538,7 +538,7 @@ public class CadastroUsuarioController implements Initializable
         if(!tvUsuarios.getItems().isEmpty() && tvUsuarios.getSelectionModel().getSelectedIndex() >= 0)
         {
             if(TelaPrincipalController.usuario_logado.getParam5().equals("alto") || 
-                TelaPrincipalController.usuario_logado.getParam2().equals(
+                TelaPrincipalController.usuario_logado.getParam3().equals(
                     tvUsuarios.getSelectionModel().getSelectedItem().getParam2()))
             {
                 setEstado(false, true, true, false, true, true, false);

@@ -208,7 +208,7 @@ public class Endereco
     {
         if(this.codigo > 0)
             return "CEP " + this.cep + " \n" + this.rua + " " + this.numero + ", " + this.bairro + " - " + 
-                this.complemento + "\n" + this.cidade + " - " + this.estado;
+                this.complemento + " \n" + this.cidade + " - " + this.estado;
         return "sem endereço cadastrado";
     }
     

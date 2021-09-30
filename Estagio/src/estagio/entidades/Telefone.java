@@ -23,7 +23,7 @@ public class Telefone
     private String numero;
     private Cliente cliente;
     private Funcionario funcionario;
-    //private Fornecedor fornecedor;
+    private Fornecedor fornecedor;
     private Parametrizacao parametrizacao;
 
     public Telefone()
@@ -66,6 +66,12 @@ public class Telefone
         this.numero = numero;
         this.parametrizacao = parametrizacao;
     }
+
+    public Telefone(String numero, Fornecedor fornecedor)
+    {
+        this.numero = numero;
+        this.fornecedor = fornecedor;
+    }
     
     public boolean salvar()
     {
@@ -84,6 +90,11 @@ public class Telefone
         {
             sql = "insert into telefone (tel_numero, func_codigo) values('$1','$2')";
             sql = sql.replace("$2", String.valueOf(funcionario.getCodigo()));
+        }
+        else if(fornecedor != null)
+        {
+            sql = "insert into telefone (tel_numero, forn_codigo) values('$1','$2')";
+            sql = sql.replace("$2", String.valueOf(fornecedor.getCodigo()));
         }
             
         sql = sql.replace("$1", numero);

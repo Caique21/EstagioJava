@@ -15,7 +15,10 @@
     -fx-text-fill: white;
 }
 
-.table-row-cell
+.list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
+    -fx-padding: 4 0 4 5;
+    -fx-background: #212121;
+}.table-row-cell
 {
    -fx-background-color: transparent;
 }

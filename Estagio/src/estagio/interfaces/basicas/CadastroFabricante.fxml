@@ -36,7 +36,7 @@
                         <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" />
                      </graphic>
                   </JFXButton>
-                  <TableView fx:id="tvFabricantes" layoutX="20.0" layoutY="75.0" prefHeight="288.0" prefWidth="875.0">
+                  <TableView fx:id="tvFabricantes" layoutX="20.0" layoutY="75.0" onMouseClicked="#selecionaFabricante" prefHeight="288.0" prefWidth="875.0">
                      <columns>
                         <TableColumn fx:id="tcMarca" prefWidth="437.0" text="Marca" />
                         <TableColumn fx:id="tcModelo" prefWidth="437.0" text="Modelo" />
@@ -71,7 +71,7 @@
                   </JFXButton>
                   <JFXButton fx:id="btRemover" buttonType="RAISED" onAction="#clickRemover" onMouseEntered="#removerModeloEnter" onMouseExited="#removerModeloExit" text="REMOVER">
                      <graphic>
-                        <FontAwesomeIconView fx:id="faClose" glyphName="TRASH" />
+                        <FontAwesomeIconView fx:id="faTrash" glyphName="TRASH" />
                      </graphic>
                   </JFXButton>
                   <JFXButton fx:id="btCancelar" buttonType="RAISED" onAction="#clickCancelar" onMouseEntered="#cancelarModeloEnter" onMouseExited="#cancelarModeloExit" text="CANCELAR">
