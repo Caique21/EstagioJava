@@ -31,7 +31,7 @@
                   </Label>
                   <JFXTextField fx:id="tfMarca" labelFloat="true" layoutX="20.0" layoutY="32.0" prefHeight="25.0" prefWidth="182.0" promptText="Nome da Marca(*)" />
                   <JFXTextField fx:id="tfModelo" labelFloat="true" layoutX="236.0" layoutY="32.0" prefHeight="25.0" prefWidth="190.0" promptText="Nome do Modelo(*)" />
-                  <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="464.0" layoutY="32.0" onAction="#clickPesquisar" onMouseEntered="#pesquisarModeloEnter" onMouseExited="#pesquisarModeloExit" text="PESQUISAR">
+                  <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="464.0" layoutY="32.0" onAction="#clickPesquisar" onMouseEntered="#pesquisarEnter" onMouseExited="#pesquisarExit" text="PESQUISAR">
                      <graphic>
                         <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" />
                      </graphic>
@@ -42,8 +42,6 @@
                         <TableColumn fx:id="tcModelo" prefWidth="437.0" text="Modelo" />
                      </columns>
                   </TableView>
-                  <Label fx:id="lbErroModelo" layoutX="236.0" layoutY="58.0" text="Label" textFill="#ff0101" />
-                  <Label fx:id="lbErroMarca" layoutX="20.0" layoutY="58.0" text="Label" textFill="#ff0101" />
                </children>
             </Pane>
          </children>
@@ -54,27 +52,22 @@
          <children>
             <HBox fx:id="hbModelo" alignment="CENTER" layoutX="20.0" prefHeight="51.0" prefWidth="875.0" spacing="15.0">
                <children>
-                  <JFXButton fx:id="btNovo" buttonType="RAISED" onAction="#clickNovo" onMouseEntered="#novoModeloEnter" onMouseExited="#novoModeloExit" text="NOVO">
+                  <JFXButton fx:id="btNovo" buttonType="RAISED" onAction="#clickNovo" onMouseEntered="#novoEnter" onMouseExited="#novoExit" text="NOVO">
                      <graphic>
                         <FontAwesomeIconView fx:id="faPlus" glyphName="PLUS" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="btConfirmar" buttonType="RAISED" onAction="#clickConfirmar" onMouseEntered="#confirmarModeloEnter" onMouseExited="#confirmarModeloExit" text="CONFIRMAR">
-                     <graphic>
-                        <FontAwesomeIconView fx:id="faCheck" glyphName="CHECK" />
-                     </graphic>
-                  </JFXButton>
-                  <JFXButton fx:id="btAlterar" buttonType="RAISED" onAction="#clickAlterar" onMouseEntered="#alterarModeloEnter" onMouseExited="#alterarModeloExit" text="ALTERAR">
+                  <JFXButton fx:id="btAlterar" buttonType="RAISED" onAction="#clickAlterar" onMouseEntered="#alterarEnter" onMouseExited="#alterarExit" text="ALTERAR">
                      <graphic>
                         <FontAwesomeIconView fx:id="faEdit" glyphName="EDIT" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="btRemover" buttonType="RAISED" onAction="#clickRemover" onMouseEntered="#removerModeloEnter" onMouseExited="#removerModeloExit" text="REMOVER">
+                  <JFXButton fx:id="btRemover" buttonType="RAISED" onAction="#clickRemover" onMouseEntered="#removerEnter" onMouseExited="#removerExit" text="REMOVER">
                      <graphic>
                         <FontAwesomeIconView fx:id="faTrash" glyphName="TRASH" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="btCancelar" buttonType="RAISED" onAction="#clickCancelar" onMouseEntered="#cancelarModeloEnter" onMouseExited="#cancelarModeloExit" text="CANCELAR">
+                  <JFXButton fx:id="btCancelar" buttonType="RAISED" onAction="#clickCancelar" onMouseEntered="#cancelarEnter" onMouseExited="#cancelarExit" text="CANCELAR">
                      <graphic>
                         <FontAwesomeIconView fx:id="faClose" glyphName="CLOSE" />
                      </graphic>

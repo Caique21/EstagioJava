@@ -6,6 +6,8 @@
 package estagio.controladores;
 
 import com.jfoenix.controls.JFXTextField;
+import estagio.entidades.Marca;
+import estagio.entidades.Modelo;
 import estagio.utilidades.Objeto;
 import java.util.ArrayList;
 
@@ -30,43 +32,105 @@ public class ctrFabricante
         return con;
     }
 
+    public boolean salvarMarca(JFXTextField tfMarca)
+    {
+        Marca marca = new Marca();
+        marca.setNome(tfMarca.getText());
+        return marca.salvar();
+    }
+    
+    public boolean salvarMarca(String m)
+    {
+        Marca marca = new Marca();
+        marca.setNome(m);
+        return marca.salvar();
+    }
+
+    public boolean alterarMarca(int codigo, JFXTextField tfMarca)
+    {
+        return new Marca(codigo, tfMarca.getText()).alterar();
+    }
+    
+    public boolean alterarMarca(int codigo, String tfMarca)
+    {
+        return new Marca(codigo, tfMarca).alterar();
+    }
+
     public boolean apagarMarca(Objeto item)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Marca().apagar(Integer.parseInt(item.getParam1()));
+    }
+
+    public boolean salvarModelo(JFXTextField tfMarca, JFXTextField tfModelo)
+    {
+        Modelo modelo = new Modelo(tfModelo.getText(), new Marca(tfMarca.getText()));
+        return modelo.salvar();
+    }
+    
+    public boolean salvarModelo(String marca_modelo)
+    {
+        Modelo modelo = new Modelo(marca_modelo.substring(marca_modelo.indexOf(":") + 1), 
+            new Marca(marca_modelo.substring(0, marca_modelo.indexOf(":"))));
+        return modelo.salvar();
+    }
+
+    public boolean alterarModelo(int codigo, JFXTextField tfModelo)
+    {
+        return new Modelo(codigo, tfModelo.getText()).alterar();
+    }
+    
+    public boolean alterarModelo(int codigo, String tfModelo)
+    {
+        return new Modelo(codigo, tfModelo).alterar();
+    }
+    
+    public boolean alterarModelo(int codigo, String tfModelo, String marca)
+    {
+        return new Modelo(codigo, tfModelo, new Marca(marca)).alterar();
     }
 
     public boolean apagarModelo(Objeto item)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Modelo().apagar(Integer.parseInt(item.getParam3()));
     }
 
     public ArrayList<Objeto> getAll()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Modelo().getAllMerged();
     }
 
     public ArrayList<Objeto> get(String... nomes)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        switch (nomes.length)
+        {
+            case 0:
+                return getAll();
+            case 1:
+                return new Modelo().get(nomes[0]);
+            default:
+                return new Modelo().get(nomes[0],nomes[1]);
+        }
+    }
+    
+    public ArrayList<Objeto> getByModelo(String nome)
+    {
+        return new Modelo().getByModelo(nome);
     }
 
-    public boolean salvarMarca(JFXTextField tfMarca)
+    public ArrayList<String> getAllMarcas()
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<String> nomes = new ArrayList<>();
+        ArrayList<Marca> marcas = new Marca().getAll();
+        
+        for (int i = 0; i < marcas.size(); i++)
+            nomes.add(marcas.get(i).getNome());
+        
+        return nomes;
     }
 
-    public boolean salvarModelo(JFXTextField tfModelo)
+    public boolean existe(String marca, String modelo)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public boolean alterarMarca(int parseInt, JFXTextField tfMarca)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public boolean alterarModelo(int parseInt, JFXTextField tfModelo)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<Objeto> m = new Modelo().get(marca,modelo);
+        return Integer.parseInt(m.get(0).getParam1()) > 0;
     }
 }
