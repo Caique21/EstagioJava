@@ -6,6 +6,7 @@
 package estagio.utilidades;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXListView;
@@ -755,6 +756,8 @@ public class Utils
                     else if(node instanceof Label)
                         node.setStyle("-fx-text-fill: " + design.get(2));
                     else if(node instanceof JFXRadioButton)
+                        node.setStyle("-fx-text-fill: " + design.get(2));
+                    else if(node instanceof JFXCheckBox)
                         node.setStyle("-fx-text-fill: " + design.get(2));
                     else if(node instanceof Circle)
                     {

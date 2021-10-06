@@ -157,13 +157,15 @@ CREATE TABLE Veiculo
  	vei_codigo serial NOT NULL,
  	vei_chassi VARCHAR(45) NULL,
 	vei_placa VARCHAR(8) NULL UNIQUE,
-	vei_modelo VARCHAR(45) NOT NULL ,
-	vei_marca VARCHAR(45) NOT NULL ,
+	modelo_codigo INTEGER NOT NULL ,
 	vei_ano INTEGER NOT NULL ,
 	vei_cor VARCHAR(45) NOT NULL ,
-	vei_descricao VARCHAR(45) NULL ,
+	vei_descricao VARCHAR(90) NULL ,
   	CONSTRAINT pk_veiculo
-		PRIMARY KEY (vei_codigo)
+		PRIMARY KEY (vei_codigo),
+	CONSTRAINT fk_veiculo_modelo
+		FOREIGN KEY (modelo_codigo)
+		REFERENCES modelo ON DELETE CASCADE
 );
 
 CREATE TABLE Usuario

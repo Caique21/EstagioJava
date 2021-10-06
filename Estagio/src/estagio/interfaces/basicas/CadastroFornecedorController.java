@@ -985,7 +985,7 @@ public class CadastroFornecedorController implements Initializable
     {
         btPesquisar.setStyle(btPesquisar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
         tooltip.setText("Pesquisar Fornecedor");
-        ToolTip.bindTooltip(btCancelar, tooltip);
+        ToolTip.bindTooltip(btPesquisar, tooltip);
     }
 
     @FXML

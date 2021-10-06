@@ -4,6 +4,7 @@ package estagio.utilidades;
  *
  * @author Henrique K.
  */
+import com.jfoenix.controls.JFXTextField;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -244,6 +245,86 @@ public abstract class MaskFieldUtil
         {
             String value = textField.getText();
             value = value.replaceAll("[^0-9A-Z]", "");
+            textField.setText(value);
+            MaskFieldUtil.positionCaret(textField);
+        }
+        );
+    }
+
+    public static void placaNormalField(JFXTextField textField)
+    {
+        MaskFieldUtil.maxField(textField, 8);
+        textField.lengthProperty().addListener((observableValue, number, number2) ->
+        {
+            String value = textField.getText();
+            int last = value.length();
+            
+            if(value.length() <= 3)
+            {
+                if(last == 1)
+                {
+                    if(!value.matches("[A-Z]"))
+                        value = "";
+                }
+                else if(!value.substring(last-1,last).matches("[A-Z]"))
+                    value = value.substring(0, last - 1);   
+            }
+            if(value.length() > 3)
+            {
+                if(value.substring(last - 1, last).matches("[0-9]"))
+                {
+                    if(!value.contains("-"))
+                        value = value.substring(0, 3) + "-" + value.substring(3);
+                }
+                else
+                {
+                    value = value.substring(0, last - 1);
+                }
+            }
+            
+            textField.setText(value);
+            MaskFieldUtil.positionCaret(textField);
+        }
+        );
+    }
+
+    public static void placaMercosulField(JFXTextField textField)
+    {
+        //m = new MaskFormatter("[A-Z]{2,3}[0-9]{4}|[A-Z]{3,4}[0-9]{3}|[A-Z0-9]{7}");
+        MaskFieldUtil.maxField(textField, 7);
+        textField.lengthProperty().addListener((observableValue, number, number2) ->
+        {
+            String value = textField.getText();
+            int last = value.length();
+            
+            if(!value.equals(""))
+            {
+                if(value.length() <= 3)
+                {
+                    if(last == 1)
+                    {
+                        if(!value.matches("[A-Z]"))
+                            value = "";
+                    }
+                    else if(!value.substring(last-1,last).matches("[A-Z]"))
+                        value = value.substring(0, last - 1);   
+                }
+                if(value.length() > 3)
+                {
+                    if(value.length() == 5)
+                    {
+                        if(!value.substring(last-1,last).matches("[A-Z]"))
+                            value = value.substring(0, last - 1);   
+                    }
+                    else
+                    {
+                        if(!value.substring(last-1,last).matches("[0-9]"))
+                            value = value.substring(0, last - 1);   
+                    }
+                }
+            }
+            
+            
             textField.setText(value);
             MaskFieldUtil.positionCaret(textField);
         }

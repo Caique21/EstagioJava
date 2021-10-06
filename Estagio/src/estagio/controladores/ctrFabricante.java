@@ -128,6 +128,18 @@ public class ctrFabricante
         return nomes;
     }
 
+    public ArrayList<String> getAllModelosByMarca(String nome)
+    {
+        ArrayList<String> nomes = new ArrayList<>();
+        Marca marca = new Marca(nome);
+        ArrayList<Modelo> modelos = new Modelo().getByMarca(marca.getCodigo());
+        
+        for (int i = 0; i < modelos.size(); i++)
+            nomes.add(modelos.get(i).getNome());
+        
+        return nomes;
+    }
+
     public boolean existe(String marca, String modelo)
     {
         ArrayList<Objeto> m = new Modelo().get(marca,modelo);

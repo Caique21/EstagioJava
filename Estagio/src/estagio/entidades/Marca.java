@@ -124,7 +124,7 @@ public class Marca
     {
         ArrayList<Marca>marcas = new ArrayList<>();
         
-        ResultSet rs = Banco.getCon().consultar("SELECT * FROM marca");
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM marca order by marca_nome");
         
         try
         {

@@ -74,6 +74,31 @@ public class Modelo
         this.codigo = codigo;
     }
 
+    public void setCodigo()
+    {
+        String sql = "SELECT modelo_codigo FROM modelo WHERE ";
+        if(this.marca != null && this.nome != null)
+            sql += "marca_codigo = " + this.marca.getCodigo() + " AND modelo_nome = '" + this.nome + "'";
+        else if(this.marca != null)
+            sql += "marca_codigo = " + this.marca.getCodigo();
+        else if(this.nome != null)
+            sql += "modelo_nome = '" + this.nome + "'";
+        
+        ResultSet rs = Banco.getCon().consultar(sql);
+        
+        try
+        {
+            if(rs != null && rs.next())            
+            {
+                this.codigo = rs.getInt("modelo_codigo");
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Modelo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public String getNome()
     {
         return nome;
@@ -243,6 +268,25 @@ public class Modelo
         {
             Logger.getLogger(Modelo.class.getName()).log(Level.SEVERE, null, ex);
             Banco.getCon().setErro(ex.getMessage());
+        }
+        return ret;
+    }
+
+    public ArrayList<Modelo> getByMarca(int marca)
+    {
+        ArrayList<Modelo>ret = new ArrayList<>();
+        String sql = "SELECT * FROM modelo WHERE marca_codigo = " + marca;
+        
+        ResultSet rs = Banco.getCon().consultar(sql);
+        
+        try
+        {
+            while(rs != null && rs.next())            
+                ret.add(new Modelo(rs.getInt("modelo_codigo"), rs.getString("modelo_nome"), new Marca(marca)));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Modelo.class.getName()).log(Level.SEVERE, null, ex);
         }
         return ret;
     }
