@@ -196,15 +196,6 @@ CREATE TABLE Acessos
 		REFERENCES usuario ON DELETE CASCADE
 );
 
-CREATE TABLE forma_pagamento
-(
-	form_pagamento_codigo SERIAL NOT NULL,
-	form_pagamento_nome VARCHAR(45) NOT NULL,
-	form_pagamento_descricao VARCHAR(90) NULL,
-	CONSTRAiNT pk_forma_pagamento
-		PRIMARY KEY(form_pagamento_codigo)
-);
-
 CREATE TABLE Compra
 (
   	comp_codigo serial NOT NULL ,
@@ -305,7 +296,8 @@ CREATE TABLE recebimento
   	rec_data Date NOT NULL ,
   	rec_valor DECIMAL(10,2) NOT NULL,
 	parc_codigo INTEGER NULL,
-	rec_forma_pagamento VARCHAR(12) not null,
+	rec_forma_pagamento VARCHAR(15) not null,
+	rec_form_pagamento_desc VARCHAR(45) NULL,
 	rec_ativo boolean NOT NULL,--TRUE == PAGAMENTO | FALSE == ESTORNO
   	CONSTRAINT pk_recebimento
 		PRIMARY KEY (rec_codigo) ,
@@ -390,6 +382,7 @@ CREATE TABLE Pagamento
   	pag_valor DECIMAL(10,2) NOT NULL,
 	parc_codigo INTEGER NULL,
 	pag_forma_pagamento VARCHAR(12) not null,
+	pag_form_pagamento_desc VARCHAR(45) NULL,
 	pag_ativo boolean NOT NULL,--TRUE == PAGAMENTO | FALSE == ESTORNO
 	desp_codigo INTEGER NULL,
   	CONSTRAINT pk_pagamento

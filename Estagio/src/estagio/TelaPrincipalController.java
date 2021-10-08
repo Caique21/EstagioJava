@@ -10,6 +10,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDecorator;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.controladores.ctrAcesso;
+import estagio.controladores.ctrDespesa;
 import estagio.controladores.ctrParametrizacao;
 import estagio.interfaces.basicas.CadastroFuncionarioController;
 import estagio.utilidades.Banco;
@@ -66,6 +67,7 @@ public class TelaPrincipalController implements Initializable
     Thread timerThread;
     private final ctrAcesso ctr_acessos = ctrAcesso.instancia();
     private final ctrParametrizacao ctr_para = ctrParametrizacao.instancia();
+    private final ctrDespesa ctrDesp = ctrDespesa.instancia();
     public static Image logo;
     public static Rectangle2D screenBounds;
     public static VBox central;
@@ -210,9 +212,10 @@ public class TelaPrincipalController implements Initializable
             atualizaLogo(SwingFXUtils.toFXImage(ctr_para.carregaLogoPequeno(),null));
         lbFantasia.setText(ctr_para.carregaFantasia());
         
-        /*Socket socket = new Socket();
+        Socket socket = new Socket();
         try
         {
+            socket.setSoTimeout(2000);
             socket.connect(new InetSocketAddress("google.com", 80));
             
             if(ctr_acessos.firstOfDay(LocalDate.now()) && socket.getLocalAddress().toString().replace("/", "")
@@ -243,13 +246,18 @@ public class TelaPrincipalController implements Initializable
         catch (IOException ex)
         {
             Logger.getLogger(TelaPrincipalController.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
+        }
         Platform.runLater(() ->
         {
             central = painelCentral;
             central.getScene();
         });
         
+        Platform.runLater(() ->
+        {
+            if(!ctrDesp.verificaGeracaoAutomatica())
+                ctrDesp.gerarDespesasAutomatica();
+        });
     }    
 
     private void inicializaHora()

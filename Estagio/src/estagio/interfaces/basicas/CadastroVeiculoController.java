@@ -484,7 +484,7 @@ public class CadastroVeiculoController implements Initializable
     @FXML
     private void clickAlterar(ActionEvent event)
     {
-         if(!tvVeiculos.getItems().isEmpty() && tvVeiculos.getSelectionModel().getSelectedIndex() >= 0)
+        if(!tvVeiculos.getItems().isEmpty() && tvVeiculos.getSelectionModel().getSelectedIndex() >= 0)
         {
             veiculo = tvVeiculos.getSelectionModel().getSelectedItem();
             acao = 1;
