@@ -41,6 +41,7 @@ public class ctrPagamento
         pagamento.setValor(Double.parseDouble(valor.replace(".", "").replace(",", ".")));
         pagamento.setForma_pagamento(forma_pagamento);
         pagamento.setForma_pagamento_desc(aux_forma_pagamento);
+        pagamento.setDespesa(despesa);
         
         boolean flag = pagamento.pagarDespesa();
         

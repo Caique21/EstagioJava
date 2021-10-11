@@ -789,4 +789,28 @@ public class Funcionario
         }
         return funcionarios;
     }
+
+    public boolean restaurar(int... codigo)
+    {
+        String sql = "UPDATE funcionario SET func_ativo = 'true' WHERE func_codigo = ";
+        
+        if(codigo.length == 0)
+            sql += this.codigo;
+        else
+            sql += codigo[0];
+        
+        return Banco.getCon().manipular(sql);
+    }
+
+    public boolean apagar_fisico(int... codigo)
+    {
+        String sql = "DELETE FROM funcionario WHERE func_codigo = ";
+        
+        if(codigo.length == 0)
+            sql += this.codigo;
+        else
+            sql += codigo[0];
+        
+        return Banco.getCon().manipular(sql);
+    }
 }

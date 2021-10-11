@@ -55,6 +55,17 @@ public class ctrFuncionario
         
         return retorno;
     }
+    
+    public ArrayList<Objeto> getByNameInativo(String nome)
+    {
+        ArrayList<Objeto>retorno = new ArrayList<>();
+        ArrayList<Funcionario>funcionarios = new Funcionario().getByName(nome,false);
+        
+        for (int i = 0; i < funcionarios.size(); i++)
+            retorno.add(convertClienteToObjeto(funcionarios.get(i)));
+        
+        return retorno;
+    }
 
     public ArrayList<Objeto> getByCPF(String cpf)
     {
@@ -62,6 +73,17 @@ public class ctrFuncionario
         Funcionario funcionario = new Funcionario().getByCpf(cpf);
         
         if(funcionario != null && funcionario.isAtivo())
+            retorno.add(convertClienteToObjeto(funcionario));
+        
+        return retorno;
+    }
+    
+    public ArrayList<Objeto> getByCPFInativo(String cpf)
+    {
+        ArrayList<Objeto>retorno = new ArrayList<>();
+        Funcionario funcionario = new Funcionario().getByCpf(cpf);
+        
+        if(funcionario != null && !funcionario.isAtivo())
             retorno.add(convertClienteToObjeto(funcionario));
         
         return retorno;
@@ -337,5 +359,15 @@ public class ctrFuncionario
     public String getNameByCode(int codigo)
     {
         return new Funcionario(codigo).getNome();
+    }
+
+    public boolean restaura(int codigo)
+    {
+        return new Funcionario().restaurar(codigo);
+    }
+
+    public boolean apagar_fisico(int codigo)
+    {
+        return new Funcionario().apagar_fisico(codigo);
     }
 }

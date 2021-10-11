@@ -105,12 +105,34 @@ public class ctrCliente
         return retorno;
     }
     
+    public ArrayList<Objeto> getByNameInativo(String nome)
+    {
+        ArrayList<Objeto>retorno = new ArrayList<>();
+        ArrayList<Cliente>clientes = new Cliente().getByName(nome,false);
+        
+        for (int i = 0; i < clientes.size(); i++)
+            retorno.add(convertClienteToObjeto(clientes.get(i)));
+        
+        return retorno;
+    }
+    
     public ArrayList<Objeto> getByCPF(String cpf)
     {
         ArrayList<Objeto>retorno = new ArrayList<>();
         Cliente cliente = new Cliente().getByCpf(cpf);
         
         if(cliente.isAtivo())
+            retorno.add(convertClienteToObjeto(cliente));
+        
+        return retorno;
+    }
+    
+    public ArrayList<Objeto> getByCPFInativo(String cpf)
+    {
+        ArrayList<Objeto>retorno = new ArrayList<>();
+        Cliente cliente = new Cliente().getByCpf(cpf);
+        
+        if(!cliente.isAtivo())
             retorno.add(convertClienteToObjeto(cliente));
         
         return retorno;
@@ -154,5 +176,15 @@ public class ctrCliente
         if(!obj.getParam1().equals(""))
             cliente.setCodigo(Integer.parseInt(obj.getParam1()));
         return cliente;
+    }
+
+    public boolean restaura(int codigo)
+    {
+        return new Cliente().restaurar(codigo);
+    }
+
+    public boolean apagar_fisico(int codigo)
+    {
+        return new Cliente().apagar_fisico(codigo);
     }
 }

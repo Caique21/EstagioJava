@@ -6,6 +6,7 @@
 package estagio.entidades;
 
 import estagio.utilidades.Banco;
+import estagio.utilidades.Utils;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -75,6 +76,12 @@ public class Despesa
     public Despesa(int codigo)
     {
         this.codigo = codigo;
+        get();
+    }
+
+    public Despesa(String nome)
+    {
+        this.nome = nome;
         get();
     }
 
@@ -163,7 +170,7 @@ public class Despesa
                 this.codigo = rs.getInt("desp_codigo");
                 this.nome = rs.getString("desp_nome");
                 this.fixo = rs.getBoolean("desp_fixo");
-                this.valor = rs.getDouble("deps_preco");
+                this.valor = rs.getDouble("desp_preco");
                 this.vencimento = rs.getDate("desp_data_vencimento");
                 //this.transporte = new Transporte(rs.getInt("trans_codigo"));
             }
@@ -192,10 +199,32 @@ public class Despesa
         }
         return despesas;
     }
-
+    
     public ArrayList<Despesa> getByNome(String nome)
     {
         return ler(Banco.getCon().consultar("SELECT * FROM despesa WHERE desp_nome Ilike '%" + nome + "%'"));
+    }
+
+    public ArrayList<Despesa> getByNomeDistinct(String nome)
+    {
+        ArrayList<String>aux = new ArrayList<>();
+        ArrayList<Despesa>despesas = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT DISTINCT desp_nome AS desp_nome FROM despesa WHERE "
+            + "desp_nome Ilike '%" + nome + "%' GROUP BY desp_nome");
+        
+        try
+        {
+            while(rs != null && rs.next())            
+                despesas.addAll(ler(Banco.getCon().consultar("SELECT * FROM despesa WHERE desp_codigo IN "
+                    + "(SELECT max(desp_codigo) FROM despesa WHERE desp_nome = '" + rs.getString("desp_nome") + "')")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Despesa.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        
+        return despesas;
     }
 
     public boolean salvar()
@@ -228,7 +257,7 @@ public class Despesa
     public boolean alterar()
     {
         String sql = "UPDATE despesa SET desp_nome = '$1', desp_fixo = '$2', desp_preco = $3, "
-            + "desp_data_vencimento = '$4', desp_descricao = '$5' WHERE desp_codigo = " + this.codigo;
+                + "desp_data_vencimento = '$4', desp_descricao = '$5' WHERE desp_codigo = " + this.codigo;
         
         sql = sql.replace("$1", this.nome);
         sql = sql.replace("$2", String.valueOf(this.fixo));
@@ -238,16 +267,131 @@ public class Despesa
         
         return Banco.getCon().manipular(sql);
     }
+    
+    public boolean alterar(String nome_antigo)
+    {
+        String sql2 = "UPDATE despesa SET desp_data_vencimento = '$4' WHERE desp_codigo = " + this.codigo;
+        
+        String sql = "UPDATE despesa SET desp_nome = '$1', desp_fixo = '$2', desp_preco = $3, "
+            + "desp_descricao = '$5' WHERE desp_nome = '" + nome_antigo + "'";
+        
+        sql = sql.replace("$1", this.nome);
+        sql = sql.replace("$2", String.valueOf(this.fixo));
+        sql = sql.replace("$3", String.valueOf(this.valor));
+        sql = sql.replace("$5", this.descricao);
+        sql2 = sql2.replace("$4", String.valueOf(this.vencimento));
+        
+        if(validaMes())
+            return Banco.getCon().manipular(sql) && Banco.getCon().manipular(sql2);
+        return Banco.getCon().manipular(sql) && Banco.getCon().manipular("DELETE FROM despesa WHERE desp_codigo = "
+            + this.codigo);
+    }
 
     public boolean apagar()
     {
-        return Banco.getCon().manipular("DELETE * FROM despesa WHERE desp_codigo = "+ this.codigo);
+        if(this.nome == null)
+            return Banco.getCon().manipular("DELETE FROM despesa WHERE desp_codigo = "+ this.codigo);
+        else
+            return Banco.getCon().manipular("DELETE FROM despesa WHERE desp_nome = '" + this.nome + "'");
     }
 
     public ArrayList<Despesa> getFixos()
     {
-        return ler(Banco.getCon().consultar("SELECT DISTINCT desp_nome, desp_preco,desp_data_vencimento,"
-            + "desp_descricao FROM despesa WHERE desp_fixo = 'true'"));
+        ArrayList<Despesa> despesas = new ArrayList<>();
+        String sql = "SELECT MAX(desp_data_vencimento) AS desp_data_vencimento, desp_nome "
+            + "FROM despesa WHERE desp_nome IN (SELECT DISTINCT desp_nome FROM despesa WHERE desp_fixo = 'true') "
+                + "GROUP BY desp_nome";
+        
+        ResultSet rs = Banco.getCon().consultar(sql);
+        
+        try
+        {
+            while(rs != null && rs.next())            
+                despesas.add(new Despesa(rs.getString("desp_nome")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Despesa.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return despesas;
+    }
+
+    public int count(String nome)
+    {
+        ResultSet rs = Banco.getCon().consultar("SELECT count(desp_nome) FROM despesa WHERE desp_nome = '" + nome + "'");
+        
+        try
+        {
+            if(rs != null && rs.next())
+                return rs.getInt("count");
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Despesa.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return 0;
+    }
+
+    public int getMinMonthByName(String outro)
+    {
+        String sql = "SELECT MIN(desp_data_vencimento) AS desp_data_vencimento FROM despesa "
+                + "WHERE desp_nome = '" + outro + "'";
+        
+        ResultSet rs = Banco.getCon().consultar(sql);
+        
+        try
+        {
+            if(rs != null && rs.next()) 
+                return rs.getDate("desp_data_vencimento").toLocalDate().getMonthValue();
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Despesa.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    private boolean validaMes()
+    {
+        String sql = "" + this.vencimento.toLocalDate().getMonthValue();
+        
+        if(this.vencimento.toLocalDate().getMonthValue() < 10)
+            sql = "0" + sql;
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM despesa WHERE to_char(desp_data_vencimento, 'MM') = '" 
+            + sql + "' AND desp_nome = '" + this.nome + "'");
+        
+        try
+        {
+            if(rs != null && rs.next())            
+                return false;
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Despesa.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return true;
+    }
+
+    public ArrayList<Integer> getMonthsByName(String nome)
+    {
+        ArrayList<Integer>meses = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT to_char(desp_data_vencimento,'MM') FROM despesa WHERE "
+            + "desp_nome = '" + nome + "' ORDER BY to_char");
+        
+        try
+        {
+            while(rs != null && rs.next())            
+                meses.add(Integer.parseInt(rs.getString("to_char")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Despesa.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return meses;
     }
     
 }

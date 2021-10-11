@@ -352,4 +352,16 @@ public class Usuario
         return ler(Banco.getCon().consultar("SELECT * FROM usuario WHERE user_nivel = '" + nivel + "'"
             + " AND user_nome <> 'admin'"));
     }
+
+    public boolean restaurar(int... codigo)
+    {
+        String sql = "UPDATE usuario SET user_ativo = 'true' WHERE user_codigo = ";
+        
+        if(codigo.length == 0)
+            sql += this.codigo;
+        else
+            sql += codigo[0];
+        
+        return Banco.getCon().manipular(sql);
+    }
 }

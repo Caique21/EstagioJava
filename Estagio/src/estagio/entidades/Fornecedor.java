@@ -307,6 +307,30 @@ public class Fornecedor
         }
         return telefones;
     }
+
+    public boolean restaurar(int... codigo)
+    {
+        String sql = "UPDATE fornecedor SET forn_ativo = 'true' WHERE forn_codigo = ";
+        
+        if(codigo.length == 0)
+            sql += this.codigo;
+        else
+            sql += codigo[0];
+        
+        return Banco.getCon().manipular(sql);
+    }
+
+    public boolean apagar_fisico(int... codigo)
+    {
+        String sql = "DELETE FROM fornecedor WHERE forn_codigo = ";
+        
+        if(codigo.length == 0)
+            sql += this.codigo;
+        else
+            sql += codigo[0];
+        
+        return Banco.getCon().manipular(sql);
+    }
     
     
 }

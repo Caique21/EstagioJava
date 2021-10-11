@@ -143,6 +143,17 @@ public class ctrUsuario
                 ret.add(convertToObjeto(u));
         return ret;
     }
+    
+    public ArrayList<Objeto> getAllInativo()
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        ArrayList<Usuario>usuarios = new Usuario().getAll();
+        
+        for(Usuario u : usuarios)
+            if(!u.isAtivo())
+                ret.add(convertToObjeto(u));
+        return ret;
+    }
 
     public ArrayList<Objeto> getByFuncionario(String funcionario)
     {
@@ -166,6 +177,17 @@ public class ctrUsuario
         return ret;
     }
 
+    public ArrayList<Objeto> getByNameInativo(String nome)
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        ArrayList<Usuario>usuarios = new Usuario().getByName(nome);
+        
+        for(Usuario u : usuarios)
+            if(!u.isAtivo())
+                ret.add(convertToObjeto(u));
+        return ret;
+    }
+
     public ArrayList<Objeto> getByNivel(String nivel)
     {
         ArrayList<Objeto>ret = new ArrayList<>();
@@ -173,6 +195,17 @@ public class ctrUsuario
         
         for(Usuario u : usuarios)
             if(u.isAtivo())
+                ret.add(convertToObjeto(u));
+        return ret;
+    }
+
+    public ArrayList<Objeto> getByNivelInativo(String nivel)
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        ArrayList<Usuario>usuarios = new Usuario().getByNivel(nivel);
+        
+        for(Usuario u : usuarios)
+            if(!u.isAtivo())
                 ret.add(convertToObjeto(u));
         return ret;
     }
@@ -199,5 +232,10 @@ public class ctrUsuario
     {
         Usuario usuario = new Usuario(codigo);
         return usuario.getCodigo() > 1? convertToObjeto(usuario) : null;
+    }
+
+    public boolean restaura(int codigo)
+    {
+        return new Usuario().restaurar(codigo);
     }
 }

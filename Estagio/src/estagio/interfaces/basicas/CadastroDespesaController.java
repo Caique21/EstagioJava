@@ -6,6 +6,7 @@
 package estagio.interfaces.basicas;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
@@ -41,6 +42,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -133,6 +136,8 @@ public class CadastroDespesaController implements Initializable
     private Label lbErroData;
     @FXML
     private VBox painelCentral;
+    @FXML
+    private JFXCheckBox cbRepetidas;
 
     /**
      * Initializes the controller class.
@@ -169,7 +174,7 @@ public class CadastroDespesaController implements Initializable
     {
         tfPesquisa.clear();
         tfValor.clear();
-        taDescricao.clear();;
+        taDescricao.clear();
         tfNome.clear();
         dpData.getEditor().clear();
     }
@@ -208,6 +213,8 @@ public class CadastroDespesaController implements Initializable
         
         nodes.add(rbFixo);
         
+        nodes.add(cbRepetidas);
+        
         Utils.setDesign(1, nodes);
         btNovo.setStyle(btNovo.getStyle() + ";-fx-cursor: default;");
         btAlterar.setStyle(btAlterar.getStyle() + ";-fx-cursor: default;");
@@ -228,11 +235,11 @@ public class CadastroDespesaController implements Initializable
         //PAINEL DE PESQUISA FICA COM O RESTANTE DA TELA
         panePesquisa.setPrefHeight(painelCentral.getPrefHeight()- paneInfo.getPrefHeight() - 10);
         
-        tvDespesa.setPrefHeight(panePesquisa.getPrefHeight() - 142);
-        tvDespesa.setPrefWidth(panePesquisa.getPrefWidth() - 80);
+        tvDespesa.setPrefHeight(panePesquisa.getPrefHeight() - (tvDespesa.getLayoutY() + 15));
+        tvDespesa.setPrefWidth(panePesquisa.getPrefWidth() - (tvDespesa.getLayoutX() * 2));
         
         //REORGANIZA OS TAMANHOS DAS COLUNAS DA TABELA
-        int sobra = (int)((tvDespesa.getPrefWidth() - 1026)/2);
+        int sobra = (int)((tvDespesa.getPrefWidth() - 1049)/2);
         tcDespesa.setPrefWidth(tcDespesa.getPrefWidth() + sobra);
         tcDescricao.setPrefWidth(tcDescricao.getPrefWidth() + sobra);
     }
@@ -241,7 +248,7 @@ public class CadastroDespesaController implements Initializable
     {
         acao = -1;
         despesa = null;
-        //clickPesquisar(new ActionEvent());
+        clickPesquisar(new ActionEvent());
         limparCampos();
         inicializaLabels();
         setEstado(true, false, false, true, true, true, true);
@@ -253,22 +260,37 @@ public class CadastroDespesaController implements Initializable
         inicializaDesign();
         redimensiona();
         
-        tcDescricao.setCellValueFactory(new PropertyValueFactory<>("param5"));
-        tcDespesa.setCellValueFactory(new PropertyValueFactory<>("param4"));
-        tcFixo.setCellValueFactory(new PropertyValueFactory<>("param6"));
-        tcValor.setCellValueFactory(new PropertyValueFactory<>("param7"));
+        tcDescricao.setCellValueFactory(new PropertyValueFactory<>("param6"));
+        tcDespesa.setCellValueFactory(new PropertyValueFactory<>("param2"));
+        tcFixo.setCellValueFactory(new PropertyValueFactory<>("param7"));
+        tcValor.setCellValueFactory(new PropertyValueFactory<>("param4"));
         tcVencimento.setCellValueFactory(new PropertyValueFactory<>("param8"));
         
         MaskFieldUtil.monetaryField(tfValor);
         
         inicializa();
-        //setListeners();
+        
+        cbRepetidas.selectedProperty().addListener((observable, oldValue, newValue) ->
+        {
+            clickPesquisar(new ActionEvent());
+        });
+        
+        rbFixo.setOnKeyPressed((event) ->
+        {
+            if(event.getCode() == KeyCode.ENTER)
+            {
+                if(rbFixo.isSelected())
+                    rbFixo.setSelected(false);
+                else
+                    rbFixo.setSelected(true);
+                tfValor.requestFocus();
+            }
+        });
     }    
 
     @FXML
     private void clickNovo(ActionEvent event)
     {
-        pagarDespesa();
         inicializa();
         acao = 0;
         setEstado(false, true, true, false, true, true, false);
@@ -291,14 +313,15 @@ public class CadastroDespesaController implements Initializable
                 {
                     if(ctrDesp.salvar(tfNome, rbFixo, tfValor, dpData, taDescricao))
                     {
-                        if(dpData.getValue().compareTo(LocalDate.now()) < 0)
+                        /*if(dpData.getValue().compareTo(LocalDate.now()) < 0)
                         {
                             alerta.setContentText("Despesa vencida, deseja pagar?");
                             alerta.showAndWait();
                             
                             if(alerta.getResult() == ButtonType.YES)
                                 pagarDespesa();
-                        }
+                        }*/
+                        inicializa();
                         alerta = new Alert(Alert.AlertType.INFORMATION, "Despesa cadastrada com sucesso!!!", 
                                 ButtonType.OK);
                     }
@@ -315,32 +338,42 @@ public class CadastroDespesaController implements Initializable
                 boolean paga = ctrPag.wasPaid(Integer.parseInt(despesa.getParam1()));
                 
                 if(paga)
-                    alerta.setContentText(alerta.getContentText() + "\nDespesa já foi paga, altera-la poderá gerar"
-                        + " estorno");
+                    Notifications.create()
+                        .darkStyle()
+                        //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
+                        .hideAfter(Duration.seconds(3)).position(Pos.BOTTOM_CENTER)
+                        .text("Despesa já foi paga, altera-la poderá gerar estorno")
+                        .showInformation();
                 
                 alerta.showAndWait();
                 
                 if(alerta.getResult() == ButtonType.YES)
                 {
-                    if(ctrDesp.alterar(Integer.parseInt(despesa.getParam1()), tfNome, rbFixo, tfValor, dpData, 
-                            taDescricao))
-                    {
-                        if(paga)
-                            ctrPag.estornarDespesa(Integer.parseInt(despesa.getParam1()));
-                        
-                        if(dpData.getValue().compareTo(LocalDate.now()) < 0)
+                    boolean result;
+                    //ALTERAÇÃO DE UMA DESPESA FIXA COM MAIS DE 1 REGISTRO, NOME ENVIADO PARA ALTERAR TODOS
+                    if(ctrDesp.count(despesa.getParam2()) > 0)
+                        result = ctrDesp.alterar(Integer.parseInt(despesa.getParam1()), tfNome, rbFixo, tfValor, dpData,
+                            taDescricao,despesa.getParam2());
+                    else 
+                        result = ctrDesp.alterar(Integer.parseInt(despesa.getParam1()), tfNome, rbFixo, tfValor, dpData,
+                            taDescricao);
+                    
+                    if(result)
+                    {   
+                        /*if(dpData.getValue().compareTo(LocalDate.now()) < 0)
                         {
                             alerta.setContentText("Despesa vencida, deseja pagar?");
                             alerta.showAndWait();
                             
                             if(alerta.getResult() == ButtonType.YES)
                                 pagarDespesa();
-                        }
-                        alerta = new Alert(Alert.AlertType.INFORMATION, "Despesa cadastrada com sucesso!!!", 
+                        }*/
+                        inicializa();
+                        alerta = new Alert(Alert.AlertType.INFORMATION, "Despesa alterada com sucesso!!!", 
                                 ButtonType.OK);
                     }
                     else
-                        alerta = new Alert(Alert.AlertType.ERROR, "Erro no cadastro da despesa", ButtonType.OK);
+                        alerta = new Alert(Alert.AlertType.ERROR, "Erro na alteracao da despesa", ButtonType.OK);
                     alerta.showAndWait();
                 }
             }
@@ -379,6 +412,180 @@ public class CadastroDespesaController implements Initializable
             new Alert(Alert.AlertType.ERROR, erros, ButtonType.OK).showAndWait();
         
         return erros.trim().equals("");
+    }
+
+    @FXML
+    private void clickAlterar(ActionEvent event)
+    {
+        if(!tvDespesa.getItems().isEmpty() && tvDespesa.getSelectionModel().getSelectedIndex() >= 0)
+        {
+            acao = 1;
+            setEstado(false, true, true, false, true, true, false);
+            despesa = tvDespesa.getSelectionModel().getSelectedItem();
+        }
+    }
+
+    @FXML
+    private void clickRemover(ActionEvent event)
+    {
+        if(!tvDespesa.getItems().isEmpty() && tvDespesa.getSelectionModel().getSelectedIndex() >= 0)
+        {
+            Alert al = new Alert(Alert.AlertType.CONFIRMATION, "Deseja remover despesa " + 
+                 tvDespesa.getSelectionModel().getSelectedItem().getParam2() + "?", ButtonType.YES,ButtonType.NO);
+            al.showAndWait();
+            
+            if(al.getResult() == ButtonType.YES)
+            {
+                if(ctrDesp.count(tvDespesa.getSelectionModel().getSelectedItem().getParam2()) > 1)
+                {
+                    ButtonType uma = new ButtonType("Uma"),todas = new ButtonType("Todas");
+                    boolean result;
+                    al = new Alert(Alert.AlertType.CONFIRMATION, "Remover esta despesa ou todas as despesas " + 
+                        tvDespesa.getSelectionModel().getSelectedItem().getParam2() + "?", uma,todas);
+                    al.showAndWait();
+                    
+                    if(al.getResult() == uma)
+                        result = ctrDesp.apagar
+                            (Integer.parseInt(tvDespesa.getSelectionModel().getSelectedItem().getParam1()));
+                    else
+                        result = ctrDesp.apagar(tvDespesa.getSelectionModel().getSelectedItem().getParam2());
+                    
+                    if(result)
+                    {
+                        inicializa();
+                        al = new Alert(Alert.AlertType.INFORMATION, "Despesa removida com sucesso!!", ButtonType.OK);
+                    }
+                    else
+                        al = new Alert(Alert.AlertType.ERROR, "Erro na remoção da despesa\n" + 
+                                Banco.getCon().getMensagemErro(), ButtonType.OK);
+                }
+                else 
+                {
+                    if(ctrDesp.apagar(Integer.parseInt(tvDespesa.getSelectionModel().getSelectedItem().getParam1())))
+                    {
+                        inicializa();
+                        al = new Alert(Alert.AlertType.INFORMATION, "Despesa removida com sucesso!!", ButtonType.OK);
+                    }
+                    else
+                        al = new Alert(Alert.AlertType.ERROR, "Erro na remoção da despesa\n" + 
+                                Banco.getCon().getMensagemErro(), ButtonType.OK);
+                }
+                al.showAndWait();
+            }
+        }
+    }
+
+    @FXML
+    private void clickCancelar(ActionEvent event)
+    {
+        inicializa();
+    }
+
+    @FXML
+    private void clickPesquisar(ActionEvent event)
+    {
+        tvDespesa.getItems().clear();
+        if(!cbRepetidas.isSelected())
+            tvDespesa.setItems(FXCollections.observableArrayList(ctrDesp.getByNomeDistinct(tfPesquisa.getText())));
+        else
+            tvDespesa.setItems(FXCollections.observableArrayList(ctrDesp.getByNome(tfPesquisa.getText())));
+    }
+
+    @FXML
+    private void selecionaDespesa(MouseEvent event)
+    {
+        if(!tvDespesa.getItems().isEmpty() && tvDespesa.getSelectionModel().getSelectedIndex() >= 0)
+        {
+            setEstado(true, false, false, true, false, false, false);
+            fillFields(tvDespesa.getSelectionModel().getSelectedItem());
+        }
+    }
+
+    private void fillFields(Objeto desp)
+    {
+        tfNome.setText(desp.getParam2());
+        rbFixo.setSelected(desp.getParam7().equals("Sim"));
+        dpData.setValue(LocalDate.parse(desp.getParam5()));
+        taDescricao.setText(desp.getParam6());
+        
+        if(desp.getParam4().substring(desp.getParam4().indexOf(".") + 1).length() == 1)
+            tfValor.setText(desp.getParam4() + "0");
+        else
+            tfValor.setText(desp.getParam4());
+    }
+
+    @FXML
+    private void novoExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void novoEnter(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void confirmarExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void confirmarEnter(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void alterarExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void alterarEnter(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void removerExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void removerEnter(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void cancelarExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void cancelarEnter(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void pesquisarExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void pesquisarEnter(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void confirmarPressed(KeyEvent event)
+    {
+        if(event.getCode() == KeyCode.ENTER)
+            clickConfimar(new ActionEvent());
+    }
+
+    @FXML
+    private void pesquisarPressed(KeyEvent event)
+    {
+        if(event.getCode() == KeyCode.ENTER)
+            clickPesquisar(new ActionEvent());
     }
 
     private void pagarDespesa()
@@ -457,11 +664,15 @@ public class CadastroDespesaController implements Initializable
         
         if(result.isPresent())
         {
-            String aux[] = result.get().split(":");
+            String aux[] = result.get().split(":"),aux2;
             if(aux.length == 4)
-                aux[2] = aux[3];
+                aux2 = aux[3];
+            else if(aux.length < 3)
+                aux2 = "";
+            else
+                aux2 = aux[2];
             
-            if(ctrPag.pagarDespesa(LocalDate.now(),aux[0],aux[1],aux[2]))
+            if(ctrPag.pagarDespesa(LocalDate.now(),aux[0],aux[1],aux2))
                 Notifications.create()
                     .darkStyle()
                     //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
@@ -476,128 +687,5 @@ public class CadastroDespesaController implements Initializable
                     .text("Erro no pagamento da despesa")
                     .showError();
         }
-    }
-
-    @FXML
-    private void clickAlterar(ActionEvent event)
-    {
-        if(!tvDespesa.getItems().isEmpty() && tvDespesa.getSelectionModel().getSelectedIndex() >= 0)
-        {
-            acao = 1;
-            setEstado(false, true, true, false, true, true, false);
-            despesa = tvDespesa.getSelectionModel().getSelectedItem();
-        }
-    }
-
-    @FXML
-    private void clickRemover(ActionEvent event)
-    {
-        if(!tvDespesa.getItems().isEmpty() && tvDespesa.getSelectionModel().getSelectedIndex() >= 0)
-        {
-            Alert al = new Alert(Alert.AlertType.CONFIRMATION, "Deseja remover despesa " + 
-                 tvDespesa.getSelectionModel().getSelectedItem().getParam2() + "?", ButtonType.YES,ButtonType.NO);
-            al.showAndWait();
-            
-            if(al.getResult() == ButtonType.YES)
-            {
-                if(ctrDesp.apagar(Integer.parseInt(tvDespesa.getSelectionModel().getSelectedItem().getParam1())))
-                {
-                    inicializa();
-                    al = new Alert(Alert.AlertType.INFORMATION, "Despesa cadastrada com sucesso!!", ButtonType.OK);
-                }
-                else
-                    al = new Alert(Alert.AlertType.ERROR, "Erro no cadastramento da despesa\n" + 
-                            Banco.getCon().getMensagemErro(), ButtonType.OK);
-                al.showAndWait();
-            }
-        }
-    }
-
-    @FXML
-    private void clickCancelar(ActionEvent event)
-    {
-        inicializa();
-    }
-
-    @FXML
-    private void clickPesquisar(ActionEvent event)
-    {
-        tvDespesa.setItems(FXCollections.observableArrayList(ctrDesp.getByNome(tfPesquisa.getText())));
-    }
-
-    @FXML
-    private void selecionaDespesa(MouseEvent event)
-    {
-        if(!tvDespesa.getItems().isEmpty() && tvDespesa.getSelectionModel().getSelectedIndex() >= 0)
-        {
-            setEstado(true, false, false, true, false, false, false);
-            fillFields(tvDespesa.getSelectionModel().getSelectedItem());
-        }
-    }
-
-    private void fillFields(Objeto desp)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-
-    @FXML
-    private void novoExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void novoEnter(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void confirmarExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void confirmarEnter(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void alterarExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void alterarEnter(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void removerExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void removerEnter(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void cancelarExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void cancelarEnter(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void pesquisarExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void pesquisarEnter(MouseEvent event)
-    {
     }
 }

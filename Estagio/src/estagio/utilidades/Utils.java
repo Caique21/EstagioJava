@@ -86,7 +86,7 @@ public class Utils
 
         Optional<String> result = dialog.showAndWait();
         
-        return result.isPresent() && ctr.matchPassword(TelaPrincipalController.usuario_logado.getParam2(), 
+        return result.isPresent() && ctr.matchPassword(TelaPrincipalController.usuario_logado.getParam3(), 
                 pwd.getText());
     }
     
@@ -339,6 +339,14 @@ public class Utils
         cal.setTime(date);
         cal.add(Calendar.MONTH, i);
         return cal.getTime();
+    }
+
+    public static java.sql.Date setMonth(java.sql.Date date, int i)
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.set(date.toLocalDate().getYear(), i, date.toLocalDate().getDayOfMonth());
+        cal.getTime();
+        return new java.sql.Date(cal.getTimeInMillis());
     }
 
     public static Date addYear(Date date, int i)

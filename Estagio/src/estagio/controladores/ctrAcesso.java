@@ -12,6 +12,7 @@ import estagio.utilidades.Utils;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -125,6 +126,15 @@ public class ctrAcesso
     public boolean firstOfDay(LocalDate now)
     {
         return get(now.toString()).isEmpty();
+    }
+
+    public boolean firstOfMonth(LocalDate now)
+    {
+        Acesso acess = new Acesso().getLastAcess();
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(acess.getLogout().getTime());
+        
+        return LocalDate.now().getMonthValue() > cal.get(Calendar.MONTH) + 1;
     }
 
     public ArrayList<Objeto> getAcessosUsuario(int cod)

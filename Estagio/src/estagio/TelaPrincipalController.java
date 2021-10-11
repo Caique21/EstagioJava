@@ -247,15 +247,13 @@ public class TelaPrincipalController implements Initializable
         {
             Logger.getLogger(TelaPrincipalController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         Platform.runLater(() ->
         {
             central = painelCentral;
             central.getScene();
-        });
-        
-        Platform.runLater(() ->
-        {
-            if(!ctrDesp.verificaGeracaoAutomatica())
+            
+            if(ctr_acessos.firstOfMonth(LocalDate.now()))
                 ctrDesp.gerarDespesasAutomatica();
         });
     }    

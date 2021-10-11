@@ -117,6 +117,18 @@ public class ctrFornecedor
         return ret;
     }
 
+    public ArrayList<Objeto> getAllInativo()
+    {
+        ArrayList<Objeto> ret = new ArrayList<>();
+        ArrayList<Fornecedor> fornecedores = new Fornecedor().getAll();
+        
+        for (int i = 0; i < fornecedores.size(); i++)
+            if(!fornecedores.get(i).isAtivo())
+                ret.add(convertToObjeto(fornecedores.get(i)));
+        
+        return ret;
+    }
+
     public ArrayList<Objeto> getByName(String nome)
     {
         ArrayList<Objeto> ret = new ArrayList<>();
@@ -129,6 +141,18 @@ public class ctrFornecedor
         return ret;
     }
 
+    public ArrayList<Objeto> getByNameInativo(String nome)
+    {
+        ArrayList<Objeto> ret = new ArrayList<>();
+        ArrayList<Fornecedor> fornecedores = new Fornecedor().getByName(nome);
+        
+        for (int i = 0; i < fornecedores.size(); i++)
+            if(!fornecedores.get(i).isAtivo())
+                ret.add(convertToObjeto(fornecedores.get(i)));
+        
+        return ret;
+    }
+
     public ArrayList<Objeto> getByCNPJ(String cnpj)
     {
         ArrayList<Objeto> ret = new ArrayList<>();
@@ -136,6 +160,18 @@ public class ctrFornecedor
         
         for (int i = 0; i < fornecedores.size(); i++)
             if(fornecedores.get(i).isAtivo())
+                ret.add(convertToObjeto(fornecedores.get(i)));
+        
+        return ret;
+    }
+
+    public ArrayList<Objeto> getByCNPJInativo(String cnpj)
+    {
+        ArrayList<Objeto> ret = new ArrayList<>();
+        ArrayList<Fornecedor> fornecedores = new Fornecedor().getByCNPJ(cnpj);
+        
+        for (int i = 0; i < fornecedores.size(); i++)
+            if(!fornecedores.get(i).isAtivo())
                 ret.add(convertToObjeto(fornecedores.get(i)));
         
         return ret;
@@ -157,5 +193,15 @@ public class ctrFornecedor
     public ArrayList<String> getTelefones(int codigo)
     {
         return new Fornecedor().getTelefones(codigo);
+    }
+
+    public boolean restaura(int codigo)
+    {
+        return new Fornecedor().restaurar(codigo);
+    }
+
+    public boolean apagar_fisico(int codigo)
+    {
+        return new Fornecedor().apagar_fisico(codigo);
     }
 }

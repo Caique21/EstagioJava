@@ -7,6 +7,7 @@ package estagio.interfaces;
 
 import com.jfoenix.controls.JFXDecorator;
 import estagio.TelaPrincipalController;
+import static estagio.TelaPrincipalController.usuario_logado;
 import estagio.utilidades.Utils;
 import java.io.IOException;
 import java.net.URL;
@@ -99,6 +100,9 @@ public class TelaGerenciamentoController implements Initializable
         panePrincipal.setPrefWidth(TelaPrincipalController.screenBounds.getMaxX() - 200);
         panePrincipal.setPrefHeight(TelaPrincipalController.screenBounds.getMaxY() - 40);
         gridPane.setPrefWidth(TelaPrincipalController.screenBounds.getMaxX() - 200);
+        
+        if(!TelaPrincipalController.usuario_logado.getParam5().equals("alto"))
+            folderDados.setDisable(true);
     }    
 
     @FXML

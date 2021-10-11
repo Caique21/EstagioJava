@@ -15,6 +15,7 @@ import estagio.utilidades.Utils;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  *
@@ -41,22 +42,64 @@ public class ctrDespesa
     {
         Despesa despesa = new Despesa(nome.getText(), fixo.isSelected(), 
              Double.parseDouble(valor.getText().replace(".", "").replace(",", ".")), Date.valueOf(data.getValue()), descricao.getText());
-        
-        return despesa.salvar();
+       
+        boolean flag = despesa.salvar();
+        int qtd = LocalDate.now().getMonthValue() - data.getValue().getMonthValue();
+        if(qtd > 0 && flag && fixo.isSelected())
+        {
+            for (int i = 0; i < qtd && flag; i++)
+                flag = flag && new Despesa(nome.getText(), fixo.isSelected(), 
+                    Double.parseDouble(valor.getText().replace(".", "").replace(",", ".")), 
+                        Date.valueOf(data.getValue().plusMonths(i + 1)), descricao.getText()).salvar();
+        }
+        return flag;
     }
 
-    public boolean alterar(int cod, JFXTextField nome, JFXRadioButton fixo, JFXTextField valor, JFXDatePicker data, JFXTextArea descricao)
+    public boolean alterar(int cod, JFXTextField nome, JFXRadioButton fixo, JFXTextField valor, JFXDatePicker data, 
+        JFXTextArea descricao,String...outros)
     {
-        Despesa despesa = new Despesa(nome.getText(), fixo.isSelected(), 
+        Despesa despesa = new Despesa(cod,nome.getText(), fixo.isSelected(), 
              Double.parseDouble(valor.getText().replace(".", "").replace(",", ".")), Date.valueOf(data.getValue()), descricao.getText());
         
-        return despesa.alterar();
+        boolean flag;
+        int qtd;
+        if(outros.length == 0)
+        {
+            flag = despesa.alterar();
+            qtd = LocalDate.now().getMonthValue() - data.getValue().getMonthValue();
+        }
+        else 
+        {
+            qtd = despesa.getMinMonthByName(outros[0]) - data.getValue().getMonthValue() - 1;
+            flag = despesa.alterar(outros[0]);
+        }
+        
+        if(flag && fixo.isSelected())
+        {
+            ArrayList<Integer>meses = despesa.getMonthsByName(nome.getText()); 
+            int min = (meses.get(0) + 1), max = meses.get(meses.size() - 1);
+            for (int i = min; i <= 12 && flag && i < max; i++)
+                if(!meses.contains(i))
+                {
+                    flag = flag && new Despesa(nome.getText(), fixo.isSelected(), 
+                        Double.parseDouble(valor.getText().replace(".", "").replace(",", ".")), 
+                            Utils.setMonth(Date.valueOf(data.getValue()),i - 1), descricao.getText()).salvar();
+                }
+        }
+        return flag;
     }
 
     public boolean apagar(int cod)
     {
         Despesa despesa = new Despesa();
         despesa.setCodigo(cod);
+        return despesa.apagar();
+    }
+    
+    public boolean apagar(String nome)
+    {
+        Despesa despesa = new Despesa();
+        despesa.setNome(nome);
         return despesa.apagar();
     }
 
@@ -70,18 +113,16 @@ public class ctrDespesa
         
         return ret;
     }
-
-    public boolean verificaGeracaoAutomatica()
+    
+    public ArrayList<Objeto> getByNomeDistinct(String nome)
     {
-        ArrayList<Despesa>despesas = new Despesa().getFixos();
-        int mes = LocalDate.now().getMonthValue();
+        ArrayList<Objeto>ret = new ArrayList<>();
+        ArrayList<Despesa>despesas = new Despesa().getByNomeDistinct(nome);
         
-        if(despesas.isEmpty())
-            return true;
         for (int i = 0; i < despesas.size(); i++)
-            if(mes < Utils.convertToLocalDate(despesas.get(i).getVencimento()).getMonthValue())
-                return false;
-        return true;
+            ret.add(convertToObjeto(despesas.get(i)));
+        
+        return ret;
     }
 
     public void gerarDespesasAutomatica()
@@ -90,12 +131,15 @@ public class ctrDespesa
         
         for(Despesa d : despesas)
         {
-            if(LocalDate.now().getMonthValue() > Utils.convertToLocalDate(d.getVencimento()).getMonthValue())
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(d.getVencimento());
+            int i = LocalDate.now().getMonthValue() - (cal.get(Calendar.MONTH) + 1);
+            
+            while(i > 0)
             {
-                Despesa aux = d;
-                aux.setCodigo(0);
-                aux.setVencimento((Date) Utils.addMonth(aux.getVencimento(), 1));
-                aux.salvar();
+                new Despesa(d.getNome(), d.isFixo(), d.getValor(), 
+                    new Date(Utils.addMonth(d.getVencimento(), 1).getTime()), "").salvar();
+                i++;
             }
         }
     }
@@ -108,8 +152,15 @@ public class ctrDespesa
         obj.setParam3(String.valueOf(desp.isFixo()));
         obj.setParam4(String.valueOf(desp.getValor()));
         obj.setParam5(String.valueOf(desp.getVencimento()));
-        obj.setParam6(desp.getDescricao());
+        obj.setParam6(desp.getDescricao() != null ? desp.getDescricao() : "");
         //obj.setParam2(String.valueOf(desp.getTransporte().getCodigo()));
+        obj.setParam7(desp.isFixo()? "Sim" : "Não");
+        obj.setParam8(Utils.convertData(desp.getVencimento()));
         return obj;
+    }
+
+    public int count(String nome)
+    {
+        return new Despesa().count(nome);
     }
 }

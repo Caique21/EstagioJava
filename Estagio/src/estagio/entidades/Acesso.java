@@ -205,4 +205,23 @@ public class Acesso
         }
         return acessos;
     }
+
+    public Acesso getLastAcess()
+    {
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM acessos WHERE acess_data_logout IN "
+                + "(SELECT MAX(acess_data_logout) as acess_data_logout FROM acessos)");
+        
+        try
+        {
+            if(rs != null && rs.next())            
+                return new Acesso(rs.getInt("acess_codigo"), rs.getTimestamp("acess_data_login"), 
+                        rs.getTimestamp("acess_data_logout"), new Usuario(rs.getInt("user_codigo")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Acesso.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return null;
+    }
 }

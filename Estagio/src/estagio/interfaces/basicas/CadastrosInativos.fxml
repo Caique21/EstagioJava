@@ -24,7 +24,7 @@
     </stylesheets>
     
     <top>
-      <Label prefHeight="35.0" prefWidth="285.0" text="Gerenciamento de Dados Inativos" BorderPane.alignment="CENTER">
+      <Label fx:id="lbTitulo" prefHeight="35.0" prefWidth="285.0" text="Gerenciamento de Dados Inativos" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -33,7 +33,7 @@
    <center>
       <JFXTabPane fx:id="tabPane" BorderPane.alignment="CENTER">
          <tabs>
-            <Tab text="CLIENTES">
+            <Tab fx:id="tabClientes" text="CLIENTES">
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                      <children>
@@ -43,7 +43,7 @@
                               <JFXTextField fx:id="tfCpfCliente" labelFloat="true" layoutX="30.0" layoutY="30.0" prefHeight="25.0" prefWidth="193.0" promptText="Pesquisar por CPF" visible="false" />
                               <JFXButton fx:id="btPesquisarCliente" buttonType="RAISED" layoutX="237.0" layoutY="30.0" onAction="#clickPesquisarCliente" onMouseEntered="#pesquisarClienteEnter" onMouseExited="#pesquisarClienteExit" text="PESQUISAR">
                                  <graphic>
-                                    <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
+                                    <FontAwesomeIconView fx:id="faSearchCliente" glyphName="SEARCH" size="15" />
                                  </graphic>
                               </JFXButton>
                               <HBox alignment="CENTER_LEFT" layoutX="30.0" layoutY="69.0" prefHeight="17.0" prefWidth="277.0" spacing="20.0">
@@ -82,7 +82,7 @@
                      </padding></VBox>
                </content>
             </Tab>
-            <Tab text="FUNCIONÁRIOS">
+            <Tab fx:id="tabFuncionarios" text="FUNCIONÁRIOS">
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                      <children>
@@ -92,7 +92,7 @@
                               <JFXTextField fx:id="tfCpfFuncionario" labelFloat="true" layoutX="30.0" layoutY="30.0" prefHeight="25.0" prefWidth="193.0" promptText="Pesquisar por CPF" visible="false" />
                               <JFXButton fx:id="btPesquisarFuncionario" buttonType="RAISED" layoutX="237.0" layoutY="30.0" onAction="#clickPesquisarFuncionario" onMouseEntered="#pesquisarFuncionarioEnter" onMouseExited="#pesquisarFuncionarioExit" text="PESQUISAR">
                                  <graphic>
-                                    <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
+                                    <FontAwesomeIconView fx:id="faSearchFuncionario" glyphName="SEARCH" size="15" />
                                  </graphic>
                               </JFXButton>
                               <HBox alignment="CENTER_LEFT" layoutX="30.0" layoutY="69.0" prefHeight="17.0" prefWidth="277.0" spacing="20.0">
@@ -129,7 +129,7 @@
                   </VBox>
                </content>
             </Tab>
-            <Tab text="USUÁRIOS">
+            <Tab fx:id="tabUsuarios" text="USUÁRIOS">
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                      <padding>
@@ -142,7 +142,7 @@
                               <JFXComboBox fx:id="cbNivel" labelFloat="true" layoutX="30.0" layoutY="30.0" prefWidth="193.0" promptText="Pesquisar por Nível" visible="false" />
                               <JFXButton fx:id="btPesquisarUsuario" buttonType="RAISED" layoutX="237.0" layoutY="30.0" onAction="#clickPesquisarUsuario" onMouseEntered="#pesquisarUsuarioEnter" onMouseExited="#pesquisarUsuarioExit" text="PESQUISAR">
                                  <graphic>
-                                    <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
+                                    <FontAwesomeIconView fx:id="faSearchUsuario" glyphName="SEARCH" size="15" />
                                  </graphic>
                               </JFXButton>
                               <HBox alignment="CENTER_LEFT" layoutX="30.0" layoutY="69.0" prefHeight="17.0" prefWidth="277.0" spacing="20.0">
@@ -174,7 +174,7 @@
                   </VBox>
                </content>
             </Tab>
-            <Tab text="FORNECEDORES">
+            <Tab fx:id="tabFornecedores" text="FORNECEDORES">
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                      <padding>
@@ -187,7 +187,7 @@
                               <JFXTextField fx:id="tfCNPJ" labelFloat="true" layoutX="30.0" layoutY="30.0" prefHeight="25.0" prefWidth="193.0" promptText="Pesquisar por CNPJ" visible="false" />
                               <JFXButton fx:id="btPesquisarFornecedor" buttonType="RAISED" layoutX="237.0" layoutY="30.0" onAction="#clickPesquisarFornecedor" onMouseEntered="#pesquisarFornecedorEnter" onMouseExited="#pesquisarFornecedorExit" text="PESQUISAR">
                                  <graphic>
-                                    <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
+                                    <FontAwesomeIconView fx:id="faSearchFornecedor" glyphName="SEARCH" size="15" />
                                  </graphic>
                               </JFXButton>
                               <HBox alignment="CENTER_LEFT" layoutX="30.0" layoutY="69.0" prefHeight="17.0" prefWidth="277.0" spacing="20.0">
