@@ -44,6 +44,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -365,7 +367,7 @@ public class CadastroVeiculoController implements Initializable
                     {
                         inicializa();
                         alerta = new Alert(Alert.AlertType.INFORMATION, "Veículo cadastrado com sucesso!!!", 
-                                ButtonType.NO);
+                                ButtonType.OK);
                     }
                     else
                         alerta = new Alert(Alert.AlertType.ERROR, "Erro no cadastramento do veículo\n" + 
@@ -387,7 +389,7 @@ public class CadastroVeiculoController implements Initializable
                     {
                         inicializa();
                         alerta = new Alert(Alert.AlertType.INFORMATION, "Veículo alterado com sucesso!!!", 
-                                ButtonType.NO);
+                                ButtonType.OK);
                     }
                     else
                         alerta = new Alert(Alert.AlertType.ERROR, "Erro na alteração do veículo\n" + 
@@ -420,10 +422,16 @@ public class CadastroVeiculoController implements Initializable
         {
             if(tfPlaca.getText().trim().equals(""))
             {
-                erros += "Digite a placa do veículo\n";
-                lbErroPlaca.setText("Campo requerido");
+                Alert a = new Alert(Alert.AlertType.WARNING, "Campo placa vazio, deseja continuar?", ButtonType.YES,ButtonType.NO);
+                a.showAndWait();
+                
+                if(a.getResult() == ButtonType.NO)
+                {
+                    erros += "Digite a placa do veículo\n";
+                    lbErroPlaca.setText("Campo requerido");
+                }
             }
-            else if(tfPlaca.getText().length() < 8)
+            if(!tfPlaca.getText().trim().equals("") && tfPlaca.getText().length() < 8)
             {
                 erros += "Placa incompleto\n";
                 lbErroPlaca.setText("Placa incompleta");
@@ -549,17 +557,22 @@ public class CadastroVeiculoController implements Initializable
 
     private void fillFields(Objeto vei)
     {
-        if(vei.getParam2().contains("-"))
+        limparCampos();
+        
+        if(vei.getParam2() != null && !vei.getParam2().trim().equals(""))
         {
-            rbMercosul.setSelected(false);
-            clickMercosul(new ActionEvent());
-            tfPlaca.setText(vei.getParam2());
-        }
-        else
-        {
-            rbMercosul.setSelected(true);
-            clickMercosul(new ActionEvent());
-            tfPlacaMercosul.setText(vei.getParam2());
+            if(vei.getParam2().contains("-"))
+            {
+                rbMercosul.setSelected(false);
+                clickMercosul(new ActionEvent());
+                tfPlaca.setText(vei.getParam2());
+            }
+            else
+            {
+                rbMercosul.setSelected(true);
+                clickMercosul(new ActionEvent());
+                tfPlacaMercosul.setText(vei.getParam2());
+            }
         }
         
         tfMarca.setText(vei.getParam7());
@@ -569,11 +582,12 @@ public class CadastroVeiculoController implements Initializable
         tfCor.setText(vei.getParam6());
         taDescricao.setText(vei.getParam9());
         
-        autoCompletePopupMarcas.hide();
-        
         autoCompletePopupModelos.getSuggestions().clear();
         autoCompletePopupModelos.getSuggestions().add("Novo Modelo");
         autoCompletePopupModelos.getSuggestions().addAll(ctrFab.getAllModelosByMarca(tfMarca.getText()));
+        
+        autoCompletePopupMarcas.hide();
+        autoCompletePopupModelos.hide();
     }
 
     @FXML
@@ -1016,5 +1030,12 @@ public class CadastroVeiculoController implements Initializable
                         + Banco.getCon().getMensagemErro(), ButtonType.OK).showAndWait();
             }
         }
+    }
+
+    @FXML
+    private void confirmarPressed(KeyEvent event)
+    {
+        if(event.getCode() == KeyCode.ENTER)
+            clickConfirmar(new ActionEvent());
     }
 }

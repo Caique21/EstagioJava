@@ -64,9 +64,9 @@ public class CadastroUsuarioController implements Initializable
     private ArrayList<String>funcionarios = new ArrayList<>();
     JFXAutoCompletePopup<String> autoCompletePopup;
     
-    private ctrFuncionario ctrFunc = ctrFuncionario.instancia();
-    private ctrUsuario ctrUsu = ctrUsuario.instancia();
-    private ctrAcesso ctrAcc = ctrAcesso.instancia();
+    private final ctrFuncionario ctrFunc = ctrFuncionario.instancia();
+    private final ctrUsuario ctrUsu = ctrUsuario.instancia();
+    private final ctrAcesso ctrAcc = ctrAcesso.instancia();
     
     private final Tooltip tooltip = new Tooltip();
     private final ToggleGroup goup = new ToggleGroup();

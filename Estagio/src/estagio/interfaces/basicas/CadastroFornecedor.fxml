@@ -150,7 +150,7 @@
                         <JFXRadioButton fx:id="rbCNPJ" text="CNPJ" />
                      </children>
                   </HBox>
-                  <Label fx:id="lbAlteracao" layoutX="588.0" layoutY="62.0" prefHeight="17.0" prefWidth="500.0" text="Data da Última Alteração: ">
+                  <Label fx:id="lbAlteracao" layoutX="588.0" layoutY="62.0" onMouseClicked="#clickAlteracao" onMouseEntered="#alteracaoEnter" onMouseExited="#alteracaoExit" prefHeight="17.0" prefWidth="500.0" text="Data da Última Alteração: ">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>

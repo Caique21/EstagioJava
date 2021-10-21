@@ -455,7 +455,8 @@ public class CadastroFuncionarioController implements Initializable
         
         tfCPF.textProperty().addListener((observable, oldValue, newValue) ->
         {
-            lbErroCPF.setText(Utils.validadorCPF2(tfCPF.getText(), funcionario, "funcionario"));
+            if(tfCPF.getText().length() == 14)
+                lbErroCPF.setText(Utils.validadorCPF2(tfCPF.getText(), funcionario, "funcionario"));
             /*if(tfCPF.getText().length() == 14)
                 lbErroCPF.setText(validarCPF());
             else
@@ -816,7 +817,7 @@ public class CadastroFuncionarioController implements Initializable
             }
         }
         
-         if(cbFuncao.getSelectionModel().getSelectedIndex() < 0)
+        if(cbFuncao.getSelectionModel().getSelectedIndex() < 0)
         {
             erros += "Selecione a função do funcionário\n";
             lbErroFuncao.setText("Seleciona a função");
@@ -833,12 +834,13 @@ public class CadastroFuncionarioController implements Initializable
                     lbErroCPF.setText("Digite o CPF");
                 erros += lbErroCPF.getText() + "\n";
 
-                validaAlteracaoEndereco();
+                erros += validaAlteracaoEndereco(a);
                 if(!validaEndereco())
                     erros += lbErroCEP.getText() + "\n" + lbErroRua.getText() + "\n" + lbErroNumero.getText() + "\n"
                         + lbErroBairro.getText() + "\n" + lbErroCidade.getText() + "\n" + lbErroEstado.getText()+"\n";
             }
-            else if(cbFuncao.getSelectionModel().getSelectedItem().equals("Motorista Fixo"))
+            
+            if(cbFuncao.getSelectionModel().getSelectedItem().equals("Motorista Fixo"))
             {
                 if(dpVencimento.getEditor().getText().equals(""))
                 {
@@ -924,34 +926,63 @@ public class CadastroFuncionarioController implements Initializable
         return flag;
     }
     
-    private void validaAlteracaoEndereco()
+    private String validaAlteracaoEndereco(Alert alerta)
     {
         String avisos = "";
-        if(funcionario == null)
+        
+        if(endereco_pesquisado != null && !endereco_pesquisado.getString("resultado").equals("0"))
         {
-            if(endereco_pesquisado != null && !endereco_pesquisado.getString("resultado").equals("0"))
-            {
-                if(!lbErroRua.getText().equals(""))
-                    avisos += lbErroRua.getText() + "\n";
-                if(!lbErroNumero.getText().equals(""))
-                    avisos += lbErroNumero.getText() + "\n";
-                if(!lbErroBairro.getText().equals(""))
-                    avisos += lbErroBairro.getText() + "\n";
-                if(!lbErroCidade.getText().equals(""))
-                    avisos += lbErroCidade.getText() + "\n";
-                if(!lbErroEstado.getText().equals(""))
-                    avisos += lbErroEstado.getText() + "\n";
-            }
+            if(!endereco_pesquisado.getString("tipo_logradouro").equals("") &&
+                !endereco_pesquisado.getString("logradouro").equals(""))
+                if(!tfRua.getText().equals(endereco_pesquisado.getString("tipo_logradouro") + " " + 
+                    endereco_pesquisado.getString("logradouro")))
+                {
+                    lbErroRua.setText("Rua diferente da pesquisa online");
+                    avisos += "Rua diferente da pesquisa online\n";
+                }
+                else
+                    lbErroRua.setText("");
+            else
+                lbErroRua.setText("");
+            
+            if(!endereco_pesquisado.getString("bairro").equals("") && 
+                !tfBairro.getText().equals(endereco_pesquisado.getString("bairro")))
+                {
+                    lbErroBairro.setText("Bairro diferente da pesquisa online");
+                    avisos += "Bairro diferente da pesquisa online\n";
+                }
+            else
+                lbErroBairro.setText("");
+            
+            if(!endereco_pesquisado.getString("cidade").equals("") && 
+                !tfCidade.getText().equals(endereco_pesquisado.getString("cidade")))
+                {
+                    lbErroCidade.setText("Cidade diferente da pesquisa online");
+                    avisos += "Cidade diferente da pesquisa online\n";
+                }
+            else
+                lbErroCidade.setText("");
+            
+            if(!endereco_pesquisado.getString("uf").equals("") && 
+                !cbEstado.getSelectionModel().getSelectedItem().equals(endereco_pesquisado.getString("uf")))
+                {
+                    lbErroEstado.setText("Estado diferente da pesquisa online");
+                    avisos += "Estado diferente da pesquisa online\n";
+                }
+            else
+                lbErroEstado.setText("");
         }
-        if(!avisos.trim().equals(""))
+        
+        if(!avisos.equals(""))
         {
-            Notifications.create()
-                .darkStyle()
-                //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
-                .hideAfter(Duration.seconds(2)).position(Pos.BOTTOM_CENTER)
-                .text("Aviso:\n" + avisos)
-                .showInformation();
+            alerta = new Alert(Alert.AlertType.WARNING, "Avisos:\n" + avisos + 
+                "Deseja confirmar alteração dos dados?", ButtonType.YES,ButtonType.NO);
+            alerta.showAndWait();
+            
+            if(alerta.getResult() == ButtonType.YES)
+                avisos = "";
         }
+        return avisos;
     }
 
     @FXML
@@ -1402,6 +1433,7 @@ public class CadastroFuncionarioController implements Initializable
     private void cleanClicked(MouseEvent event)
     {
         imgFrente.setImage(null);
+        imgVerso.setImage(null);
     }
 
     @FXML
@@ -1472,11 +1504,14 @@ public class CadastroFuncionarioController implements Initializable
     {
         if(!Utils.validaCPF(tfCPF.getText().replace(".", "").replace("-", "")))
             return "CPF inválido";
-        else if(funcionario == null && ctrFunc.cpfExists(tfCPF.getText()) > 0 || 
-            funcionario != null && ctrFunc.cpfExists(tfCPF.getText()) != Integer.parseInt(funcionario.getParam1()))  
-            return "CPF já cadastrado";
         else
+        {
+            int ret = ctrFunc.cpfExists(tfCPF.getText());
+            if(ret > 0)
+                if(funcionario == null || funcionario != null && ret != Integer.parseInt(funcionario.getParam1()))
+                    return "CPF já cadastrado";
             return "";
+        }
     }
 
     @FXML
@@ -1641,7 +1676,6 @@ public class CadastroFuncionarioController implements Initializable
     {
         if(lbAlteracao.getText().substring(lbAlteracao.getText().indexOf(":") + 1).length() > 1)
         {
-            
             Alert alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja pesquisar data de acesso?", ButtonType.YES,ButtonType.NO);
             alerta.showAndWait();
 
@@ -1662,7 +1696,6 @@ public class CadastroFuncionarioController implements Initializable
 
                     stage.setTitle("Cadastro de Usuário");
                     stage.setScene(scene);
-                    stage.setAlwaysOnTop(true);
                     stage.showAndWait();
 
                 } 

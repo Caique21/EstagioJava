@@ -5,6 +5,7 @@
  */
 package estagio.interfaces;
 
+import estagio.TelaPrincipalController;
 import estagio.utilidades.Utils;
 import java.io.IOException;
 import java.net.URL;
@@ -21,6 +22,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -58,6 +60,8 @@ public class TelaFinancasController implements Initializable
     private Pane panePrincipal;
     @FXML
     private Label lbTitulo;
+    @FXML
+    private GridPane gridPane;
 
     /**
      * Initializes the controller class.
@@ -69,6 +73,10 @@ public class TelaFinancasController implements Initializable
         nodes.add(panePrincipal);
         nodes.add(lbTitulo);
         Utils.setDesign(1, nodes);
+        
+        panePrincipal.setPrefWidth(TelaPrincipalController.screenBounds.getMaxX() - 200);
+        panePrincipal.setPrefHeight(TelaPrincipalController.screenBounds.getMaxY() - 40);
+        gridPane.setPrefWidth(TelaPrincipalController.screenBounds.getMaxX() - 200);
     }    
 
     @FXML

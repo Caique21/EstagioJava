@@ -7,6 +7,7 @@ package estagio.interfaces.basicas;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
@@ -14,12 +15,14 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.TelaPrincipalController;
 import estagio.controladores.ctrEndereco;
 import estagio.controladores.ctrFornecedor;
+import static estagio.interfaces.configuracao.TelaParametrizacaoController.bt;
 import estagio.utilidades.Banco;
 import estagio.utilidades.MaskFieldUtil;
 import estagio.utilidades.Objeto;
 import estagio.utilidades.ToolTip;
 import estagio.utilidades.TooltippedTableCell;
 import estagio.utilidades.Utils;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +30,11 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -43,6 +49,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import static json.Json.consultaCep;
 import org.json.JSONObject;
 
@@ -256,6 +263,7 @@ public class CadastroFornecedorController implements Initializable
         nodes.add(btDelTelefone);
         nodes.add(btNovo);
         nodes.add(btPesquisar);
+        nodes.add(btPesquisarCep);
         nodes.add(btRemover);
         
         nodes.add(tfBairro);
@@ -488,7 +496,7 @@ public class CadastroFornecedorController implements Initializable
     {
         setEstado(true, true, false, false, true, true, true, true);
         limparCampos();
-        lbAlteracao.setText("Data da última alteração: ");
+        lbAlteracao.setText("Data da Última Alteração: ");
         
         acao = -1;
         fornecedor = null;
@@ -544,7 +552,7 @@ public class CadastroFornecedorController implements Initializable
         if(validaFornecedor())
         {
             Alert alerta;
-            if(acao == 0)
+            if(acao == 0 || acao == 2)
             {
                 alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja cadastrar fornecedor " + tfNome.getText()
                     + "?", ButtonType.YES,ButtonType.NO);
@@ -555,9 +563,15 @@ public class CadastroFornecedorController implements Initializable
                     if(ctrForn.salvar(tfNome,tfCNPJ,tfEmail,lvTelefones,tfCEP,tfRua,tfNumero,tfBairro,tfComplemento,
                         tfCidade,cbEstado))
                     {
-                        inicializa();
                         alerta = new Alert(Alert.AlertType.INFORMATION, "Fornecedor cadastrado com sucesso!!!", 
                                 ButtonType.OK);
+                        
+                        if(acao == 2)
+                        {
+                            Stage stage = (Stage) btNovo.getScene().getWindow();
+                            stage.close();
+                        }
+                        inicializa();
                     }
                     else
                         alerta = new Alert(Alert.AlertType.ERROR, "Erro no cadastro do fornecedor\n" + 
@@ -709,6 +723,11 @@ public class CadastroFornecedorController implements Initializable
     @FXML
     private void clickCancelar(ActionEvent event)
     {
+        if(acao == 2)
+        {
+            Stage stage = (Stage) btNovo.getScene().getWindow();
+            stage.close();
+        }
         inicializa();
     }
 
@@ -821,7 +840,7 @@ public class CadastroFornecedorController implements Initializable
         tfNome.setText(fornecedor.getParam2());
         tfCNPJ.setText(fornecedor.getParam3());
         tfEmail.setText(fornecedor.getParam4());
-        lbAlteracao.setText("Data da Última alteração: " + fornecedor.getParam5());
+        lbAlteracao.setText("Data da Última Alteração: " + fornecedor.getParam5());
         
         Objeto ender = ctrEnder.getByCodigo(Integer.parseInt(fornecedor.getParam6()));
         if(!ender.getParam1().equals("0"))
@@ -863,6 +882,43 @@ public class CadastroFornecedorController implements Initializable
         {
             endereco_pesquisado = null;
             new Alert(Alert.AlertType.ERROR, "CEP não encontrado", ButtonType.OK).showAndWait();
+        }
+    }
+
+    @FXML
+    private void clickAlteracao(MouseEvent event)
+    {
+        if(lbAlteracao.getText().substring(lbAlteracao.getText().indexOf(":") + 1).trim().length() > 0)
+        {
+            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja pesquisar data de acesso?", ButtonType.YES,ButtonType.NO);
+            alerta.showAndWait();
+
+            if(alerta.getResult() == ButtonType.YES)
+            {
+                try
+                {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/basicas/CadastroUsuario.fxml"));     
+                    Parent root = (Parent) fxmlLoader.load();
+                    Stage stage = new Stage();
+                    JFXDecorator decorator = new JFXDecorator(stage, root);
+
+                    decorator.setStyle("-fx-decorator-color: #040921;");
+
+                    Scene scene = new Scene(decorator);
+                    CadastroUsuarioController controller = fxmlLoader.<CadastroUsuarioController>getController();
+                    controller.pesquisarData(lbAlteracao.getText().substring(lbAlteracao.getText().indexOf(":") + 1).trim());
+
+                    stage.setTitle("Cadastro de Usuário");
+                    stage.setScene(scene);
+                    stage.showAndWait();
+
+                } 
+                catch (IOException er)
+                {
+                    Alert a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Usuários! \nErro: " + er.getMessage(), ButtonType.OK);
+                    a.showAndWait();
+                }
+            }
         }
     }
 
@@ -989,6 +1045,23 @@ public class CadastroFornecedorController implements Initializable
     }
 
     @FXML
+    private void alteracaoExit(MouseEvent event)
+    {
+        lbAlteracao.setStyle(lbAlteracao.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+    }
+
+    @FXML
+    private void alteracaoEnter(MouseEvent event)
+    {
+        lbAlteracao.setStyle(lbAlteracao.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        if(lbAlteracao.getText().substring(lbAlteracao.getText().indexOf(":") + 1).trim().length() > 0)
+        {
+            tooltip.setText("Pesquisar Fornecedor");
+            ToolTip.bindTooltip(lbAlteracao, tooltip);
+        }
+    }
+
+    @FXML
     private void mainPressed(KeyEvent event)
     {
         if(event.getCode() == KeyCode.ENTER)
@@ -1014,5 +1087,13 @@ public class CadastroFornecedorController implements Initializable
     {
         if(event.getCode() == KeyCode.ENTER)
             clickPesquisarCEP(new ActionEvent());
+    }
+
+    public void setForn(String forn)
+    {
+        clickNovo(new ActionEvent());
+        acao = 2;
+        tfNome.setText(forn);
+        tfCNPJ.requestFocus();
     }
 }

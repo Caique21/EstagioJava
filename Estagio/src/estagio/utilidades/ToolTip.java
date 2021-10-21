@@ -27,9 +27,11 @@ public abstract class ToolTip
                 // if you don't change the y coordinate of the tooltip, you
                 // will see constant screen flicker
                 tooltip.setStyle("-fx-font-size:12");
-                tooltip.show(node, event.getScreenX() + 15, event.getScreenY() + 15);
+                if(!tooltip.isShowing())
+                    tooltip.show(node, event.getScreenX() + 15, event.getScreenY() + 15);
             }
         });
+        
         node.setOnMouseExited(new EventHandler<MouseEvent>()
         {
             @Override

@@ -237,27 +237,33 @@ public class Utils
             return "CPF inválido";
         else
         {
+            int ret = 0;
             if(tabela.equals("cliente"))
             {
-                if(objeto == null && ctrCliente.instancia().cpfExists(cpf) > 0//inserção e CPF não é repetido
+                ret = ctrCliente.instancia().cpfExists(cpf);
+                /*if(objeto == null && ctrCliente.instancia().cpfExists(cpf) > 0//inserção e CPF não é repetido
                     ||objeto != null && ctrCliente.instancia().cpfExists(cpf) != Integer.parseInt(objeto.getParam1()))
                     return "CPF já cadastrado";
                 else
-                    return "";
+                    return "";*/
             }
             else if(tabela.equals("funcionario"))
             {
-                if(ctrFuncionario.instancia().cpfExists(cpf) > 0)
+                ret = ctrFuncionario.instancia().cpfExists(cpf);
+                /*if(ctrFuncionario.instancia().cpfExists(cpf) > 0)
                 {
                     if(objeto == null || objeto != null && 
                          ctrFuncionario.instancia().cpfExists(cpf) != Integer.parseInt(objeto.getParam1()))
                         return "CPF já cadastrado";
                 }
                 else
-                    return "";
+                    return "";*/
             }
+            if(ret > 0)
+                if(objeto == null || objeto != null && ret != Integer.parseInt(objeto.getParam1()))
+                    return "CPF já cadastrado";
+            return "";
         }
-        return null;
     }
 
     public static String validadorCPF(String cpf, Objeto cliente, ctrCliente ctrCli)
@@ -278,11 +284,14 @@ public class Utils
         return "";*/
         if(!Utils.validaCPF(cpf.replace(".", "").replace("-", "")))
             return "CPF inválido";
-        else if(cliente == null && ctrCli.cpfExists(cpf) > 0 || 
-            cliente != null && ctrCli.cpfExists(cpf) != Integer.parseInt(cliente.getParam1()))  
-            return "CPF já cadastrado";
         else
+        {
+            int ret = ctrCli.cpfExists(cpf);
+            if(ret > 0)
+                if(cliente == null || cliente != null && ret != Integer.parseInt(cliente.getParam1()))
+                    return "CPF já cadastrado";
             return "";
+        }
     }
 
     

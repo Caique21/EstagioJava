@@ -30,6 +30,12 @@ public class Veiculo
     {
     }
 
+    public Veiculo(int codigo)
+    {
+        this.codigo = codigo;
+        get();
+    }
+
     public Veiculo(int codigo, String placa,  Modelo modelo, String chassi, int ano, String cor, String descricao)
     {
         this.codigo = codigo;
@@ -193,6 +199,29 @@ public class Veiculo
     public ArrayList<Veiculo> getByPlaca(String placa)
     {
         return  ler(Banco.getCon().consultar("SELECT * FROM veiculo WHERE vei_placa Ilike '%" + placa + "%'"));
+    }
+
+    private void get()
+    {
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM veiculo WHERE vei_codigo = " + this.codigo);
+        
+        try
+        {
+            if(rs != null && rs.next())            
+            {
+                this.ano = rs.getInt("vei_ano");
+                this.chassi = rs.getString("vei_chassi");
+                this.cor = rs.getString("vei_cor");
+                this.descricao = rs.getString("vei_descricao");
+                this.modelo = new Modelo(rs.getInt("modelo_codigo"));
+                this.placa = rs.getString("vei_placa");
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Veiculo.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
     }
     
     

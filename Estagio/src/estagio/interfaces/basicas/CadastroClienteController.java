@@ -8,6 +8,7 @@ package estagio.interfaces.basicas;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
@@ -20,6 +21,7 @@ import estagio.utilidades.Objeto;
 import estagio.utilidades.Utils;
 import estagio.utilidades.ToolTip;
 import estagio.utilidades.TooltippedTableCell;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,8 +30,11 @@ import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -44,6 +49,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import static json.Json.consultaCep;
 import org.json.JSONObject;
 
@@ -271,7 +277,6 @@ public class CadastroClienteController implements Initializable
     
     private void setListeners()
     {
-        
         tfCPF.textProperty().addListener((observable, oldValue, newValue) ->
         {
             if(newValue.length() == 14)
@@ -455,6 +460,12 @@ public class CadastroClienteController implements Initializable
                 }
             }
         });
+        
+        dpData.getEditor().setEditable(false);
+        dpData.getEditor().textProperty().addListener((observable, oldValue, newValue) ->
+        {
+            dpData.setValue(LocalDate.now());
+        });
     }
     
     private void inicializaDesign()
@@ -493,18 +504,6 @@ public class CadastroClienteController implements Initializable
         nodes.add(lbContato);
         nodes.add(lbDataAlteracao);
         nodes.add(lbEndereco);
-        nodes.add(lbErroBairro);
-        nodes.add(lbErroCEP);
-        nodes.add(lbErroCPF);
-        nodes.add(lbErroCidade);
-        nodes.add(lbErroData);
-        nodes.add(lbErroEmail);
-        nodes.add(lbErroEstado);
-        nodes.add(lbErroNome);
-        nodes.add(lbErroNumero);
-        nodes.add(lbErroRua);
-        nodes.add(lbErroRG);
-        nodes.add(lbErroTelefone);
         nodes.add(lbInfoBasica);
         nodes.add(lbNascimento);
         nodes.add(lbPesquisa);
@@ -526,19 +525,19 @@ public class CadastroClienteController implements Initializable
         
         Utils.setDesign(1, nodes);
         
-        lbErroBairro.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
-        lbErroCEP.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
-        lbErroCPF.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
-        lbErroCidade.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
-        lbErroData.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
-        lbErroEmail.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
-        lbErroEstado.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
-        lbErroNome.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
-        lbErroNumero.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
-        lbErroRG.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
-        lbErroRua.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
-        lbErroTelefone.setStyle(lbErroBairro.getStyle() + ";-fx-text-fill: red;");
-        
+        btNovo.setStyle(btNovo.getStyle() + ";-fx-cursor: default;");
+        btAlterar.setStyle(btAlterar.getStyle() + ";-fx-cursor: default;");
+        btCancelar.setStyle(btCancelar.getStyle() + ";-fx-cursor: default;");
+        btPesquisar.setStyle(btPesquisar.getStyle() + ";-fx-cursor: default;");
+        btRemover.setStyle(btRemover.getStyle() + ";-fx-cursor: default;");
+        btAddTelefone.setStyle(btAddTelefone.getStyle() + ";-fx-cursor: default;");
+        btDelTelefone.setStyle(btDelTelefone.getStyle() + ";-fx-cursor: default;");
+        btPesquisarCEP.setStyle(btPesquisarCEP.getStyle() + ";-fx-cursor: default;");
+        lbDataAlteracao.setStyle(btPesquisarCEP.getStyle() + ";-fx-cursor: default;");
+    }
+    
+    private void redimensiona()
+    {
         panePrincipal.setPrefWidth(TelaPrincipalController.screenBounds.getMaxX() - 200);
         panePrincipal.setPrefHeight(TelaPrincipalController.screenBounds.getMaxY() - 80);
         lbTitulo.setPrefHeight(45);
@@ -593,6 +592,7 @@ public class CadastroClienteController implements Initializable
         inicializaDesign();
         inicializa();
         setListeners();
+        redimensiona();
         
         tcEndereco.setCellFactory(TooltippedTableCell.forTableColumn());
         tcNome.setCellFactory(TooltippedTableCell.forTableColumn());
@@ -614,7 +614,7 @@ public class CadastroClienteController implements Initializable
         if(validaCliente())
         {
             Alert alerta;
-            if(acao == 0)//INSERT
+            if(acao == 0 || acao == 2)//INSERT
             {
                 alerta = new Alert(Alert.AlertType.CONFIRMATION,"Deseja cadastrar cliente " + tfNome.getText() + "?",
                         ButtonType.YES,ButtonType.NO);
@@ -627,6 +627,11 @@ public class CadastroClienteController implements Initializable
                     {
                         new Alert(Alert.AlertType.INFORMATION, "Cliente cadastrado com sucesso!!!", ButtonType.OK)
                             .showAndWait();
+                        if(acao == 2)
+                        {
+                            Stage stage = (Stage) btNovo.getScene().getWindow();
+                            stage.close();
+                        }
                         inicializa();
                     }
                     else
@@ -704,6 +709,11 @@ public class CadastroClienteController implements Initializable
     @FXML
     private void clickCancelar(ActionEvent event)
     {
+        if(acao == 2)
+        {
+            Stage stage = (Stage) btNovo.getScene().getWindow();
+            stage.close();
+        }
         inicializa();
     }
 
@@ -837,15 +847,54 @@ public class CadastroClienteController implements Initializable
     }
 
     @FXML
+    private void pesquisaData(MouseEvent event)
+    {
+        if(lbDataAlteracao.getText().substring(lbDataAlteracao.getText().indexOf(":") + 1).trim().length() > 0)
+        {
+            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja pesquisar data de acesso?", ButtonType.YES,ButtonType.NO);
+            alerta.showAndWait();
+
+            if(alerta.getResult() == ButtonType.YES)
+            {
+                try
+                {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/basicas/CadastroUsuario.fxml"));     
+                    Parent root = (Parent) fxmlLoader.load();
+                    Stage stage = new Stage();
+                    JFXDecorator decorator = new JFXDecorator(stage, root);
+
+                    decorator.setStyle("-fx-decorator-color: #040921;");
+
+                    Scene scene = new Scene(decorator);
+                    CadastroUsuarioController controller = fxmlLoader.<CadastroUsuarioController>getController();
+                    controller.pesquisarData(lbDataAlteracao.getText().
+                        substring(lbDataAlteracao.getText().indexOf(":") + 1).trim());
+
+                    stage.setTitle("Cadastro de Usuário");
+                    stage.setScene(scene);
+                    stage.setAlwaysOnTop(true);
+                    stage.showAndWait();
+
+                } 
+                catch (IOException er)
+                {
+                    Alert a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Usuários! \nErro: " + er.getMessage(), ButtonType.OK);
+                    a.showAndWait();
+                }
+            }
+        }
+    }
+
+    @FXML
     private void novoExit(MouseEvent event)
     {
-        btNovo.setStyle(btNovo.getStyle() + ";-fx-cursor: default;");
+        btNovo.setStyle(btNovo.getStyle().replace("-fx-cursor: hand;", "-fx-cursor: default;"));
     }
 
     @FXML
     private void novoEnter(MouseEvent event)
     {
-        btNovo.setStyle(btNovo.getStyle() + ";-fx-cursor: hand;");
+        btNovo.setStyle(btNovo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
         tooltip.setText("Iniciar Novo Cadastro");
         ToolTip.bindTooltip(btNovo, tooltip);
     }
@@ -853,13 +902,13 @@ public class CadastroClienteController implements Initializable
     @FXML
     private void confirmarExit(MouseEvent event)
     {
-        btConfirmar.setStyle(btConfirmar.getStyle() + ";-fx-cursor: default;");
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: hand;", "-fx-cursor: default;"));
     }
 
     @FXML
     private void confirmarEnter(MouseEvent event)
     {
-        btConfirmar.setStyle(btConfirmar.getStyle() + ";-fx-cursor: hand;");
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
         tooltip.setText("Confirmar Ação");
         ToolTip.bindTooltip(btConfirmar, tooltip);
     }
@@ -867,13 +916,13 @@ public class CadastroClienteController implements Initializable
     @FXML
     private void alterarExit(MouseEvent event)
     {
-        btAlterar.setStyle(btAlterar.getStyle() + ";-fx-cursor: default;");
+        btAlterar.setStyle(btAlterar.getStyle().replace("-fx-cursor: hand;", "-fx-cursor: default;"));
     }
 
     @FXML
     private void alterarEnter(MouseEvent event)
     {
-        btAlterar.setStyle("-fx-cursor: hand;" + btAlterar.getStyle());
+        btAlterar.setStyle(btAlterar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
         tooltip.setText("Alterar Cliente");
         ToolTip.bindTooltip(btAlterar, tooltip);
     }
@@ -881,13 +930,13 @@ public class CadastroClienteController implements Initializable
     @FXML
     private void removerExit(MouseEvent event)
     {
-        btRemover.setStyle("-fx-cursor: default;" + btRemover.getStyle());
+        btRemover.setStyle(btRemover.getStyle().replace("-fx-cursor: hand;", "-fx-cursor: default;"));
     }
 
     @FXML
     private void removerEnter(MouseEvent event)
     {
-        btRemover.setStyle("-fx-cursor: hand;" + btRemover.getStyle());
+        btRemover.setStyle(btRemover.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
         tooltip.setText("Remover Cliente");
         ToolTip.bindTooltip(btRemover, tooltip);
     }
@@ -895,13 +944,13 @@ public class CadastroClienteController implements Initializable
     @FXML
     private void cancelarExit(MouseEvent event)
     {
-        btCancelar.setStyle("-fx-cursor: default;" + btCancelar.getStyle());
+        btCancelar.setStyle(btCancelar.getStyle().replace("-fx-cursor: hand;", "-fx-cursor: default;"));
     }
 
     @FXML
     private void cancelarEnter(MouseEvent event)
     {
-        btCancelar.setStyle("-fx-cursor: hand;" + btCancelar.getStyle());
+        btCancelar.setStyle(btCancelar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
         tooltip.setText("Cancelar Ação");
         ToolTip.bindTooltip(btCancelar, tooltip);
     }
@@ -909,13 +958,13 @@ public class CadastroClienteController implements Initializable
     @FXML
     private void cepExit(MouseEvent event)
     {
-        btPesquisarCEP.setStyle(btPesquisarCEP.getStyle() + ";-fx-cursor: default;");
+        btPesquisarCEP.setStyle(btPesquisarCEP.getStyle().replace("-fx-cursor: hand;", "-fx-cursor: default;"));
     }
 
     @FXML
     private void cepEnter(MouseEvent event)
     {
-        btPesquisarCEP.setStyle(btPesquisarCEP.getStyle() + ";-fx-cursor: hand;");
+        btPesquisarCEP.setStyle(btPesquisarCEP.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
         tooltip.setText("Pesquisar CEP online");
         ToolTip.bindTooltip(btPesquisarCEP, tooltip);
     }
@@ -923,7 +972,7 @@ public class CadastroClienteController implements Initializable
     @FXML
     private void addTelEnter(MouseEvent event)
     {
-        btAddTelefone.setStyle("-fx-cursor: hand;" + btAddTelefone.getStyle());
+        btAddTelefone.setStyle(btAddTelefone.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
         tooltip.setText("Adiconar Telefone/Celular");
         ToolTip.bindTooltip(btAddTelefone, tooltip);
     }
@@ -931,13 +980,13 @@ public class CadastroClienteController implements Initializable
     @FXML
     private void addTelExit(MouseEvent event)
     {
-        btAddTelefone.setStyle("-fx-cursor: default;" + btAddTelefone.getStyle());
+        btAddTelefone.setStyle(btAddTelefone.getStyle().replace("-fx-cursor: hand;", "-fx-cursor: default;"));
     }
 
     @FXML
     private void delTelEnter(MouseEvent event)
     {
-        btDelTelefone.setStyle("-fx-cursor: hand;" + btDelTelefone.getStyle());
+        btDelTelefone.setStyle(btDelTelefone.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
         tooltip.setText("Remover Telefone/Celular selecionado");
         ToolTip.bindTooltip(btDelTelefone, tooltip);
     }
@@ -945,21 +994,38 @@ public class CadastroClienteController implements Initializable
     @FXML
     private void delTelExit(MouseEvent event)
     {
-        btDelTelefone.setStyle("-fx-cursor: default;" + btDelTelefone.getStyle());
+        btDelTelefone.setStyle(btDelTelefone.getStyle().replace("-fx-cursor: hand;", "-fx-cursor: default;"));
     }
 
     @FXML
     private void pesquisarExit(MouseEvent event)
     {
-        btPesquisar.setStyle("-fx-cursor: default;" + btPesquisar.getStyle());
+        btPesquisar.setStyle(btPesquisar.getStyle().replace("-fx-cursor: hand;", "-fx-cursor: default;"));
     }
 
     @FXML
     private void pesquisarEnter(MouseEvent event)
     {
-        btPesquisar.setStyle("-fx-cursor: hand;" + btPesquisar.getStyle());
+        btPesquisar.setStyle(btPesquisar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
         tooltip.setText("Buscar Cliente");
         ToolTip.bindTooltip(btPesquisar, tooltip);
+    }
+
+    @FXML
+    private void alteracaoExit(MouseEvent event)
+    {
+        lbDataAlteracao.setStyle(lbDataAlteracao.getStyle().replace("-fx-cursor: hand;", "-fx-cursor: default;"));
+    }
+
+    @FXML
+    private void alteracaoEnter(MouseEvent event)
+    {
+        lbDataAlteracao.setStyle(lbDataAlteracao.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        if(lbDataAlteracao.getText().substring(lbDataAlteracao.getText().indexOf(":") + 1).trim().length() > 0)
+        {
+            tooltip.setText("Pesquisar data");
+            ToolTip.bindTooltip(lbDataAlteracao, tooltip);
+        }
     }
 
     @FXML
@@ -1088,16 +1154,6 @@ public class CadastroClienteController implements Initializable
             lbErroCEP.setText("Digite um CEP");
         }
         
-        if(lvTelefones.getItems().isEmpty())
-        {
-            alerta = new Alert(Alert.AlertType.WARNING, "Nenhum telefone/celular cadastrado, deseja continuar?", 
-                    ButtonType.YES,ButtonType.NO);
-            alerta.showAndWait();
-            
-            if(alerta.getResult() == ButtonType.NO)
-                erros += "Nenhum telefone/celular cadastrado\n";
-        }
-        
         if(!erros.trim().equals(""))
             new Alert(Alert.AlertType.ERROR, erros, ButtonType.OK).showAndWait();
         return erros.trim().equals("");
@@ -1106,7 +1162,6 @@ public class CadastroClienteController implements Initializable
     private String validaAlteracaoEndereco(Alert alerta)
     {
         String avisos = "";
-        
         
         if(endereco_pesquisado != null && !endereco_pesquisado.getString("resultado").equals("0"))
         {
@@ -1190,5 +1245,13 @@ public class CadastroClienteController implements Initializable
             }
         tfTelefone.clear();
         inicializaLabels();
+    }
+
+    public void setCli(String cli)
+    {
+        clickNovo(new ActionEvent());
+        acao = 2;
+        tfNome.setText(cli);
+        tfCPF.requestFocus();
     }
 }

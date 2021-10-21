@@ -187,4 +187,25 @@ public class ctrCliente
     {
         return new Cliente().apagar_fisico(codigo);
     }
+
+    public ArrayList<String> getAllNames(String... nome)
+    {
+        ArrayList<String>ret = new ArrayList<>();
+        ArrayList<Cliente>clientes;
+        
+        if(nome.length == 0)
+            clientes = new Cliente().getByName("", true);
+        else
+            clientes = new Cliente().getByName(nome[0], true);
+        
+        for (int i = 0; i < clientes.size(); i++)
+            ret.add(clientes.get(i).getNome());
+        
+        return ret;
+    }
+
+    public boolean isCliente(String nome)
+    {
+        return new Cliente(nome).getCodigo() > 0;
+    }
 }

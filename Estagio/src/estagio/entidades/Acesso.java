@@ -154,7 +154,8 @@ public class Acesso
         
         try
         {
-            return new Acesso(rs.getInt("acess_codigo"), rs.getTimestamp("acess_data_login"), 
+            if(rs != null && rs.next())
+                return new Acesso(rs.getInt("acess_codigo"), rs.getTimestamp("acess_data_login"), 
                         rs.getTimestamp("acess_data_logout"), new Usuario(rs.getInt("user_codigo")));
         }
         catch (SQLException ex)

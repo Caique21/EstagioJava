@@ -204,4 +204,21 @@ public class ctrFornecedor
     {
         return new Fornecedor().apagar_fisico(codigo);
     }
+
+    public ArrayList<String> getAllNames(String... nome)
+    {
+        ArrayList<String>ret = new ArrayList<>();
+        ArrayList<Fornecedor>fornecedores;
+        
+        if(nome.length == 0)
+            fornecedores = new Fornecedor().getByName("");
+        else
+            fornecedores = new Fornecedor().getByName(nome[0]);
+        
+        for (int i = 0; i < fornecedores.size(); i++)
+            if(fornecedores.get(i).isAtivo())
+                ret.add(fornecedores.get(i).getNome());
+        
+        return ret;
+    }
 }

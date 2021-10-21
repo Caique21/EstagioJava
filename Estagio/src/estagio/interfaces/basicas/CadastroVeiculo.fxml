@@ -68,20 +68,20 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="tfPlaca" labelFloat="true" layoutX="40.0" layoutY="37.0" promptText="Placa(*)" />
+                  <JFXTextField fx:id="tfPlaca" labelFloat="true" layoutX="40.0" layoutY="37.0" onKeyPressed="#confirmarPressed" promptText="Placa(*)" />
                   <JFXTextField fx:id="tfPlacaMercosul" labelFloat="true" layoutX="40.0" layoutY="37.0" promptText="Placa(*)" visible="false" />
                   <HBox alignment="CENTER_LEFT" layoutX="226.0" layoutY="37.0" prefHeight="25.0" prefWidth="889.0" spacing="50.0">
                      <children>
                         <JFXCheckBox fx:id="rbMercosul" onAction="#clickMercosul" text="Mercosul" />
                         <JFXTextField fx:id="tfMarca" labelFloat="true" prefHeight="25.0" prefWidth="195.0" promptText="Marca" />
                         <JFXTextField fx:id="tfModelo" labelFloat="true" prefHeight="25.0" prefWidth="195.0" promptText="Modelo" />
-                        <JFXTextField fx:id="tfChassi" labelFloat="true" prefHeight="25.0" prefWidth="186.0" promptText="Chassi" />
+                        <JFXTextField fx:id="tfChassi" labelFloat="true" onKeyPressed="#confirmarPressed" prefHeight="25.0" prefWidth="186.0" promptText="Chassi" />
                      </children>
                   </HBox>
                   <HBox layoutX="40.0" layoutY="100.0" prefHeight="36.0" prefWidth="270.0" spacing="50.0">
                      <children>
-                        <JFXTextField fx:id="tfAno" labelFloat="true" prefHeight="25.0" prefWidth="57.0" promptText="Ano" />
-                        <JFXTextField fx:id="tfCor" labelFloat="true" promptText="Cor" />
+                        <JFXTextField fx:id="tfAno" labelFloat="true" onKeyPressed="#confirmarPressed" prefHeight="25.0" prefWidth="57.0" promptText="Ano" />
+                        <JFXTextField fx:id="tfCor" labelFloat="true" onKeyPressed="#confirmarPressed" promptText="Cor" />
                      </children>
                   </HBox>
                   <Label fx:id="lbErroPlaca" layoutX="40.0" layoutY="62.0" text="Label" textFill="RED" />
@@ -90,7 +90,7 @@
                   <Label fx:id="lbErroChassi" layoutX="842.0" layoutY="62.0" text="Label" textFill="RED" />
                   <Label fx:id="lbErroAno" layoutX="40.0" layoutY="125.0" text="Label" textFill="RED" />
                   <Label fx:id="lbErroCor" layoutX="148.0" layoutY="125.0" text="Label" textFill="RED" />
-                  <JFXTextArea fx:id="taDescricao" layoutX="336.0" layoutY="89.0" prefHeight="36.0" prefWidth="703.0" promptText="Descrição" />
+                  <JFXTextArea fx:id="taDescricao" layoutX="336.0" layoutY="89.0" onKeyPressed="#confirmarPressed" prefHeight="36.0" prefWidth="703.0" promptText="Descrição" />
                </children>
             </Pane>
             <Pane fx:id="panePesquisa" prefHeight="448.0" prefWidth="1130.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">

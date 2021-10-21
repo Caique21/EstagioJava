@@ -7,7 +7,6 @@ package estagio.interfaces;
 
 import com.jfoenix.controls.JFXDecorator;
 import estagio.TelaPrincipalController;
-import static estagio.TelaPrincipalController.usuario_logado;
 import estagio.utilidades.Utils;
 import java.io.IOException;
 import java.net.URL;

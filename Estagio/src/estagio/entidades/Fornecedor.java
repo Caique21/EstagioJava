@@ -38,6 +38,12 @@ public class Fornecedor
         get();
     }
 
+    public Fornecedor(String nome)
+    {
+        this.nome = nome;
+        get();
+    }
+
     public Fornecedor(String nome_cnpj, boolean nome)
     {
         if(nome)
