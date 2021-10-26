@@ -212,12 +212,12 @@ public class Compra
         
         if(this.fornecedor != null)
         {
-            sql = sql.replace("$8", "forn_codigo");
+            sql = sql.replace("$9", "forn_codigo");
             sql = sql.replace("$1", String.valueOf(this.fornecedor.getCodigo()));
         }
         else if(this.cliente != null)
         {
-            sql = sql.replace("$8", "cli_codigo");
+            sql = sql.replace("$9", "cli_codigo");
             sql = sql.replace("$1", String.valueOf(this.cliente.getCodigo()));
         }
         

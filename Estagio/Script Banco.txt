@@ -257,7 +257,6 @@ CREATE TABLE venda
 CREATE TABLE parcela
 (
 	parc_codigo serial NOT NULL,
-	parc_status INTEGER NULL,
 	parc_dataVencimento DATE NOT NULL,
 	parc_numero INTEGER NOT NULL,
 	parc_dataPagamento DATE,

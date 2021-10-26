@@ -2,9 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXCheckBox?>
-<?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXDatePicker?>
-<?import com.jfoenix.controls.JFXRadioButton?>
 <?import com.jfoenix.controls.JFXTextArea?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
@@ -65,6 +63,24 @@
    <center>
       <VBox fx:id="painelCentral" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
+            <Pane fx:id="paneDadosCompra" prefHeight="68.0" prefWidth="1130.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
+               <children>
+                  <JFXTextField fx:id="tfFornecedor" labelFloat="true" layoutX="26.0" layoutY="24.0" prefHeight="25.0" prefWidth="217.0" promptText="Fornecedor(*)" />
+                  <JFXTextField fx:id="tfNotaFiscal" labelFloat="true" layoutX="310.0" layoutY="24.0" prefHeight="25.0" prefWidth="154.0" promptText="Nota Fiscal(*)" />
+                  <JFXTextField fx:id="tfVendedor" labelFloat="true" layoutX="511.0" layoutY="24.0" prefHeight="25.0" prefWidth="248.0" promptText="Vendedor" />
+                  <JFXDatePicker fx:id="dpEmissao" layoutX="888.0" layoutY="24.0" prefHeight="25.0" prefWidth="159.0" />
+                  <FontAwesomeIconView fx:id="faView" glyphName="EYE" layoutX="250.0" layoutY="46.0" onMouseEntered="#fornecedorEnter" onMouseExited="#fornecedorExit" size="18" />
+                  <Label fx:id="lbErroFornecedor" layoutX="26.0" layoutY="49.0" text="Label" textFill="RED" />
+                  <Label fx:id="lbEmissao" layoutX="794.0" layoutY="31.0" text="Data de Emissão:" />
+                  <Label fx:id="lbErroNotaFiscal" layoutX="310.0" layoutY="49.0" text="Label" textFill="RED" />
+                  <Label fx:id="lbErroVendedor" layoutX="511.0" layoutY="49.0" text="Label" textFill="RED" />
+                  <Label fx:id="lbDadosVeiculos1" text="Dados da Compra">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
             <Pane fx:id="paneVeiculo" prefHeight="127.0" prefWidth="1130.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                <children>
                   <Label fx:id="lbDadosVeiculos" text="Dados do Veículo">
@@ -95,91 +111,45 @@
                   <JFXButton fx:id="btAdicionarVeiculo" buttonType="RAISED" layoutX="833.0" layoutY="86.0" onAction="#clickAdicionarVeiculo" onMouseEntered="#addVeiculoEnter" onMouseExited="#addVeiculoExit" text="ADICIONAR VEÍCULO">
                      <graphic>
                         <FontAwesomeIconView fx:id="faPlus2" glyphName="PLUS" />
-                     </graphic></JFXButton>
+                     </graphic>
+                  </JFXButton>
                   <JFXButton fx:id="btRemoverVeiculo" buttonType="RAISED" layoutX="983.0" layoutY="86.0" onAction="#clickRemoverVeiculo" onMouseEntered="#delVeiculoEnter" onMouseExited="#delVeiculoExit" text="REMOVER VEÍCULO">
                      <graphic>
                         <FontAwesomeIconView fx:id="faMinus" glyphName="MINUS" />
-                     </graphic></JFXButton>
+                     </graphic>
+                  </JFXButton>
                   <Label fx:id="lbErroValorVeiculo" layoutX="30.0" layoutY="112.0" text="Label" textFill="RED" />
                </children>
             </Pane>
-            <VBox fx:id="vboxCentral" alignment="TOP_CENTER" prefHeight="290.0" prefWidth="1130.0">
+            <VBox fx:id="vboxCentral" alignment="TOP_RIGHT" prefHeight="388.0" prefWidth="1130.0">
                <children>
                   <Label fx:id="lbVeiculos" alignment="CENTER" prefHeight="17.0" prefWidth="1194.0" text="Veículos">
                      <font>
                         <Font name="System Bold Italic" size="12.0" />
                      </font>
                   </Label>
-                  <TableView fx:id="tvVeiculos" onMouseClicked="#selecionaVeiculo" prefHeight="269.0" prefWidth="1100.0">
-                    <columns>
-                      <TableColumn fx:id="tcMarca" prefWidth="178.0" text="Marca" />
+                  <TableView fx:id="tvVeiculos" onMouseClicked="#selecionaVeiculo" prefHeight="333.0" prefWidth="1100.0">
+                     <columns>
+                        <TableColumn fx:id="tcMarca" prefWidth="178.0" text="Marca" />
                         <TableColumn fx:id="tcModelo" prefWidth="171.0" text="Modelo" />
-                      <TableColumn fx:id="tcPlaca" prefWidth="85.0" text="Placa" />
+                        <TableColumn fx:id="tcPlaca" prefWidth="85.0" text="Placa" />
                         <TableColumn fx:id="tcValor" prefWidth="125.0" text="Valor" />
                         <TableColumn fx:id="tcChassi" prefWidth="125.0" text="Chassi" />
                         <TableColumn fx:id="tcAno" minWidth="4.0" prefWidth="64.0" text="Ano" />
                         <TableColumn fx:id="tcCor" prefWidth="96.0" text="Cor" />
                         <TableColumn fx:id="tcDescricao" prefWidth="255.0" text="Descrição" />
-                    </columns>
+                     </columns>
                   </TableView>
+                  <Label fx:id="lbSubTotal" prefHeight="30.0" prefWidth="418.0" text="SubTotal: R$">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
                </children>
                <padding>
                   <Insets left="15.0" right="15.0" />
                </padding>
             </VBox>
-            <Pane fx:id="paneDadosCompra" prefHeight="170.0" prefWidth="1130.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
-               <children>
-                  <HBox alignment="CENTER_LEFT" layoutX="30.0" layoutY="5.0" prefHeight="51.0" prefWidth="606.0" spacing="35.0">
-                     <children>
-                        <JFXRadioButton fx:id="rbAvista" onAction="#clickAvista" text="À Vista" />
-                        <JFXRadioButton fx:id="rbParcelado" onAction="#clickParcelado" text="Parcelado" />
-                        <JFXTextField fx:id="tfNumeroParcelas" labelFloat="true" prefHeight="25.0" prefWidth="88.0" promptText="Nº Parcelas(*)" />
-                        <VBox alignment="CENTER_LEFT" prefHeight="51.0" prefWidth="83.0" spacing="10.0">
-                           <children>
-                              <JFXRadioButton fx:id="rbJuros" onAction="#clickJuros" text="Juros" />
-                              <JFXRadioButton fx:id="rbDesconto" onAction="#clickDesconto" text="Desconto" />
-                           </children>
-                        </VBox>
-                        <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
-                           <children>
-                              <JFXRadioButton fx:id="rbValor" onAction="#clickValor" text="Valor" />
-                              <JFXRadioButton fx:id="rbPorcentagem" onAction="#clickPorcentagem" text="Porcentagem" />
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-                  <JFXTextField fx:id="tfValorReajuste" labelFloat="true" layoutX="618.0" layoutY="18.0" promptText="Valor" />
-                  <JFXTextField fx:id="tfPorcReajuste" labelFloat="true" layoutX="618.0" layoutY="18.0" promptText="Valor" visible="false" />
-                  <JFXDatePicker fx:id="dpVencimento" layoutX="783.0" layoutY="18.0" />
-                  <JFXButton fx:id="btParcelasManuais" buttonType="RAISED" layoutX="979.0" layoutY="20.0" onAction="#clickGerarParcelas" onMouseEntered="#gerarParcelasEnter" onMouseExited="#gerarParcelasExit" text="Gerar Parcelas Manuais">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </JFXButton>
-                  <JFXTextField fx:id="tfFornecedor" labelFloat="true" layoutX="30.0" layoutY="72.0" prefHeight="25.0" prefWidth="217.0" promptText="Fornecedor(*)" />
-                  <JFXTextField fx:id="tfNotaFiscal" labelFloat="true" layoutX="302.0" layoutY="72.0" prefHeight="25.0" prefWidth="154.0" promptText="Nota Fiscal(*)" />
-                  <JFXTextField fx:id="tfVendedor" labelFloat="true" layoutX="478.0" layoutY="72.0" prefHeight="25.0" prefWidth="197.0" promptText="Vendedor" />
-                  <JFXComboBox fx:id="cbFormaPagamento" labelFloat="true" layoutX="293.0" layoutY="126.0" prefHeight="25.0" prefWidth="144.0" promptText="Forma Pagamento(*)" />
-                  <JFXTextField fx:id="tfNumeroCheque" labelFloat="true" layoutX="458.0" layoutY="126.0" prefHeight="25.0" prefWidth="117.0" promptText="Nº Cheque(*)" />
-                  <JFXDatePicker fx:id="dpEmissao" layoutX="122.0" layoutY="126.0" prefHeight="25.0" prefWidth="159.0" />
-                  <FontAwesomeIconView fx:id="faView" glyphName="EYE" layoutX="257.0" layoutY="90.0" onMouseEntered="#fornecedorEnter" onMouseExited="#fornecedorExit" size="18" />
-                  <Label fx:id="lbErroTipoPagamento" layoutX="30.0" layoutY="45.0" text="Label" textFill="RED" />
-                  <Label fx:id="lbErroNumeroParcelas" layoutX="243.0" layoutY="45.0" text="Label" textFill="RED" />
-                  <Label fx:id="lbErroValorReajuste" layoutX="618.0" layoutY="45.0" text="Label" textFill="RED" />
-                  <Label fx:id="lbErroFornecedor" layoutX="30.0" layoutY="97.0" text="Label" textFill="RED" />
-                  <Label fx:id="lbEmissao" layoutX="30.0" layoutY="130.0" text="Data de Emissão:" />
-                  <Label fx:id="lbErroNotaFiscal" layoutX="302.0" layoutY="97.0" text="Label" textFill="RED" />
-                  <Label fx:id="lbSubTotal" layoutX="700.0" layoutY="78.0" prefHeight="30.0" prefWidth="418.0" text="SubTotal: R$">
-                     <font>
-                        <Font name="System Bold" size="20.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="lbErroVendedor" layoutX="478.0" layoutY="97.0" text="Label" textFill="RED" />
-                  <Label fx:id="lbErroFormaPagamento" layoutX="292.0" layoutY="152.0" text="Label" textFill="RED" />
-                  <Label fx:id="lbErroNumeroCheque" layoutX="458.0" layoutY="152.0" text="Label" textFill="RED" />
-                  <Label fx:id="lbVencimento" layoutX="774.0" layoutY="3.0" prefHeight="17.0" prefWidth="171.0" text="Data de Vencimento 1ª Parcela" />
-               </children>
-            </Pane>
          </children>
          <BorderPane.margin>
             <Insets />

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="213.0" prefWidth="805.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.fundamentais.ConfirmarTransacaoController">
+   <top>
+      <Label fx:id="lbTitulo" text="Informações de Pagamento da " BorderPane.alignment="CENTER">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+      <Pane prefHeight="189.0" prefWidth="805.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox fx:id="hbJuros" alignment="CENTER_LEFT" layoutX="20.0" layoutY="7.0" prefHeight="36.0" prefWidth="168.0" spacing="20.0">
+               <children>
+                  <JFXRadioButton fx:id="rbJuros" onAction="#clickJuros" text="Juros" />
+                  <JFXRadioButton fx:id="rbDesconto" onAction="#clickDesconto" text="Desconto" />
+               </children>
+            </HBox>
+            <HBox fx:id="hbValor" alignment="CENTER_LEFT" layoutX="217.0" layoutY="7.0" prefHeight="36.0" prefWidth="179.0" spacing="20.0">
+               <children>
+                  <JFXRadioButton fx:id="rbValor" onAction="#clickValor" text="Valor" />
+                  <JFXRadioButton fx:id="rbPorcentagem" onAction="#clickPorcentagem" text="Porcentagem" />
+               </children>
+            </HBox>
+            <JFXTextField fx:id="tfValorReajuste" labelFloat="true" layoutX="432.0" layoutY="15.0" promptText="Valor" />
+            <JFXTextField fx:id="tfPorcReajuste" labelFloat="true" layoutX="432.0" layoutY="15.0" promptText="Valor" visible="false" />
+            <JFXTextField fx:id="tfEntrada" labelFloat="true" layoutX="604.0" layoutY="15.0" promptText="Valor de Entrada" />
+            <HBox fx:id="hbParcelas" alignment="CENTER_LEFT" layoutX="20.0" layoutY="65.0" prefHeight="51.0" prefWidth="321.0" spacing="40.0">
+               <children>
+                  <JFXRadioButton fx:id="rbAvista" onAction="#clickAvista" text="À Vista" />
+                  <JFXRadioButton fx:id="rbParcelado" onAction="#clickParcelado" text="Parcelado" />
+                  <JFXTextField fx:id="tfNumeroParcelas" labelFloat="true" prefHeight="25.0" prefWidth="88.0" promptText="Nº Parcelas(*)" />
+               </children>
+            </HBox>
+            <JFXDatePicker fx:id="dpVencimento" layoutX="379.0" layoutY="78.0" />
+            <JFXButton fx:id="btParcelasManuais" buttonType="RAISED" layoutX="581.0" layoutY="71.0" onAction="#clickGerarParcelas" onMouseEntered="#gerarParcelasEnter" onMouseExited="#gerarParcelasExit" text="Gerar Parcelas Manuais">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </JFXButton>
+            <Label fx:id="lbVencimento" layoutX="361.0" layoutY="63.0" prefHeight="17.0" prefWidth="171.0" text="Data de Vencimento 1ª Parcela:" />
+            <Label fx:id="lbLimparParcelas" layoutX="655.0" layoutY="95.0" text="Limpar Parcelas Manuais">
+               <font>
+                  <Font name="System Italic" size="12.0" />
+               </font>
+            </Label>
+            <Label fx:id="lbSubTotal" layoutX="333.0" layoutY="114.0" prefHeight="30.0" prefWidth="458.0" text="Total da %: R$">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <HBox alignment="CENTER" layoutX="15.0" layoutY="144.0" prefHeight="45.0" prefWidth="773.0" spacing="30.0">
+               <children>
+                  <JFXButton fx:id="btVisualizar" buttonType="RAISED" onAction="#clickVisualizar" text="Visualizar Parcelas">
+                     <graphic>
+                        <FontAwesomeIconView fx:id="faView" glyphName="EYE" size="15" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="btConfirmar" buttonType="RAISED" onAction="#clickConfirmar" text="Confirmar Pagamento">
+                     <graphic>
+                        <FontAwesomeIconView fx:id="faCheck" glyphName="CHECK" size="15" />
+                     </graphic>
+                  </JFXButton>
+                  <JFXButton fx:id="btCancelar" buttonType="RAISED" onAction="#clickCancelar" text="Cancelar">
+                     <graphic>
+                        <FontAwesomeIconView fx:id="faClose" glyphName="CLOSE" size="15" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
+            <Label fx:id="lbErroReajuste" layoutX="433.0" layoutY="43.0" text="Label" textFill="RED" />
+            <Label fx:id="lbErroEntrada" layoutX="604.0" layoutY="43.0" text="Label" textFill="RED" />
+            <Label fx:id="lbErroParcelas" layoutX="242.0" layoutY="104.0" text="Label" textFill="RED" />
+         </children>
+      </Pane>
+   </center>
+</BorderPane>

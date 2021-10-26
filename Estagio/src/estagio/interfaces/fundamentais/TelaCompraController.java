@@ -8,10 +8,8 @@ package estagio.interfaces.fundamentais;
 import com.jfoenix.controls.JFXAutoCompletePopup;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXDecorator;
-import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
@@ -55,7 +53,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -86,10 +83,6 @@ public class TelaCompraController implements Initializable
     private final ArrayList<String>fornecedores = new ArrayList<>();
     private ArrayList<Objeto>parcelas = new ArrayList<>();
     
-    private final ToggleGroup goup1 = new ToggleGroup();
-    private final ToggleGroup goup2 = new ToggleGroup();
-    private final ToggleGroup goup3 = new ToggleGroup();
-    
     private int acao;
 
     @FXML
@@ -104,8 +97,6 @@ public class TelaCompraController implements Initializable
     private Label lbDadosVeiculos;
     @FXML
     private Label lbVeiculos;
-    @FXML
-    private Label lbVencimento;
     @FXML
     private Label lbEmissao;
     @FXML
@@ -125,21 +116,11 @@ public class TelaCompraController implements Initializable
     @FXML
     private Label lbErroValorVeiculo;
     @FXML
-    private Label lbErroTipoPagamento;
-    @FXML
-    private Label lbErroNumeroParcelas;
-    @FXML
-    private Label lbErroValorReajuste;
-    @FXML
     private Label lbErroFornecedor;
     @FXML
     private Label lbErroNotaFiscal;
     @FXML
     private Label lbErroVendedor;
-    @FXML
-    private Label lbErroFormaPagamento;
-    @FXML
-    private Label lbErroNumeroCheque;
     @FXML
     private JFXTextField tfPlaca;
     @FXML
@@ -181,26 +162,6 @@ public class TelaCompraController implements Initializable
     @FXML
     private TableColumn<Objeto,String> tcDescricao;
     @FXML
-    private JFXRadioButton rbAvista;
-    @FXML
-    private JFXRadioButton rbParcelado;
-    @FXML
-    private JFXTextField tfNumeroParcelas;
-    @FXML
-    private JFXRadioButton rbJuros;
-    @FXML
-    private JFXRadioButton rbDesconto;
-    @FXML
-    private JFXRadioButton rbValor;
-    @FXML
-    private JFXRadioButton rbPorcentagem;
-    @FXML
-    private JFXTextField tfValorReajuste;
-    @FXML
-    private JFXDatePicker dpVencimento;
-    @FXML
-    private JFXButton btParcelasManuais;
-    @FXML
     private JFXDatePicker dpEmissao;
     @FXML
     private JFXTextField tfFornecedor;
@@ -208,10 +169,6 @@ public class TelaCompraController implements Initializable
     private JFXTextField tfNotaFiscal;
     @FXML
     private JFXTextField tfVendedor;
-    @FXML
-    private JFXComboBox<String> cbFormaPagamento;
-    @FXML
-    private JFXTextField tfNumeroCheque;
     @FXML
     private JFXButton btNovo;
     @FXML
@@ -247,9 +204,9 @@ public class TelaCompraController implements Initializable
     @FXML
     private JFXTextField tfPlacaMercosul;
     @FXML
-    private JFXTextField tfPorcReajuste;
-    @FXML
     private JFXTextArea taDescricao;
+    @FXML
+    private Label lbDadosVeiculos1;
 
     /**
      * Initializes the controller class.
@@ -265,7 +222,6 @@ public class TelaCompraController implements Initializable
         nodes.add(btAlterar);
         nodes.add(btCancelar);
         nodes.add(btConfirmar);
-        nodes.add(btParcelasManuais);
         nodes.add(btNovo);
         nodes.add(btRemoverVeiculo);
         nodes.add(btPesquisar);
@@ -278,12 +234,8 @@ public class TelaCompraController implements Initializable
         nodes.add(tfMarca);
         nodes.add(tfModelo);
         nodes.add(tfNotaFiscal);
-        nodes.add(tfNumeroCheque);
-        nodes.add(tfNumeroParcelas);
         nodes.add(tfPlaca);
         nodes.add(tfPlacaMercosul);
-        nodes.add(tfValorReajuste);
-        nodes.add(tfPorcReajuste);
         nodes.add(tfValorVeiculo);
         nodes.add(tfVendedor);
         
@@ -293,16 +245,10 @@ public class TelaCompraController implements Initializable
         nodes.add(lbEmissao);
         nodes.add(lbSubTotal);
         nodes.add(lbVeiculos);
-        nodes.add(lbVencimento);
         nodes.add(lbTitulo);
+        nodes.add(lbDadosVeiculos1);
         
-        nodes.add(rbAvista);
-        nodes.add(rbDesconto);
-        nodes.add(rbJuros);
         nodes.add(rbMercosul);
-        nodes.add(rbParcelado);
-        nodes.add(rbPorcentagem);
-        nodes.add(rbValor);
         
         nodes.add(faCheck);
         nodes.add(faClose);
@@ -314,8 +260,6 @@ public class TelaCompraController implements Initializable
         nodes.add(faTrash);
         nodes.add(faMinus);
         
-        nodes.add(cbFormaPagamento);
-        
         Utils.setDesign(1, nodes);
         
         btNovo.setStyle(btNovo.getStyle() + ";-fx-cursor: default;");
@@ -324,7 +268,6 @@ public class TelaCompraController implements Initializable
         btPesquisar.setStyle(btPesquisar.getStyle() + ";-fx-cursor: default;");
         btRemover.setStyle(btRemover.getStyle() + ";-fx-cursor: default;");
         btAdicionarVeiculo.setStyle(btAdicionarVeiculo.getStyle() + ";-fx-cursor: default;");
-        btParcelasManuais.setStyle(btParcelasManuais.getStyle() + ";-fx-cursor: default;");
         btRemoverVeiculo.setStyle(btRemoverVeiculo.getStyle() + ";-fx-cursor: default;");
     }
     
@@ -375,25 +318,16 @@ public class TelaCompraController implements Initializable
     
     private void limpaLabelsDados()
     {
-        lbErroFormaPagamento.setText("");
         lbErroFornecedor.setText("");
         lbErroNotaFiscal.setText("");
-        lbErroNumeroCheque.setText("");
-        lbErroNumeroCheque.setText("");
-        lbErroTipoPagamento.setText("");
-        lbErroValorReajuste.setText("");
         lbErroVendedor.setText("");
-        lbErroNumeroParcelas.setText("");
     }
     
     private void limpaCampoDados()
     {
-        dpVencimento.setValue(LocalDate.now());
         tfFornecedor.clear();
         tfNotaFiscal.clear();
         tfVendedor.clear();
-        cbFormaPagamento.getSelectionModel().select(-1);
-        tfNumeroCheque.clear();
     }
     
     private void atualizaListaFornecedores(String... nome)
@@ -441,19 +375,13 @@ public class TelaCompraController implements Initializable
     
     private void inicializa()
     {
-        rbAvista.setSelected(true);
-        rbDesconto.setSelected(true);
-        rbValor.setSelected(true);
-        tfValorReajuste.setPromptText("Desconto(R$)");
-        tfValorReajuste.setText("0");
-        
         limpaLabelsDados();
         limpaCampoDados();
         limpaLabelsVeiculo();
         limpaCamposVeiculo();
         tvVeiculos.getItems().clear();
-        tfNumeroCheque.setVisible(false);
         parcelas = new ArrayList<>();
+        dpEmissao.setValue(LocalDate.now());
         
         atualizaListaFornecedores("");
         
@@ -483,26 +411,11 @@ public class TelaCompraController implements Initializable
         tcModelo.setCellFactory(TooltippedTableCell.forTableColumn());
         tcDescricao.setCellFactory(TooltippedTableCell.forTableColumn());
         
-        rbAvista.setToggleGroup(goup1);
-        rbParcelado.setToggleGroup(goup1);
-        
-        rbDesconto.setToggleGroup(goup2);
-        rbJuros.setToggleGroup(goup2);
-        
-        rbPorcentagem.setToggleGroup(goup3);
-        rbValor.setToggleGroup(goup3);
-        
-        cbFormaPagamento.getItems().addAll("Cartão","Cheque","Dinheiro","Pix","Transferência");
-        
         setPopUpLocation(autoCompletePopupFornecedores,tfFornecedor);
         
         dpEmissao.getEditor().setEditable(false);
         
         MaskFieldUtil.monetaryField(tfValorVeiculo);
-        MaskFieldUtil.monetaryField(tfValorReajuste);
-        MaskFieldUtil.numericField(tfNumeroParcelas);
-        MaskFieldUtil.numericField(tfPorcReajuste);
-        MaskFieldUtil.numericField(tfNumeroCheque);
         MaskFieldUtil.yearField(tfAno);
         MaskFieldUtil.toUpperCase(tfPlaca);
         MaskFieldUtil.toUpperCase(tfPlacaMercosul);
@@ -536,50 +449,37 @@ public class TelaCompraController implements Initializable
             
                if(a.getResult() == ButtonType.YES)
                {
-                   int cod = ctrComp.salvar(tfFornecedor,cliente,tfNumeroParcelas,dpVencimento,lbSubTotal,
-                        calculaAjuste(),tfNotaFiscal,dpEmissao,tfVendedor,cbFormaPagamento,tfNumeroCheque,tvVeiculos);
-                   if(cod > 0)
-                   {
-                       ///abrir tela de pagamento da compra
-                       if(dpVencimento.getValue().compareTo(LocalDate.now()) <= 0)
+                    try
+                    {
+                       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/fundamentais/ConfirmarTransacao.fxml"));
+                       Parent root = (Parent) fxmlLoader.load();
+                       Stage stage = new Stage();
+                       JFXDecorator decorator = new JFXDecorator(stage, root);
+
+                       decorator.setStyle("-fx-decorator-color: #040921;");
+                       ConfirmarTransacaoController controller = fxmlLoader.<ConfirmarTransacaoController>getController();
+                       controller.setCompra(tfFornecedor,ctrCli.isCliente(tfFornecedor.getText()),tfNotaFiscal,tfVendedor,dpEmissao,tvVeiculos,lbSubTotal);
+                       Scene scene = new Scene(decorator);
+
+                       stage.setTitle("Cadastro de Fornecedor");
+                       stage.setScene(scene);
+                       stage.showAndWait();
+                       
+                       if(controller.getResposta())
                        {
-                           a.setContentText("Existe(m) parcela(s) vencida(s), deseja efetuar o pagamento?");
-                           a.showAndWait();
-                           
-                           if(a.getResult() == ButtonType.YES)
-                           {
-                               try
-                               {
-                                   FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/basicas/CadastroFornecedor.fxml"));
-                                   Parent root = (Parent) fxmlLoader.load();
-                                   Stage stage = new Stage();
-                                   JFXDecorator decorator = new JFXDecorator(stage, root);
-
-                                   decorator.setStyle("-fx-decorator-color: #040921;");
-
-                                   Scene scene = new Scene(decorator);
-
-                                   stage.setTitle("Cadastro de Fornecedor");
-                                   stage.setScene(scene);
-                                   CadastroFornecedorController controller = fxmlLoader.<CadastroFornecedorController>getController();
-                                   controller.setForn(tfFornecedor.getText());
-                                   stage.showAndWait();
-                                   atualizaListaFornecedores(tfFornecedor.getText());
-                               }
-                               catch (IOException er)
-                               {
-                                   a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Pagamento! \nErro: " + er.getMessage(), ButtonType.OK);
-                                   System.out.println(er.getMessage());
-                                   a.showAndWait();
-                               }
-                           }
+                           inicializa();
+                           a = new Alert(Alert.AlertType.INFORMATION, "Compra efetuada com sucesso!!!", ButtonType.OK);
                        }
-                       inicializa();
-                       a = new Alert(Alert.AlertType.INFORMATION, "Compra cadastrada com sucesso!!!", ButtonType.OK);
+                       else
+                           a = new Alert(Alert.AlertType.ERROR, "Erro, compra não efetuado", ButtonType.OK);
+                       a.showAndWait();
                    }
-                   else
-                       a = new Alert(Alert.AlertType.ERROR, "Erro no cadastro da compra", ButtonType.OK);
-                   a.showAndWait();
+                   catch (IOException er)
+                   {
+                       a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Pagamento! \nErro: " + er.getMessage(), ButtonType.OK);
+                       System.out.println(er.getMessage());
+                       a.showAndWait();
+                   }
                }
            }
        }
@@ -592,16 +492,6 @@ public class TelaCompraController implements Initializable
         
         if(tvVeiculos.getItems().isEmpty())
             erros += "Lista de Veículos vazia\n";
-        
-        if(rbParcelado.isSelected())
-            if(tfNumeroParcelas.getText().trim().equals("") || Integer.parseInt(tfNumeroParcelas.getText()) < 1)
-            {
-                erros += "Número de parcelas inválida\n";
-                lbErroNumeroParcelas.setText("Campo inválido");
-            }
-        
-        if(dpVencimento.getEditor().getText().trim().equals(""))
-            erros += "Digite a data do vencimento da primeira parcela\n";
         
         if(tfFornecedor.getText().trim().equals(""))
         {
@@ -694,18 +584,6 @@ public class TelaCompraController implements Initializable
         {
             erros += "Digite a nota fiscal da compra\n";
             lbErroNotaFiscal.setText("Campo requerido");
-        }
-        
-        if(cbFormaPagamento.getSelectionModel().getSelectedIndex() < 0)
-        {
-            erros += "Seleciona a forma de pagamento\n";
-            lbErroFormaPagamento.setText("Campo requerido");
-        }
-        else if(cbFormaPagamento.getSelectionModel().getSelectedItem().equals("Cheque") && 
-                tfNumeroCheque.getText().trim().equals(""))
-        {
-            erros += "Digite o número do cheque";
-            lbErroNumeroCheque.setText("Campo requerido");
         }
         
         if(!erros.trim().equals(""))
@@ -982,42 +860,6 @@ public class TelaCompraController implements Initializable
     }
 
     @FXML
-    private void clickGerarParcelas(ActionEvent event)
-    {
-        Dialog<String> dialog = new Dialog<>();
-        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.YES, ButtonType.CANCEL);
-        dialog.getDialogPane().setPrefWidth(500);
-        
-        JFXTextField num_parcelas = new JFXTextField();
-        MaskFieldUtil.numericField(num_parcelas);
-        num_parcelas.setLabelFloat(true);
-        num_parcelas.setPromptText("Número de parcelas");
-        num_parcelas.setText(tfNumeroParcelas.getText());
-        
-        dialog.getDialogPane().setContent(num_parcelas);
-        dialog.setResultConverter(dialogButton ->
-        {
-            if (dialogButton == ButtonType.YES)
-            {
-                if(!num_parcelas.getText().trim().equals("") && Integer.parseInt(num_parcelas.getText()) > 0)
-                return num_parcelas.getText();
-            }
-            return null;
-        });
-        Optional<String> result = dialog.showAndWait();
-
-        if(result.isPresent())
-        {
-            int num = Integer.parseInt(result.get());
-            
-            for (int i = 0; i < num; i++)
-            {
-                
-            }
-        }
-    }
-
-    @FXML
     private void clickMercosul(ActionEvent event)
     {
         if(rbMercosul.isSelected())
@@ -1032,77 +874,6 @@ public class TelaCompraController implements Initializable
             tfPlacaMercosul.setVisible(false);
             tfPlaca.clear();
         }
-    }
-
-    @FXML
-    private void clickAvista(ActionEvent event)
-    {
-        tfNumeroParcelas.setText("1");
-        dpVencimento.setValue(LocalDate.now());
-    }
-
-    @FXML
-    private void clickParcelado(ActionEvent event)
-    {
-        tfNumeroParcelas.requestFocus();
-    }
-
-    @FXML
-    private void clickJuros(ActionEvent event)
-    {
-        if(rbValor.isSelected())
-        {
-            tfValorReajuste.setPromptText("Juros(R$)");
-            tfValorReajuste.setText("0");
-        }
-        else if(rbPorcentagem.isSelected())
-        {
-            tfPorcReajuste.setPromptText("Juros(%)");
-            tfPorcReajuste.setText("0");
-        }
-        //atualizaTotal();
-    }
-
-    @FXML
-    private void clickDesconto(ActionEvent event)
-    {
-        if(rbValor.isSelected())
-        {
-            tfValorReajuste.setPromptText("Desconto(R$)");
-            tfValorReajuste.setText("0");
-        }
-        else if(rbPorcentagem.isSelected())
-        {
-            tfPorcReajuste.setPromptText("Desconto(%)");
-            tfPorcReajuste.setText("0");
-        }
-        //atualizaTotal();
-    }
-
-    @FXML
-    private void clickValor(ActionEvent event)
-    {
-        tfPorcReajuste.setVisible(false);
-        tfValorReajuste.setVisible(true);
-        tfValorReajuste.clear();
-        
-        if(rbDesconto.isSelected())
-            clickDesconto(new ActionEvent());
-        else
-            clickJuros(new ActionEvent());
-    }
-
-    @FXML
-    private void clickPorcentagem(ActionEvent event)
-    {
-        tfValorReajuste.setVisible(false);
-        tfPorcReajuste.setVisible(true);
-        tfPorcReajuste.clear();
-        
-        if(rbDesconto.isSelected())
-            clickDesconto(new ActionEvent());
-        else
-            clickJuros(new ActionEvent());
     }
 
     @FXML
@@ -1194,27 +965,9 @@ public class TelaCompraController implements Initializable
     private void fornecedorEnter(MouseEvent event)
     {
     }
-
-    @FXML
-    private void gerarParcelasExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void gerarParcelasEnter(MouseEvent event)
-    {
-    }
     
     private void setListeners()
     {
-        cbFormaPagamento.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
-        {
-            if(newValue.equals("Cheque"))
-                tfNumeroCheque.setVisible(true);
-            else
-                tfNumeroCheque.setVisible(false);
-        });
-        
         autoCompletePopupFornecedores.setSelectionHandler(event ->
         {
             tfFornecedor.setText(event.getObject());
@@ -1361,26 +1114,14 @@ public class TelaCompraController implements Initializable
         
         tvVeiculos.getItems().addListener((ListChangeListener.Change<? extends Objeto> c) ->
         {
-            atualizaTotal();
-        });
-        
-        tfValorReajuste.textProperty().addListener((observable) ->
-        {
-            if(rbValor.isSelected())
-                atualizaTotal();
-        });
-        
-        tfPorcReajuste.textProperty().addListener((observable) ->
-        {
-            if(rbPorcentagem.isSelected())
-                atualizaTotal();
+            calculaTotal();
         });
     }
     
     private void setPopUpLocation(JFXAutoCompletePopup<String> popup, Node node)
     {
-        popup.setAnchorY(node.localToScene(0, 0).getY() - popup.getHeight() - 15);
-        popup.setAnchorX(node.localToScene(0, 0).getX());
+        //popup.setAnchorY(node.localToScene(0, 0).getY() - popup.getHeight() - 15);
+        //popup.setAnchorX(node.localToScene(0, 0).getX());
     }
 
     private void CadastrarModelo()
@@ -1493,40 +1234,12 @@ public class TelaCompraController implements Initializable
         }
     }
 
-    private void atualizaTotal()
-    {
-        double total = calculaTotal(),nvalor;
-        
-        if(rbDesconto.isSelected())
-        {
-            if(rbValor.isSelected())
-                total -= Double.parseDouble(tfValorReajuste.getText().replace(".", "").replace(",", "."));
-            else if(rbPorcentagem.isSelected())
-            {
-                nvalor = 100 - (Integer.parseInt(tfPorcReajuste.getText()));
-                total = Utils.truncate((total * (nvalor / 100)));
-            }
-        }
-        else if(rbJuros.isSelected())
-        {
-            if(rbValor.isSelected())
-                total += Double.parseDouble(tfValorReajuste.getText().replace(".", "").replace(",", "."));
-            else if(rbPorcentagem.isSelected())
-            {
-                nvalor = 100 + (Integer.parseInt(tfPorcReajuste.getText()));
-                total = Utils.truncate((total * (nvalor / 100)));
-            }
-        } 
-        
-        //lbSubTotal.setText("Total da Compra: R$" + total);
-        lbSubTotal.setText("Total da Compra: " + NumberFormat.getCurrencyInstance().format(total));
-    }
-
     private double calculaTotal()
     {
         double total = 0.0;
         for(Objeto obj : tvVeiculos.getItems())
             total += Double.parseDouble(obj.getParam10().replace(".", "").replace(",", "."));
+        lbSubTotal.setText("Total da Compra: " + NumberFormat.getCurrencyInstance().format(total));
         return total;
     }
 

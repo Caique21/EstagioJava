@@ -15,7 +15,6 @@ import java.sql.Date;
 public class Parcela
 {
     private int codigo;
-    private String status;
     private Date vencimento;
     private int numero;
     private Date pagamento;
@@ -44,16 +43,6 @@ public class Parcela
     public void setCodigo(int codigo)
     {
         this.codigo = codigo;
-    }
-
-    public String getStatus()
-    {
-        return status;
-    }
-
-    public void setStatus(String status)
-    {
-        this.status = status;
     }
 
     public Date getVencimento()
@@ -128,26 +117,23 @@ public class Parcela
 
     public boolean salvar()
     {
-        String sql = "INSERT INTO parcela(parc_status,parc_datavencimento,parc_numero,parc_datapagamento,"
-            + "parc_valorpago,parc_valorparcela,$8) VALUES ('$1','$2',$3,'$4',$5,$6,$7)";
+        String sql = "INSERT INTO parcela(parc_datavencimento,parc_numero,parc_valorparcela,$5) "
+                + "VALUES ('$1',$2,$3,$4)";
         
         if(this.compra != null)
         {
-            sql = sql.replace("$8", "comp_codigo");
-            sql = sql.replace("$7", String.valueOf(this.compra.getCodigo()));
+            sql = sql.replace("$5", "comp_codigo");
+            sql = sql.replace("$4", String.valueOf(this.compra.getCodigo()));
         }
         else if(this.venda != null)
         {
-            sql = sql.replace("$8", "ven_codigo");
+            sql = sql.replace("$5", "ven_codigo");
             //sql = sql.replace("$7", String.valueOf(this.venda.getClass()));
         }
         
-        sql = sql.replace("$1", this.status);
-        sql = sql.replace("$2", String.valueOf(this.vencimento));
-        sql = sql.replace("$3", String.valueOf(this.numero));
-        sql = sql.replace("$4", String.valueOf(this.pagamento));
-        sql = sql.replace("$5", String.valueOf(this.valor_pago));
-        sql = sql.replace("$6", String.valueOf(this.valor_parcela));
+        sql = sql.replace("$1", String.valueOf(this.vencimento));
+        sql = sql.replace("$2", String.valueOf(this.numero));
+        sql = sql.replace("$3", String.valueOf(this.valor_parcela));
         
         return Banco.getCon().manipular(sql);
     }
