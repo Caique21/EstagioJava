@@ -20,6 +20,7 @@ import estagio.controladores.ctrFabricante;
 import estagio.controladores.ctrFornecedor;
 import estagio.interfaces.basicas.CadastroClienteController;
 import estagio.interfaces.basicas.CadastroFornecedorController;
+import estagio.interfaces.buscas.BuscarCompraController;
 import estagio.utilidades.Banco;
 import estagio.utilidades.MaskFieldUtil;
 import estagio.utilidades.Objeto;
@@ -613,6 +614,31 @@ public class TelaCompraController implements Initializable
     @FXML
     private void clickPesquisar(ActionEvent event)
     {
+        try
+        {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/buscas/BuscarCompra.fxml"));
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            JFXDecorator decorator = new JFXDecorator(stage, root);
+
+            decorator.setStyle("-fx-decorator-color: #040921;");
+            BuscarCompraController controller = fxmlLoader.<BuscarCompraController>getController();
+            Scene scene = new Scene(decorator);
+
+            stage.setTitle("Buscar Compra");
+            stage.setScene(scene);
+            stage.showAndWait();
+
+            if (controller.getResposta() != null)
+            {
+                inicializa();
+            }
+        }
+        catch (IOException er)
+        {
+            new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Pesquisa! "
+                    + "\nErro: " + er.getMessage(), ButtonType.OK).showAndWait();
+        }
     }
 
     @FXML
@@ -1248,10 +1274,5 @@ public class TelaCompraController implements Initializable
     {
         if(event.getCode() == KeyCode.ENTER)
             clickAdicionarVeiculo(new ActionEvent());
-    }
-
-    private Double calculaAjuste()
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

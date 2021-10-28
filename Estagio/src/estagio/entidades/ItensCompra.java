@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -132,6 +133,26 @@ public class ItensCompra
         {
             Logger.getLogger(ItensCompra.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public ArrayList<ItensCompra> getByCompra(Compra compra)
+    {
+        ArrayList<ItensCompra>veiculos = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM veiculo_compra WHERE comp_codigo = " + compra.getCodigo());
+        
+        try
+        {
+            while(rs != null && rs.next())            
+            {
+                veiculos.add(new ItensCompra(new Veiculo(rs.getInt("vei_codigo")), compra, 
+                        rs.getDouble("vei_comp_valor")));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(ItensCompra.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return veiculos;
     }
     
     

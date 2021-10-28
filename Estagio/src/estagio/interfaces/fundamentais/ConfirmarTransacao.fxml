@@ -51,7 +51,7 @@
                </font>
             </JFXButton>
             <Label fx:id="lbVencimento" layoutX="361.0" layoutY="63.0" prefHeight="17.0" prefWidth="171.0" text="Data de Vencimento 1ª Parcela:" />
-            <Label fx:id="lbLimparParcelas" layoutX="655.0" layoutY="95.0" text="Limpar Parcelas Manuais">
+            <Label fx:id="lbLimparParcelas" layoutX="650.0" layoutY="96.0" onMouseEntered="#limparParcelasEnter" onMouseExited="#limparParcelasExit" text="Limpar Parcelas Manuais">
                <font>
                   <Font name="System Italic" size="12.0" />
                </font>
@@ -63,17 +63,17 @@
             </Label>
             <HBox alignment="CENTER" layoutX="15.0" layoutY="144.0" prefHeight="45.0" prefWidth="773.0" spacing="30.0">
                <children>
-                  <JFXButton fx:id="btVisualizar" buttonType="RAISED" onAction="#clickVisualizar" text="Visualizar Parcelas">
+                  <JFXButton fx:id="btVisualizar" buttonType="RAISED" onAction="#clickVisualizar" onMouseEntered="#visualizarEnter" onMouseExited="#visualizarExit" text="Visualizar Parcelas">
                      <graphic>
                         <FontAwesomeIconView fx:id="faView" glyphName="EYE" size="15" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="btConfirmar" buttonType="RAISED" onAction="#clickConfirmar" text="Confirmar Pagamento">
+                  <JFXButton fx:id="btConfirmar" buttonType="RAISED" onAction="#clickConfirmar" onMouseEntered="#confirmarEnter" onMouseExited="#confirmarExit" text="Confirmar Pagamento">
                      <graphic>
                         <FontAwesomeIconView fx:id="faCheck" glyphName="CHECK" size="15" />
                      </graphic>
                   </JFXButton>
-                  <JFXButton fx:id="btCancelar" buttonType="RAISED" onAction="#clickCancelar" text="Cancelar">
+                  <JFXButton fx:id="btCancelar" buttonType="RAISED" onAction="#clickCancelar" onMouseEntered="#cancelarEnter" onMouseExited="#cancelarExit" text="Cancelar">
                      <graphic>
                         <FontAwesomeIconView fx:id="faClose" glyphName="CLOSE" size="15" />
                      </graphic>

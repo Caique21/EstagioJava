@@ -115,6 +115,66 @@ public class ctrCompra
         return compra.getCodigo();
     }
 
+    public int salvar(String fornecedor, boolean cliente, String parcelas, String vencimento, String total, 
+        double calculaAjuste, String notafiscal, String emissao, String vendedor,String entrada, 
+        ArrayList<Objeto> veiculos, ArrayList<Objeto> list_parcelas)
+    {
+        Compra compra = new Compra();
+        compra.setQtd_parcelas(Integer.parseInt(parcelas));
+        compra.setAjuste(calculaAjuste);
+        compra.setData(Utils.convertToDate(LocalDate.now()));
+        compra.setData_emissao(Utils.convertStringToDateUTC(emissao));
+        compra.setNumero_nota_fiscal(notafiscal);
+        compra.setVendedor(vendedor);
+        compra.setValor_total(Utils.convertStringToDouble(total.substring(total.indexOf(":") + 1).replace("R$", "")));
+        
+        if(cliente)
+            compra.setCliente(new Cliente(fornecedor));
+        else
+            compra.setFornecedor(new Fornecedor(fornecedor));
+        
+        boolean flag = compra.salvar();
+        compra.setCodigo(Banco.getCon().getMaxPK("compra", "comp_codigo"));
+        
+        ////PARCELAS////
+        boolean has_entrada = false;
+        
+        //ENTRADA//
+        if(entrada != null && !entrada.trim().equals("0") && !entrada.trim().equals(""))
+            has_entrada = flag = new Parcela(Date.valueOf(LocalDate.now()), 1, 
+                    Double.parseDouble(entrada.replace(".", "").replace(",", ".")), compra).salvar();
+        //ENTRADA//
+        
+        for (int i = 0; i < list_parcelas.size() && flag; i++)
+        {
+            Objeto p = list_parcelas.get(i);
+            if(has_entrada)
+                p.setParam1(String.valueOf(Integer.parseInt(p.getParam1()) + 1));
+            
+            flag = new Parcela(Date.valueOf(p.getParam3()), Integer.parseInt(p.getParam1()), 
+                    Utils.convertStringToDouble(p.getParam2()), compra).salvar();
+        }
+        ////PARCELAS////
+        
+        ////ITENS DA VENDA////
+        for (int i = 0; i < veiculos.size() && flag; i++)
+        {
+            Objeto v = veiculos.get(i);
+            ItensCompra item = new ItensCompra(convertToVeiculo(v), compra, 
+                Double.parseDouble(v.getParam10().replace(".", "").replace(",", ".")));
+            flag = flag && item.salvar();
+        }
+        ////ITENS DA VENDA////
+        
+        if(!flag)
+        {
+            compra.apagar();
+            new ItensCompra(compra).apagarVeiculos();
+            return 0;
+        }
+        return compra.getCodigo();
+    }
+
     private Veiculo convertToVeiculo(Objeto v)
     {
         Veiculo veiculo = new Veiculo();
@@ -184,4 +244,117 @@ public class ctrCompra
         }
         return compra.getCodigo();
     }*/
+    
+    public ArrayList<Objeto> getAll()
+    {
+        ArrayList<Compra>compras = new Compra().getAll();
+        ArrayList<Objeto>ret = new ArrayList<>();
+        
+        for (int i = 0; i < compras.size(); i++)
+            ret.add(convertToObjeto(compras.get(i)));
+        
+        return ret;
+    }
+
+    public ArrayList<Objeto> getByNome(String nome)
+    {
+        ArrayList<Compra>compras = new Compra().getByNome(nome);
+        ArrayList<Objeto>ret = new ArrayList<>();
+        
+        for (int i = 0; i < compras.size(); i++)
+            ret.add(convertToObjeto(compras.get(i)));
+        
+        return ret;
+    }
+
+    public ArrayList<Objeto> getByNotaFiscal(String nota_fiscal)
+    {
+        ArrayList<Compra>compras = new Compra().getByNotaFiscal(nota_fiscal);
+        ArrayList<Objeto>ret = new ArrayList<>();
+        
+        for (int i = 0; i < compras.size(); i++)
+            ret.add(convertToObjeto(compras.get(i)));
+        
+        return ret;
+    }
+
+    public ArrayList<Objeto> getByVeiculo(String veiculo)
+    {
+        ArrayList<Compra>compras = new Compra().getByVeiculo(veiculo);
+        ArrayList<Objeto>ret = new ArrayList<>();
+        
+        for (int i = 0; i < compras.size(); i++)
+            ret.add(convertToObjeto(compras.get(i)));
+        
+        return ret;
+    }
+
+    public ArrayList<Objeto> getByVendedor(String vendedor)
+    {
+        ArrayList<Compra>compras = new Compra().getByVendedor(vendedor);
+        ArrayList<Objeto>ret = new ArrayList<>();
+        
+        for (int i = 0; i < compras.size(); i++)
+            ret.add(convertToObjeto(compras.get(i)));
+        
+        return ret;
+    }
+
+    private Objeto convertToObjeto(Compra comp)
+    {
+        ///1 - CÓDIGO, 2 - TRUE SE FOR FORNECEDOR, 3 - CÓDIGO DO FORNECEDOR/CLIENTE, 4 - NOME DO FORNECEDOR/CLIENTE
+        ///5 - QTD PARCELAS, 6 - VALOR TOTAL, 7 - AJUSTE, 8 - DATA DA COMPRA, 9 - NOTA FISCAL, 10 - DATA DE EMISSÃO
+        ///11 - VENDEDOR, LIST1 - PARCELAS, LIST2 - VEICULOS
+        
+        Objeto obj = new Objeto();
+        obj.setParam1(String.valueOf(comp.getCodigo()));
+        obj.setParam5(String.valueOf(comp.getQtd_parcelas()));
+        obj.setParam6(String.valueOf(comp.getValor_total()));
+        obj.setParam7(String.valueOf(comp.getAjuste()));
+        obj.setParam8(String.valueOf(comp.getData()));
+        obj.setParam9(comp.getNumero_nota_fiscal());
+        obj.setParam10(String.valueOf(comp.getData_emissao()));
+        obj.setParam11(comp.getVendedor());
+        
+        if(comp.getFornecedor() != null)
+        {
+            obj.setParam2(String.valueOf(true));
+            obj.setParam3(String.valueOf(comp.getFornecedor().getCodigo()));
+            obj.setParam4(comp.getFornecedor().getNome());
+        }
+        else if(comp.getCliente() != null)
+        {
+            obj.setParam2(String.valueOf(false));
+            obj.setParam3(String.valueOf(comp.getCliente().getCodigo()));
+            obj.setParam4(comp.getCliente().getNome());
+        }
+        
+        ArrayList<Parcela>parcelas = new Parcela().getByCompra(comp);
+        for(Parcela p : parcelas)
+        {
+            ///1 - CÓDIGO, 2 - VENCIMENTO, 3 - NÚMERO, 4 - PAGAMENTO, 5 - VALOR PARCELA, 6 - VALOR PAGO
+            ///7 - COMPRA CÓDIGO, 8 - VENDA CÓDIGO 
+            Objeto par = new Objeto();
+            par.setParam1(String.valueOf(p.getCodigo()));
+            par.setParam2(String.valueOf(p.getVencimento()));
+            par.setParam3(String.valueOf(p.getNumero()));
+            par.setParam4(String.valueOf(p.getPagamento()));
+            par.setParam5(String.valueOf(p.getValor_parcela()));
+            par.setParam6(String.valueOf(p.getValor_pago()));
+            par.setParam7(String.valueOf(comp.getCodigo()));
+            obj.addList1(par);
+        }
+        
+        ArrayList<ItensCompra>veiculos = new ItensCompra().getByCompra(comp);
+        obj.setList2ToString("");
+        for(ItensCompra item : veiculos)
+        {
+            ///1 - VEICULO CODIGO, 2 - CODIGO COMPRA, 3 - VALOR
+            obj.addList2(new Objeto(String.valueOf(item.getVeiculo().getCodigo()), String.valueOf(comp.getCodigo()), 
+                String.valueOf(item.getValor())));
+            obj.setList2ToString(obj.getList2ToString() + item.getVeiculo().toString() + "\n\n");
+        }
+        
+        return obj;
+    }
 }

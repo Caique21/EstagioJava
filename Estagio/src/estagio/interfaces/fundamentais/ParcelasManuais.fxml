@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="418.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.fundamentais.ParcelasManuaisController">
+   <children>
+      <TableView fx:id="tvParcelas" editable="true" layoutX="30.0" layoutY="83.0" prefHeight="273.0" prefWidth="537.0">
+        <columns>
+          <TableColumn fx:id="tcNumero" editable="false" prefWidth="159.0" text="Número" />
+          <TableColumn fx:id="tcValor" prefWidth="151.0" text="Valor" />
+            <TableColumn fx:id="tcData" prefWidth="226.0" text="Data de Vencimento" />
+        </columns>
+      </TableView>
+      <JFXTextField fx:id="tfParcelas" focusColor="#6485e8" labelFloat="true" layoutX="30.0" layoutY="45.0" onKeyPressed="#parcelasPressed" prefHeight="25.0" prefWidth="115.0" promptText="Número de Parcelas" unFocusColor="BLACK" />
+      <JFXButton fx:id="btGerarParcelas" buttonType="RAISED" layoutX="176.0" layoutY="45.0" onAction="#clickGerar" onMouseEntered="#gerarEnter" onMouseExited="#gerarExit" text="GERAR">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+         <graphic>
+            <FontAwesomeIconView fx:id="faEdit" glyphName="EDIT" size="15" />
+         </graphic>
+      </JFXButton>
+      <Label fx:id="lbTitulo" alignment="CENTER" layoutX="-4.0" layoutY="6.0" prefHeight="17.0" prefWidth="600.0" text="Gerando Parcelas Manuais">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <Label fx:id="lbTotal" alignment="CENTER_RIGHT" layoutX="376.0" layoutY="49.0" prefHeight="17.0" prefWidth="191.0" text="Valor Total: R$">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <HBox alignment="CENTER_RIGHT" layoutX="31.0" layoutY="361.0" prefHeight="50.0" prefWidth="537.0" spacing="20.0">
+         <children>
+            <JFXButton fx:id="btConfirmar" buttonType="RAISED" onAction="#clickConfirmar" text="CONFIRMAR">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <graphic>
+                  <FontAwesomeIconView fx:id="faCheck" glyphName="CHECK" onMouseEntered="#selecionaEnter" onMouseExited="#selecionaExit" size="15" />
+               </graphic>
+            </JFXButton>
+            <JFXButton fx:id="btCancelar" buttonType="RAISED" onAction="#clickCancelar" onMouseEntered="#cancelaEnter" onMouseExited="#cancelaExit" text="CANCELAR">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+               <graphic>
+                  <FontAwesomeIconView fx:id="faClose" glyphName="CLOSE" size="15" />
+               </graphic>
+            </JFXButton>
+         </children>
+         <padding>
+            <Insets left="15.0" />
+         </padding>
+      </HBox>
+   </children>
+</Pane>

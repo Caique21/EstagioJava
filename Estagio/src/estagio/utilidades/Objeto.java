@@ -30,8 +30,11 @@ public class Objeto
     private String param14;
     private String param15;
     
+    
     private ArrayList<Objeto>list1;
+    private String list1ToString;
     private ArrayList<Objeto>list2;
+    private String list2ToString;
     private ArrayList<Objeto>list3;
 
     public Objeto()
@@ -336,6 +339,91 @@ public class Objeto
         this.list1.add(obj);
     }
 
+    @Override
+    public String toString()
+    {
+        String ret = "{";
+        
+        if (getParam1() != null)
+        {
+            ret += getParam1() + ",";
+        }
+
+        if (getParam2() != null)
+        {
+            ret += getParam2() + ",";
+        }
+
+        if (getParam3() != null)
+        {
+            ret += getParam3() + ",";
+        }
+
+        if (getParam4() != null)
+        {
+            ret += getParam4() + ",";
+        }
+
+        if (getParam5() != null)
+        {
+            ret += getParam5() + ",";
+        }
+
+        if (getParam6() != null)
+        {
+            ret += getParam6() + ",";
+        }
+
+        if (getParam7() != null)
+        {
+            ret += getParam7() + ",";
+        }
+
+        if (getParam8() != null)
+        {
+            ret += getParam8() + ",";
+        }
+
+        if (getParam9() != null)
+        {
+            ret += getParam9() + ",";
+        }
+
+        if (getParam10() != null)
+        {
+            ret += getParam10() + ",";
+        }
+
+        if (getParam11() != null)
+        {
+            ret += getParam11() + ",";
+        }
+
+        if (getParam12() != null)
+        {
+            ret += getParam12() + ",";
+        }
+
+        if (getParam13() != null)
+        {
+            ret += getParam13() + ",";
+        }
+
+        if (getParam14() != null)
+        {
+            ret += getParam14() + ",";
+        }
+
+        if (getParam5() != null)
+        {
+            ret += getParam15() + ",";
+        }
+
+        ret += "},";
+        
+        return ret;
+    }
+
     public ArrayList<Objeto> getList2()
     {
         return list2;
@@ -392,5 +480,25 @@ public class Objeto
     public void setParam15(String param15)
     {
         this.param15 = param15;
+    }
+
+    public String getList1ToString()
+    {
+        return list1ToString;
+    }
+
+    public void setList1ToString(String list1ToString)
+    {
+        this.list1ToString = list1ToString;
+    }
+
+    public String getList2ToString()
+    {
+        return list2ToString;
+    }
+
+    public void setList2ToString(String list2ToString)
+    {
+        this.list2ToString = list2ToString;
     }
 }

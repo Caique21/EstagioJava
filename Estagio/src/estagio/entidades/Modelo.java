@@ -290,6 +290,12 @@ public class Modelo
         }
         return ret;
     }
+
+    @Override
+    public String toString()
+    {
+        return "{" + "nome=" + nome + ", marca=" + marca.getNome() + '}';
+    }
     
     
 }

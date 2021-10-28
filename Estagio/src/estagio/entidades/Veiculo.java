@@ -223,6 +223,32 @@ public class Veiculo
             Banco.getCon().setErro(ex.getMessage());
         }
     }
+
+    @Override
+    public String toString()
+    {
+        String ret = "Veiculo {placa = " ;
+        
+        if(placa != null)
+            ret += placa;
+        ret += ", ";
+        
+        ret += "modelo " + modelo.toString() + ", ";
+        
+        ret += "chassi = ";
+        if(chassi != null)
+            ret += chassi;
+        ret += ", ";
+        
+        ret += "ano=" + ano + ", cor=" + cor + ", ";
+        
+        ret += "descrição = ";
+        if(descricao != null)
+            ret += descricao;
+        ret += "}";
+                
+        return ret;
+    }
     
     
 }

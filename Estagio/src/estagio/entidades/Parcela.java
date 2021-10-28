@@ -7,6 +7,11 @@ package estagio.entidades;
 
 import estagio.utilidades.Banco;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -25,6 +30,33 @@ public class Parcela
 
     public Parcela()
     {
+    }
+
+    public Parcela(int codigo, Date vencimento, int numero, Date pagamento, double valor_parcela, double valor_pago, Venda venda)
+    {
+        this.codigo = codigo;
+        this.vencimento = vencimento;
+        this.numero = numero;
+        this.pagamento = pagamento;
+        this.valor_parcela = valor_parcela;
+        this.valor_pago = valor_pago;
+        this.venda = venda;
+    }
+
+    public Parcela(int codigo, Date vencimento, int numero, Date pagamento, double valor_parcela, double valor_pago, Compra compra)
+    {
+        this.codigo = codigo;
+        this.vencimento = vencimento;
+        this.numero = numero;
+        this.pagamento = pagamento;
+        this.valor_parcela = valor_parcela;
+        this.valor_pago = valor_pago;
+        this.compra = compra;
+    }
+
+    public Parcela(Compra compra)
+    {
+        this.compra = compra;
     }
 
     public Parcela(Date vencimento, int numero, double valor_parcela, Compra compra)
@@ -136,6 +168,33 @@ public class Parcela
         sql = sql.replace("$3", String.valueOf(this.valor_parcela));
         
         return Banco.getCon().manipular(sql);
+    }
+
+    public ArrayList<Parcela> getByCompra(Compra compra)
+    {
+        ArrayList<Parcela> parcelas = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela WHERE comp_codigo = " + compra.getCodigo());
+        
+        try
+        {
+            while(rs != null && rs.next())            
+            {
+                Parcela p = new Parcela();
+                p.setCodigo(rs.getInt("parc_codigo"));
+                p.setValor_pago(rs.getDouble("parc_valorpago"));
+                p.setCompra(compra);
+                p.setNumero(rs.getInt("parc_numero"));
+                p.setPagamento(rs.getDate("parc_datapagamento"));
+                p.setValor_parcela(rs.getDouble("parc_valorparcela"));
+                p.setVencimento(rs.getDate("parc_datavencimento"));
+                parcelas.add(p);
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Parcela.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return parcelas;
     }
     
     

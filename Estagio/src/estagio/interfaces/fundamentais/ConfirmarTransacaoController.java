@@ -7,13 +7,16 @@ package estagio.interfaces.fundamentais;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.controladores.ctrCompra;
 import estagio.utilidades.MaskFieldUtil;
 import estagio.utilidades.Objeto;
+import estagio.utilidades.ToolTip;
 import estagio.utilidades.Utils;
+import java.io.IOException;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -23,14 +26,19 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -49,6 +57,7 @@ public class ConfirmarTransacaoController implements Initializable
     private final ToggleGroup goup1 = new ToggleGroup();
     private final ToggleGroup goup2 = new ToggleGroup();
     private final ToggleGroup goup3 = new ToggleGroup();
+    private final Tooltip tooltip = new Tooltip();
     
     private boolean compra;
     private boolean resposta = false;
@@ -119,47 +128,6 @@ public class ConfirmarTransacaoController implements Initializable
     /**
      * Initializes the controller class.
      */
-     private void inicializaDesign()
-    {
-        List<Node>nodes = new ArrayList<>();
-        nodes.add(panePrincipal);
-        nodes.add(hbJuros);
-        nodes.add(hbParcelas);
-        nodes.add(hbValor);
-        
-        nodes.add(btCancelar);
-        nodes.add(btConfirmar);
-        nodes.add(btParcelasManuais);
-        nodes.add(btVisualizar);
-        
-        nodes.add(tfEntrada);
-        nodes.add(tfNumeroParcelas);
-        nodes.add(tfPorcReajuste);
-        nodes.add(tfValorReajuste);
-        
-        nodes.add(lbLimparParcelas);
-        nodes.add(lbVencimento);
-        nodes.add(lbSubTotal);
-        nodes.add(lbTitulo);
-        
-        nodes.add(rbAvista);
-        nodes.add(rbDesconto);
-        nodes.add(rbJuros);
-        nodes.add(rbParcelado);
-        nodes.add(rbPorcentagem);
-        nodes.add(rbValor);
-        
-        nodes.add(faCheck);
-        nodes.add(faClose);
-        nodes.add(faView);
-        
-        Utils.setDesign(1, nodes);
-        
-        btConfirmar.setStyle(btConfirmar.getStyle() + ";-fx-cursor: default;");
-        btParcelasManuais.setStyle(btParcelasManuais.getStyle() + ";-fx-cursor: default;");
-        btCancelar.setStyle(btCancelar.getStyle() + ";-fx-cursor: default;");
-        btVisualizar.setStyle(btVisualizar.getStyle() + ";-fx-cursor: default;");
-    }
     
     @Override
     public void initialize(URL url, ResourceBundle rb)
@@ -188,6 +156,11 @@ public class ConfirmarTransacaoController implements Initializable
         tfNumeroParcelas.setText("1");
         tfValorReajuste.setText("0");
         tfEntrada.setDisable(true);
+        
+        btConfirmar.setStyle(btConfirmar.getStyle() + ";-fx-cursor: default;");
+        btParcelasManuais.setStyle(btParcelasManuais.getStyle() + ";-fx-cursor: default;");
+        btCancelar.setStyle(btCancelar.getStyle() + ";-fx-cursor: default;");
+        btVisualizar.setStyle(btVisualizar.getStyle() + ";-fx-cursor: default;");
         
         setListeners();
     }    
@@ -240,6 +213,12 @@ public class ConfirmarTransacaoController implements Initializable
                 }
             }
         }
+        else
+        {
+            for (int i = 0; i < parcelas.size(); i++)
+                tvParcelas.getItems().add(new Objeto(parcelas.get(i).getParam2(), parcelas.get(i).getParam1(), 
+                        parcelas.get(i).getParam3()));
+        }
             
         dialog.getDialogPane().setContent(tvParcelas);
         dialog.showAndWait();
@@ -250,15 +229,27 @@ public class ConfirmarTransacaoController implements Initializable
     {
         if(compra && obj != null)
         {
-            //if(valida())
             if(!dpVencimento.getEditor().getText().equals(""))
             {
-                if(ctrComp.salvar(obj.getParam1(), Boolean.valueOf(obj.getParam2()), tfNumeroParcelas.getText(), 
-                    String.valueOf(dpVencimento.getValue()),this.lbSubTotal.getText().substring(lbSubTotal.getText().indexOf("$") + 1),
-                    calculaAjuste(), obj.getParam7(), obj.getParam8(), obj.getParam9(), 
-                    tfEntrada.getText() ,obj.getList1()) > 0)
+                if(parcelas == null)
                 {
-                    resposta = true;
+                    resposta = ctrComp.salvar(obj.getParam1(), Boolean.valueOf(obj.getParam2()), 
+                        tfNumeroParcelas.getText(), String.valueOf(dpVencimento.getValue()),
+                        this.lbSubTotal.getText().substring(lbSubTotal.getText().indexOf("$") + 1),
+                        calculaAjuste(), obj.getParam7(), obj.getParam8(), obj.getParam9(), 
+                        tfEntrada.getText() ,obj.getList1()) > 0;
+                }
+                else
+                {
+                    resposta = ctrComp.salvar(obj.getParam1(), Boolean.valueOf(obj.getParam2()), 
+                        tfNumeroParcelas.getText(), String.valueOf(dpVencimento.getValue()),
+                        this.lbSubTotal.getText().substring(lbSubTotal.getText().indexOf("$") + 1),
+                        calculaAjuste(), obj.getParam7(), obj.getParam8(), obj.getParam9(), 
+                        tfEntrada.getText() ,obj.getList1(),parcelas) > 0;
+                }
+                
+                if(resposta)
+                {
                     Stage stage = (Stage) btConfirmar.getScene().getWindow();
                     stage.close();
                 }
@@ -277,6 +268,45 @@ public class ConfirmarTransacaoController implements Initializable
     @FXML
     private void clickGerarParcelas(ActionEvent event)
     {
+        try
+        {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/fundamentais/ParcelasManuais.fxml"));
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            JFXDecorator decorator = new JFXDecorator(stage, root);
+
+            decorator.setStyle("-fx-decorator-color: #040921;");
+
+            Scene scene = new Scene(decorator);
+            ParcelasManuaisController controller = fxmlLoader.<ParcelasManuaisController>getController();
+
+            if(tfEntrada.getText().trim().equals("0") || tfEntrada.getText().trim().equals(""))
+                controller.setTotal(lbSubTotal.getText().substring(lbSubTotal.getText().indexOf("$") + 1));
+            else
+                controller.setTotal(String.valueOf(NumberFormat.getCurrencyInstance().format
+                    (Utils.convertStringToDouble(lbSubTotal.getText().substring(lbSubTotal.getText().indexOf("$") + 1))
+                            - Utils.convertStringToDouble(tfEntrada.getText()))));
+
+            
+            stage.setTitle("Gerar Parcelas");
+            stage.setScene(scene);
+            stage.showAndWait();
+
+            parcelas = controller.getParcelas();
+            if (parcelas != null && !parcelas.isEmpty())
+            {
+                tfNumeroParcelas.setText("" + parcelas.size());
+                rbParcelado.setSelected(true);
+                dpVencimento.setValue(LocalDate.parse(parcelas.get(0).getParam3()));
+                lbLimparParcelas.setVisible(true);
+            }
+        }
+        catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Busca de Compra! \nErro: " + er.getMessage(), ButtonType.OK);
+            System.out.println(er.getMessage());
+            a.showAndWait();
+        }
     }
 
     @FXML
@@ -358,11 +388,71 @@ public class ConfirmarTransacaoController implements Initializable
     @FXML
     private void gerarParcelasExit(MouseEvent event)
     {
+        btParcelasManuais.setStyle(btParcelasManuais.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void gerarParcelasEnter(MouseEvent event)
     {
+        btParcelasManuais.setStyle(btParcelasManuais.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Gerar Parcelas Manualmente");
+        ToolTip.bindTooltip(btParcelasManuais, tooltip);
+    }
+
+    @FXML
+    private void limparParcelasExit(MouseEvent event)
+    {
+        lbLimparParcelas.setStyle(lbLimparParcelas.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+    }
+
+    @FXML
+    private void limparParcelasEnter(MouseEvent event)
+    {
+        lbLimparParcelas.setStyle(lbLimparParcelas.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Limpar Parcelas Geradas Manualmente");
+        ToolTip.bindTooltip(lbLimparParcelas, tooltip);
+    }
+
+    @FXML
+    private void visualizarExit(MouseEvent event)
+    {
+        btVisualizar.setStyle(btVisualizar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+    }
+
+    @FXML
+    private void visualizarEnter(MouseEvent event)
+    {
+        btVisualizar.setStyle(btVisualizar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Visualizar Parcelas");
+        ToolTip.bindTooltip(btVisualizar, tooltip);
+    }
+
+    @FXML
+    private void confirmarExit(MouseEvent event)
+    {
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+    }
+
+    @FXML
+    private void confirmarEnter(MouseEvent event)
+    {
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Confirmar Informações");
+        ToolTip.bindTooltip(btConfirmar, tooltip);
+    }
+
+    @FXML
+    private void cancelarExit(MouseEvent event)
+    {
+        btCancelar.setStyle(btCancelar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+    }
+
+    @FXML
+    private void cancelarEnter(MouseEvent event)
+    {
+        btCancelar.setStyle(btCancelar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Cancelar");
+        ToolTip.bindTooltip(btCancelar, tooltip);
     }
 
     void setCompra(JFXTextField tfFornecedor,boolean cliente, JFXTextField tfNotaFiscal, JFXTextField tfVendedor, 
@@ -398,6 +488,8 @@ public class ConfirmarTransacaoController implements Initializable
             double val = Double.parseDouble(tfEntrada.getText().replace(".", "").replace(",", "."));
             if(val < 0 || val > total)
                 tfEntrada.setText(oldValue);
+            else
+                lbLimparParcelas.setVisible(false);
         });
         
         tfEntrada.focusedProperty().addListener((observable, oldValue, newValue) ->
@@ -410,6 +502,8 @@ public class ConfirmarTransacaoController implements Initializable
         {
             if(Integer.parseInt(tfNumeroParcelas.getText()) <= 0 || Integer.parseInt(tfNumeroParcelas.getText()) > 96)
                 tfNumeroParcelas.setText(oldValue);
+            else
+                lbLimparParcelas.setVisible(false);
         });
         
         tfNumeroParcelas.focusedProperty().addListener((observable, oldValue, newValue) ->
@@ -443,6 +537,18 @@ public class ConfirmarTransacaoController implements Initializable
         {
             if(rbPorcentagem.isSelected() && !newValue && tfPorcReajuste.getText().trim().equals(""))
                 tfPorcReajuste.setText("0");
+        });
+        
+        dpVencimento.valueProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(newValue.compareTo(oldValue) != 0)
+                lbLimparParcelas.setVisible(false);
+        });
+        
+        lbSubTotal.textProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(!newValue.equals(oldValue))
+                lbLimparParcelas.setVisible(false);
         });
     }
 
