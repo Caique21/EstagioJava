@@ -138,8 +138,8 @@ public class ctrDespesa
             while(i > 0)
             {
                 new Despesa(d.getNome(), d.isFixo(), d.getValor(), 
-                    new Date(Utils.addMonth(d.getVencimento(), 1).getTime()), "").salvar();
-                i++;
+                    new Date(Utils.addMonth(d.getVencimento(), i).getTime()), "").salvar();
+                i--;
             }
         }
     }

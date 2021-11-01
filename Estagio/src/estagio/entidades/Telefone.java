@@ -105,7 +105,7 @@ public class Telefone
     {
         ArrayList<String> telefones = new ArrayList<>();
         
-        ResultSet rs = Banco.getCon().consultar("SELECT tel_numero FROM telefone WHERE cli_codigo" + 
+        ResultSet rs = Banco.getCon().consultar("SELECT tel_numero FROM telefone WHERE cli_codigo = " + 
                 cliente.getCodigo());
         
         try

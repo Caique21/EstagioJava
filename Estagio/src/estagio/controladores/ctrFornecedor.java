@@ -217,7 +217,24 @@ public class ctrFornecedor
         
         for (int i = 0; i < fornecedores.size(); i++)
             if(fornecedores.get(i).isAtivo())
-                ret.add(fornecedores.get(i).getNome());
+                ret.add(fornecedores.get(i).getNome() + ", " + fornecedores.get(i).getCnpj());
+        
+        return ret;
+    }
+
+    public ArrayList<String> getCodigoByNames(String... nome)
+    {
+        ArrayList<String>ret = new ArrayList<>();
+        ArrayList<Fornecedor>fornecedores;
+        
+        if(nome.length == 0)
+            fornecedores = new Fornecedor().getByName("");
+        else
+            fornecedores = new Fornecedor().getByName(nome[0]);
+        
+        for (int i = 0; i < fornecedores.size(); i++)
+            if(fornecedores.get(i).isAtivo())
+                ret.add(fornecedores.get(i).getCodigo() + "");
         
         return ret;
     }

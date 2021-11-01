@@ -84,6 +84,11 @@ public class ctrVeiculo
         
         return ret;
     }
+    
+    public Objeto getByCodigo(int codigo)
+    {
+        return convertToObjeto(new Veiculo(codigo));
+    }
 
     public boolean salvar(String placa, JFXTextField marca, JFXTextField modelo, JFXTextField chassi, JFXTextField cor,
         JFXTextField ano, JFXTextArea descricao)

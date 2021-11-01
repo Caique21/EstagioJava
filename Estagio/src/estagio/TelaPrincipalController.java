@@ -256,6 +256,7 @@ public class TelaPrincipalController implements Initializable
             if(ctr_acessos.firstOfMonth(LocalDate.now()))
                 ctrDesp.gerarDespesasAutomatica();
         });
+        
     }    
 
     private void inicializaHora()

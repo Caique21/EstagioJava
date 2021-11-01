@@ -18,6 +18,7 @@ import estagio.controladores.ctrCliente;
 import estagio.controladores.ctrCompra;
 import estagio.controladores.ctrFabricante;
 import estagio.controladores.ctrFornecedor;
+import estagio.controladores.ctrVeiculo;
 import estagio.interfaces.basicas.CadastroClienteController;
 import estagio.interfaces.basicas.CadastroFornecedorController;
 import estagio.interfaces.buscas.BuscarCompraController;
@@ -51,19 +52,23 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
+import org.controlsfx.control.PopOver;
 
 /**
  * FXML Controller class
@@ -76,15 +81,20 @@ public class TelaCompraController implements Initializable
     private final ctrFornecedor ctrForn = ctrFornecedor.instancia();
     private final ctrFabricante ctrFab = ctrFabricante.instancia();
     private final ctrCompra ctrComp = ctrCompra.instancia();
+    private final ctrVeiculo ctrVei = ctrVeiculo.instancia();
     
     private final JFXAutoCompletePopup<String> autoCompletePopupMarcas = new JFXAutoCompletePopup<>();
     private final JFXAutoCompletePopup<String> autoCompletePopupModelos = new JFXAutoCompletePopup<>();
     private final JFXAutoCompletePopup<String> autoCompletePopupFornecedores = new JFXAutoCompletePopup<>();
     
-    private final ArrayList<String>fornecedores = new ArrayList<>();
+    private ArrayList<String>fornecedores = new ArrayList<>();
     private ArrayList<Objeto>parcelas = new ArrayList<>();
     
+    private PopOver pop;
+    private BorderPane pane;
+    
     private int acao;
+    private Objeto compra;
 
     @FXML
     private BorderPane panePrincipal;
@@ -270,6 +280,8 @@ public class TelaCompraController implements Initializable
         btRemover.setStyle(btRemover.getStyle() + ";-fx-cursor: default;");
         btAdicionarVeiculo.setStyle(btAdicionarVeiculo.getStyle() + ";-fx-cursor: default;");
         btRemoverVeiculo.setStyle(btRemoverVeiculo.getStyle() + ";-fx-cursor: default;");
+        faView.setStyle(faView.getStyle() + ";-fx-cursor: default;");
+        faView.setSize("18");
     }
     
     private void redimensiona()
@@ -363,8 +375,8 @@ public class TelaCompraController implements Initializable
         }
         else
         {
-            paneDadosCompra.setDisable(b2);
-            paneVeiculo.setDisable(b1);
+            paneDadosCompra.setDisable(b1);
+            paneVeiculo.setDisable(b2);
             btNovo.setDisable(b3);
             btConfirmar.setDisable(b4);
             btRemover.setDisable(b5);
@@ -383,6 +395,7 @@ public class TelaCompraController implements Initializable
         tvVeiculos.getItems().clear();
         parcelas = new ArrayList<>();
         dpEmissao.setValue(LocalDate.now());
+        compra = null;
         
         atualizaListaFornecedores("");
         
@@ -441,7 +454,7 @@ public class TelaCompraController implements Initializable
        if(validaCompra())
        {
            Alert a = new Alert(Alert.AlertType.CONFIRMATION,"",ButtonType.YES,ButtonType.NO);
-           boolean cliente = ctrCli.isCliente(tfFornecedor.getText());
+           boolean cliente = isCliente();
            
            if(acao == 0)
            {
@@ -459,7 +472,7 @@ public class TelaCompraController implements Initializable
 
                        decorator.setStyle("-fx-decorator-color: #040921;");
                        ConfirmarTransacaoController controller = fxmlLoader.<ConfirmarTransacaoController>getController();
-                       controller.setCompra(tfFornecedor,ctrCli.isCliente(tfFornecedor.getText()),tfNotaFiscal,tfVendedor,dpEmissao,tvVeiculos,lbSubTotal);
+                       controller.setCompra(tfFornecedor,cliente,tfNotaFiscal,tfVendedor,dpEmissao,tvVeiculos,lbSubTotal);
                        Scene scene = new Scene(decorator);
 
                        stage.setTitle("Cadastro de Fornecedor");
@@ -499,7 +512,7 @@ public class TelaCompraController implements Initializable
             erros += "Digite o nome do Fornecedor\n";
             lbErroFornecedor.setText("Campo requerido");
         }
-        else if(!autoCompletePopupFornecedores.getSuggestions().contains(tfFornecedor.getText()))
+        else if(!fornecedores.contains(tfFornecedor.getText()))
         {
             Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Fornecedor não cadastrado, deseja cadastrar?", 
                     ButtonType.YES,ButtonType.NO);
@@ -605,9 +618,16 @@ public class TelaCompraController implements Initializable
         Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Deseja excluir a compra?", ButtonType.YES,ButtonType.NO);
         a.showAndWait();
         
-        if(a.getResult() == ButtonType.YES)
+        if(a.getResult() == ButtonType.YES && compra != null)
         {
-            
+            if(ctrComp.apagar(Integer.parseInt(compra.getParam1())))
+            {
+                inicializa();
+                a = new Alert(Alert.AlertType.CONFIRMATION, "Compra excluída com sucesso!!!!", ButtonType.OK);
+            }
+            else
+                a = new Alert(Alert.AlertType.ERROR, "Erro na remoção da compra", ButtonType.OK);
+            a.showAndWait();
         }
     }
 
@@ -628,10 +648,24 @@ public class TelaCompraController implements Initializable
             stage.setTitle("Buscar Compra");
             stage.setScene(scene);
             stage.showAndWait();
-
-            if (controller.getResposta() != null)
+            
+            inicializa();
+            compra = controller.getResposta();
+            if(compra != null)
             {
-                inicializa();
+                tfFornecedor.setText(compra.getParam4() + ", " + compra.getParam13());
+                pane = criarPaneFornecedor();
+                tfNotaFiscal.setText(compra.getParam9());
+                tfVendedor.setText(compra.getParam11());
+                dpEmissao.setValue(LocalDate.parse(compra.getParam10()));
+                
+                for (int i = 0; i < compra.getList2().size(); i++)
+                {
+                    Objeto veiculo = ctrVei.getByCodigo(Integer.parseInt(compra.getList2().get(i).getParam1()));
+                    veiculo.setParam10(compra.getList2().get(i).getParam3());
+                    tvVeiculos.getItems().add(veiculo);
+                }
+                setEstado(false, false, false, true, false, false, false, false);
             }
         }
         catch (IOException er)
@@ -985,11 +1019,101 @@ public class TelaCompraController implements Initializable
     @FXML
     private void fornecedorExit(MouseEvent event)
     {
+        faView.setStyle(faView.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        
+        if(pop != null && pop.isShowing())
+            pop.hide();
     }
 
     @FXML
     private void fornecedorEnter(MouseEvent event)
     {
+        faView.setStyle(faView.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        
+        if(pane != null)
+        {
+            pop = new PopOver(pane);
+            pop.show(faView);
+        }
+    }
+
+    @FXML
+    private void fornecedorClicked(MouseEvent event)
+    {
+        if(pop != null && !pop.isShowing())
+            pop.show(faView);
+        else
+            pop.hide();
+    }
+
+    private BorderPane criarPaneFornecedor()
+    {
+        if(!tfFornecedor.getText().equals("") && !tfFornecedor.getText().equals("FORNECEDORES") && 
+            !tfFornecedor.getText().equals("CLIENTES"))
+        {
+            BorderPane pane = new BorderPane();
+        
+            Label titulo = new Label();
+            HBox hbox1 = new HBox(10),hbox2 = new HBox(10);
+            hbox1.setPadding(new Insets(10, 10, 10, 10));
+            hbox2.setPadding(new Insets(0, 10, 0, 10));
+            Objeto obj;
+
+            JFXTextField nome = new JFXTextField();
+            nome.setLabelFloat(true);
+            nome.setPromptText("Nome");
+            
+            JFXTextField email = new JFXTextField();
+            email.setLabelFloat(true);
+            email.setPromptText("Email");
+            email.setPrefWidth(200);
+            
+            TextArea endereco = new TextArea();
+            endereco.setPrefWidth(pane.getWidth() - 20);
+            endereco.setPrefHeight(100);
+            endereco.setWrapText(true);
+            
+            if(isCliente())
+            {
+                titulo.setText("CLIENTE");
+                obj = ctrCli.getByCPF(tfFornecedor.getText().substring(tfFornecedor.getText().indexOf(", ") + 2)
+                    .trim()).get(0);
+                
+                JFXTextField cpf = new JFXTextField(obj.getParam3());
+                cpf.setLabelFloat(true);
+                cpf.setPromptText("CPF");
+                
+                JFXTextField rg = new JFXTextField(obj.getParam4());
+                rg.setLabelFloat(true);
+                rg.setPromptText("RG");
+                
+                email.setText(obj.getParam8());
+                hbox1.getChildren().addAll(nome,cpf,rg,email);
+            }
+            else
+            {
+                titulo.setText("FORNECEDOR");
+                
+                obj = ctrForn.getByCNPJ(tfFornecedor.getText().substring(tfFornecedor.getText().indexOf(", ") + 2)
+                    .trim()).get(0);
+                
+                JFXTextField cnpj = new JFXTextField(obj.getParam3());
+                cnpj.setLabelFloat(true);
+                cnpj.setPromptText("CNPJ");
+                
+                email.setText(obj.getParam4());
+                hbox1.getChildren().addAll(nome,cnpj,email);
+            }
+            
+            nome.setText(obj.getParam2());
+            endereco.setText(obj.getParam7());
+            
+            VBox vbox = new VBox(5,hbox1,endereco);
+            pane.setTop(titulo);
+            pane.setBottom(vbox);
+            return pane;
+        }
+        return null;
     }
     
     private void setListeners()
@@ -997,6 +1121,13 @@ public class TelaCompraController implements Initializable
         autoCompletePopupFornecedores.setSelectionHandler(event ->
         {
             tfFornecedor.setText(event.getObject());
+        });
+        
+        tfFornecedor.focusedProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(!newValue)
+                if(tfFornecedor.getText().equals("FORNECEDORES") || tfFornecedor.getText().equals("CLIENTES"))
+                    tfFornecedor.setText("");
         });
 
         tfFornecedor.textProperty().addListener(observable ->
@@ -1011,7 +1142,10 @@ public class TelaCompraController implements Initializable
             else
             {    
                 if(tfFornecedor.isFocused())
+                {
                     autoCompletePopupFornecedores.show(tfFornecedor);
+                    pane = criarPaneFornecedor();
+                }
             }
         });
         
@@ -1019,15 +1153,11 @@ public class TelaCompraController implements Initializable
         {
             tfFornecedor.requestFocus();
             if(!autoCompletePopupFornecedores.isShowing())
+            {
                 autoCompletePopupFornecedores.show(tfFornecedor);
+            }
             else
                 autoCompletePopupFornecedores.hide();
-        });
-        
-        autoCompletePopupFornecedores.showingProperty().addListener((observable, oldValue, newValue) ->
-        {
-            if(newValue)
-                setPopUpLocation(autoCompletePopupFornecedores,tfFornecedor);
         });
         
         ChangeListener dataEmissao = (ChangeListener<String>) (ObservableValue<? extends String> observable, String oldValue, String newValue) ->
@@ -1274,5 +1404,17 @@ public class TelaCompraController implements Initializable
     {
         if(event.getCode() == KeyCode.ENTER)
             clickAdicionarVeiculo(new ActionEvent());
+    }
+
+    private boolean isCliente()
+    {
+        if(!tfFornecedor.getText().equals("FORNECEDORES") && !tfFornecedor.getText().equals("CLIENTES") &&
+                !tfFornecedor.getText().equals(""))
+        {
+            if(tfFornecedor.getText().contains("/"))
+                return false;
+            return true;
+        }
+        return false;
     }
 }

@@ -105,6 +105,11 @@ public class ctrCliente
         return retorno;
     }
     
+    public Objeto getByNameExato(String nome)
+    {
+        return convertClienteToObjeto(new Cliente(nome));
+    }
+    
     public ArrayList<Objeto> getByNameInativo(String nome)
     {
         ArrayList<Objeto>retorno = new ArrayList<>();
@@ -199,7 +204,7 @@ public class ctrCliente
             clientes = new Cliente().getByName(nome[0], true);
         
         for (int i = 0; i < clientes.size(); i++)
-            ret.add(clientes.get(i).getNome());
+            ret.add(clientes.get(i).getNome() + ", " + clientes.get(i).getCpf());
         
         return ret;
     }

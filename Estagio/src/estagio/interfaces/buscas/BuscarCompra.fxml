@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.buscas.BuscarCompraController">
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.buscas.BuscarCompraController">
    <top>
       <Label fx:id="lbTitulo" text="Pesquisar Compras" BorderPane.alignment="CENTER">
          <font>
@@ -59,8 +59,8 @@
                       <TableColumn fx:id="tcNome" prefWidth="260.0" text="Fornecedor/Cliente" />
                       <TableColumn fx:id="tcNotaFiscal" prefWidth="106.0" text="Nota Fiscal" />
                         <TableColumn fx:id="tcVendedor" prefWidth="126.0" text="Vendedor" />
-                        <TableColumn fx:id="tcEmissao" prefWidth="103.0" text="Emissão" />
-                        <TableColumn fx:id="tcVeiculos" prefWidth="284.0" text="Veículos" />
+                        <TableColumn fx:id="tcEmissao" prefWidth="143.0" text="Emissão" />
+                        <TableColumn fx:id="tcVeiculos" prefWidth="444.0" text="Veículos" />
                     </columns>
                   </TableView>
                </children>

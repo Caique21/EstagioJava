@@ -133,7 +133,7 @@ public class BuscarCompraController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        tcEmissao.setCellValueFactory(new PropertyValueFactory<>("param10"));
+        tcEmissao.setCellValueFactory(new PropertyValueFactory<>("param12"));
         tcNome.setCellValueFactory(new PropertyValueFactory<>("param4"));
         tcNotaFiscal.setCellValueFactory(new PropertyValueFactory<>("param9"));
         tcVendedor.setCellValueFactory(new PropertyValueFactory<>("param11"));
@@ -169,6 +169,10 @@ public class BuscarCompraController implements Initializable
                 stage.close();
             }
         }
+        else if(tvCompra.getItems().isEmpty())
+            new Alert(Alert.AlertType.ERROR, "Nenhuma compra cadastrada", ButtonType.OK).showAndWait();
+        else
+            new Alert(Alert.AlertType.ERROR, "Nenhuma compra selecionada", ButtonType.OK).showAndWait();
     }
 
     @FXML
@@ -182,6 +186,7 @@ public class BuscarCompraController implements Initializable
     @FXML
     private void clickPesquisar(ActionEvent event)
     {
+        tvCompra.getItems().clear();
         if(rbNome.isSelected())
             tvCompra.setItems(FXCollections.observableArrayList(ctrComp.getByNome(tfNome.getText())));
         else if(rbNotaFiscal.isSelected())

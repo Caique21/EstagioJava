@@ -5,9 +5,6 @@
  */
 package estagio.controladores;
 
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTextField;
 import estagio.entidades.Cliente;
 import estagio.entidades.Compra;
 import estagio.entidades.Fornecedor;
@@ -21,8 +18,6 @@ import estagio.utilidades.Utils;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
 
 /**
  *
@@ -52,16 +47,16 @@ public class ctrCompra
         compra.setQtd_parcelas(Integer.parseInt(parcelas));
         compra.setAjuste(calculaAjuste);
         compra.setData(Utils.convertToDate(LocalDate.now()));
-        compra.setData_emissao(Utils.convertStringToDateUTC(emissao));
+        compra.setData_emissao(Utils.convertStringToDate(emissao));
         compra.setNumero_nota_fiscal(notafiscal);
         compra.setVendedor(vendedor);
         compra.setValor_total(Double.parseDouble(total.substring(total.indexOf(":") + 1).replace("R$", "").
                 replace(".", "").replace(",", ".")));
         
         if(cliente)
-            compra.setCliente(new Cliente(fornecedor));
+            compra.setCliente(new Cliente(fornecedor.substring(0, fornecedor.indexOf(","))));
         else
-            compra.setFornecedor(new Fornecedor(fornecedor));
+            compra.setFornecedor(new Fornecedor(fornecedor.substring(0, fornecedor.indexOf(","))));
         
         boolean flag = compra.salvar();
         compra.setCodigo(Banco.getCon().getMaxPK("compra", "comp_codigo"));
@@ -315,18 +310,21 @@ public class ctrCompra
         obj.setParam9(comp.getNumero_nota_fiscal());
         obj.setParam10(String.valueOf(comp.getData_emissao()));
         obj.setParam11(comp.getVendedor());
+        obj.setParam12(Utils.convertData(comp.getData_emissao()));
         
         if(comp.getFornecedor() != null)
         {
             obj.setParam2(String.valueOf(true));
             obj.setParam3(String.valueOf(comp.getFornecedor().getCodigo()));
             obj.setParam4(comp.getFornecedor().getNome());
+            obj.setParam13(comp.getFornecedor().getCnpj());
         }
         else if(comp.getCliente() != null)
         {
             obj.setParam2(String.valueOf(false));
             obj.setParam3(String.valueOf(comp.getCliente().getCodigo()));
             obj.setParam4(comp.getCliente().getNome());
+            obj.setParam13(comp.getCliente().getCpf());
         }
         
         ArrayList<Parcela>parcelas = new Parcela().getByCompra(comp);
@@ -356,5 +354,12 @@ public class ctrCompra
         }
         
         return obj;
+    }
+
+    public boolean apagar(int codigo)
+    {
+        Compra c = new Compra();
+        c.setCodigo(codigo);
+        return c.apagar();
     }
 }

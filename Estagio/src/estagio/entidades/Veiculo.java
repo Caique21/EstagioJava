@@ -227,25 +227,25 @@ public class Veiculo
     @Override
     public String toString()
     {
-        String ret = "Veiculo {placa = " ;
+        String ret = "Veiculo {placa = '" ;
         
         if(placa != null)
             ret += placa;
-        ret += ", ";
+        ret += "', ";
         
         ret += "modelo " + modelo.toString() + ", ";
         
-        ret += "chassi = ";
+        ret += "chassi = '";
         if(chassi != null)
             ret += chassi;
-        ret += ", ";
+        ret += "', ";
         
-        ret += "ano=" + ano + ", cor=" + cor + ", ";
+        ret += "ano = " + ano + ", cor = " + cor + ", ";
         
-        ret += "descrição = ";
+        ret += "descrição = '";
         if(descricao != null)
             ret += descricao;
-        ret += "}";
+        ret += "'}";
                 
         return ret;
     }

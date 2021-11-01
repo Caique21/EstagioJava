@@ -37,6 +37,7 @@ public class Compra
     public Compra(int codigo)
     {
         this.codigo = codigo;
+        get();
     }
 
     public Compra(Fornecedor fornecedor)
@@ -241,6 +242,40 @@ public class Compra
     {
         return Banco.getCon().manipular("DELETE FROM compra WHERE comp_codigo = " + this.codigo);
     }
+
+    private void get()
+    {
+        String sql = "SELECT * FROM compra WHERE ";
+        
+        if(this.codigo > 0)
+            sql += "comp_codigo = " + this.codigo;
+        
+        ResultSet rs = Banco.getCon().consultar(sql);
+        
+        try
+        {
+            if(rs != null && rs.next())            
+            {
+                this.ajuste = rs.getDouble("comp_ajuste");
+                this.data = rs.getDate("comp_data_compra");
+                this.data_emissao = rs.getDate("comp_data_emissao");
+                this.numero_nota_fiscal = rs.getString("comp_nota_fiscal");
+                this.qtd_parcelas = rs.getInt("comp_qtd_parcelas");
+                this.valor_total = rs.getDouble("comp_valor_total");
+                this.vendedor = rs.getString("comp_vendedor");
+                
+                if(rs.getInt("cli_codigo") > 0)
+                    this.cliente = new Cliente(rs.getInt("cli_codigo"));
+                else
+                    this.fornecedor = new Fornecedor(rs.getInt("forn_codigo"));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Compra.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+    }
     
     private ArrayList<Compra> ler(ResultSet rs)
     {
@@ -270,6 +305,7 @@ public class Compra
         catch (SQLException ex)
         {
             Logger.getLogger(Compra.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
         }
         return compras;
     }
@@ -291,29 +327,52 @@ public class Compra
 
     public ArrayList<Compra> getByNotaFiscal(String nota_fiscal)
     {
-        return ler(Banco.getCon().consultar("SELECT * FROM compra WHERE comp_nota_fiscal = '" + nota_fiscal + "'"));
+        return ler(Banco.getCon().consultar("SELECT * FROM compra WHERE comp_nota_fiscal Ilike '%" + nota_fiscal + "%'"));
     }
 
     public ArrayList<Compra> getByVeiculo(String veiculo)
     {
-        ArrayList<Compra> ret = ler(Banco.getCon().consultar("SELECT * FROM veiculo WHERE vei_placa Ilike '%"
-            + veiculo + "%'"));
+        String sql = "SELECT DISTINCT(compra.comp_codigo) FROM compra INNER JOIN veiculo_compra ON compra.comp_codigo = veiculo_compra.comp_codigo \n"
+                + "	AND veiculo_compra.vei_codigo IN (SELECT vei_codigo FROM veiculo WHERE vei_placa Ilike '%" + veiculo + "%') \n"
+                + "UNION\n"
+                + "SELECT DISTINCT(compra.comp_codigo) FROM compra INNER JOIN veiculo_compra ON compra.comp_codigo = veiculo_compra.comp_codigo \n"
+                + "	AND veiculo_compra.vei_codigo IN (SELECT vei_codigo FROM veiculo INNER JOIN modelo \n"
+                + "				ON veiculo.modelo_codigo = modelo.modelo_codigo AND modelo_nome ILike '%" + veiculo + "%')\n"
+                + "UNION\n"
+                + "SELECT DISTINCT(compra.comp_codigo) FROM compra INNER JOIN veiculo_compra ON compra.comp_codigo = veiculo_compra.comp_codigo \n"
+                + "	AND veiculo_compra.vei_codigo IN (SELECT vei_codigo FROM veiculo WHERE modelo_codigo IN \n"
+                + "			(SELECT modelo_codigo FROM marca INNER JOIN modelo ON modelo.marca_codigo = marca.marca_codigo \n"
+                + "			 	AND marca_nome Ilike '%" + veiculo + "%'))";
+        ArrayList<Compra> ret = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar(sql);
         
-        ret.addAll(ler(Banco.getCon().consultar("SELECT vei_codigo,vei_chassi,vei_placa,veiculo.modelo_codigo,vei_ano,"
-            + "vei_cor,vei_descricao FROM veiculo INNER JOIN modelo on veiculo.modelo_codigo = modelo.modelo_codigo "
-                + "AND modelo_nome ILike '%" + veiculo + "%'")));
-        
-        ret.addAll(ler(Banco.getCon().consultar("SELECT * FROM veiculo WHERE modelo_codigo IN "
-            + "(SELECT modelo_codigo FROM marca INNER JOIN modelo ON modelo.marca_codigo = marca.marca_codigo "
-                + "AND marca_nome Ilike '%" + veiculo + "%')")));
+        try
+        {
+            while(rs != null && rs.next())            
+                ret.add(new Compra(rs.getInt("comp_codigo")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Compra.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         return ret;
+        /*return ler(Banco.getCon().consultar("SELECT * FROM compra INNER JOIN veiculo_compra "
+                + "ON compra.comp_codigo = veiculo_compra.comp_codigo AND veiculo_compra.vei_codigo "
+                + "IN (SELECT vei_codigo FROM veiculo WHERE vei_placa Ilike '%" + veiculo + "%') "
+            + "UNION "
+            + "SELECT * FROM compra INNER JOIN veiculo_compra ON compra.comp_codigo = veiculo_compra.comp_codigo "
+                + "AND veiculo_compra.vei_codigo IN (SELECT vei_codigo FROM veiculo INNER JOIN modelo "
+                + "ON veiculo.modelo_codigo = modelo.modelo_codigo AND modelo_nome ILike '%" + veiculo + "%') "
+            + "UNION "
+            + "SELECT * FROM compra INNER JOIN veiculo_compra ON compra.comp_codigo = veiculo_compra.comp_codigo "
+                + "AND veiculo_compra.vei_codigo IN (SELECT vei_codigo FROM veiculo WHERE modelo_codigo IN "
+                    + "(SELECT modelo_codigo FROM marca INNER JOIN modelo ON modelo.marca_codigo = marca.marca_codigo "
+                + "AND marca_nome Ilike '%" + veiculo + "%'))"));*/
     }
 
     public ArrayList<Compra> getByVendedor(String vendedor)
     {
         return ler(Banco.getCon().consultar("SELECT * FROM compra WHERE comp_vendedor Ilike '%" + vendedor + "%'"));
     }
-    
-    
 }
