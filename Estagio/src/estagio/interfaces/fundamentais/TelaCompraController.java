@@ -52,7 +52,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -327,6 +326,7 @@ public class TelaCompraController implements Initializable
         tfAno.clear();
         tfCor.clear();
         tfValorVeiculo.clear();
+        taDescricao.clear();
     }
     
     private void limpaLabelsDados()
@@ -454,7 +454,6 @@ public class TelaCompraController implements Initializable
        if(validaCompra())
        {
            Alert a = new Alert(Alert.AlertType.CONFIRMATION,"",ButtonType.YES,ButtonType.NO);
-           boolean cliente = isCliente();
            
            if(acao == 0)
            {
@@ -471,8 +470,54 @@ public class TelaCompraController implements Initializable
                        JFXDecorator decorator = new JFXDecorator(stage, root);
 
                        decorator.setStyle("-fx-decorator-color: #040921;");
+                       
                        ConfirmarTransacaoController controller = fxmlLoader.<ConfirmarTransacaoController>getController();
-                       controller.setCompra(tfFornecedor,cliente,tfNotaFiscal,tfVendedor,dpEmissao,tvVeiculos,lbSubTotal);
+                       gerarCompra();
+                       controller.setCompra(compra,lbSubTotal,acao);
+                       
+                       Scene scene = new Scene(decorator);
+
+                       stage.setTitle("Cadastro de Fornecedor");
+                       stage.setScene(scene);
+                       stage.showAndWait();
+                       
+                       if(controller.getResposta())
+                       {
+                           inicializa();
+                           a = new Alert(Alert.AlertType.INFORMATION, "Compra efetuada com sucesso!!!", ButtonType.OK);
+                       }
+                       else
+                           a = new Alert(Alert.AlertType.ERROR, "Erro, compra não efetuado", ButtonType.OK);
+                       a.showAndWait();
+                   }
+                   catch (IOException er)
+                   {
+                       a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Pagamento! \nErro: " + er.getMessage(), ButtonType.OK);
+                       System.out.println(er.getMessage());
+                       a.showAndWait();
+                   }
+               }
+           }
+           else if(acao == 1 && compra != null)
+           {
+               a.setContentText("Alterar cadastro da compra?");
+               a.showAndWait();
+            
+               if(a.getResult() == ButtonType.YES)
+               {
+                    try
+                    {
+                       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/fundamentais/ConfirmarTransacao.fxml"));
+                       Parent root = (Parent) fxmlLoader.load();
+                       Stage stage = new Stage();
+                       JFXDecorator decorator = new JFXDecorator(stage, root);
+
+                       decorator.setStyle("-fx-decorator-color: #040921;");
+                       
+                       ConfirmarTransacaoController controller = fxmlLoader.<ConfirmarTransacaoController>getController();
+                       gerarCompra();
+                       controller.setCompra(compra,lbSubTotal,acao);
+                       
                        Scene scene = new Scene(decorator);
 
                        stage.setTitle("Cadastro de Fornecedor");
@@ -507,7 +552,8 @@ public class TelaCompraController implements Initializable
         if(tvVeiculos.getItems().isEmpty())
             erros += "Lista de Veículos vazia\n";
         
-        if(tfFornecedor.getText().trim().equals(""))
+        if(tfFornecedor.getText().equals("FORNECEDORES") || tfFornecedor.getText().equals("CLIENTES") ||
+                tfFornecedor.getText().trim().equals(""))
         {
             erros += "Digite o nome do Fornecedor\n";
             lbErroFornecedor.setText("Campo requerido");
@@ -608,7 +654,7 @@ public class TelaCompraController implements Initializable
     @FXML
     private void clickAlterar(ActionEvent event)
     {
-        acao = 2;
+        acao = 1;
         setEstado(false, false, true, false, true, true, true, false);
     }
 
@@ -659,13 +705,16 @@ public class TelaCompraController implements Initializable
                 tfVendedor.setText(compra.getParam11());
                 dpEmissao.setValue(LocalDate.parse(compra.getParam10()));
                 
+                TextField aux = new TextField();
+                MaskFieldUtil.monetaryField(aux);
                 for (int i = 0; i < compra.getList2().size(); i++)
                 {
                     Objeto veiculo = ctrVei.getByCodigo(Integer.parseInt(compra.getList2().get(i).getParam1()));
-                    veiculo.setParam10(compra.getList2().get(i).getParam3());
+                    aux.setText(Utils.exibeCentavos(Double.parseDouble(compra.getList2().get(i).getParam10())));
+                    veiculo.setParam10(aux.getText());
                     tvVeiculos.getItems().add(veiculo);
                 }
-                setEstado(false, false, false, true, false, false, false, false);
+                setEstado(true, true, false, true, false, false, false, false);
             }
         }
         catch (IOException er)
@@ -1410,11 +1459,42 @@ public class TelaCompraController implements Initializable
     {
         if(!tfFornecedor.getText().equals("FORNECEDORES") && !tfFornecedor.getText().equals("CLIENTES") &&
                 !tfFornecedor.getText().equals(""))
-        {
-            if(tfFornecedor.getText().contains("/"))
-                return false;
-            return true;
-        }
+            return !tfFornecedor.getText().contains("/");
         return false;
+    }
+
+    private void gerarCompra()
+    {
+        ///1 - CÓDIGO, 2 - TRUE SE FOR FORNECEDOR, 3 - CÓDIGO DO FORNECEDOR/CLIENTE, 4 - NOME DO FORNECEDOR/CLIENTE
+        ///5 - QTD PARCELAS, 6 - VALOR TOTAL, 7 - AJUSTE, 8 - DATA DA COMPRA, 9 - NOTA FISCAL, 10 - DATA DE EMISSÃO
+        ///11 - VENDEDOR, LIST1 - PARCELAS, LIST2 - VEICULOS, 13 - CNPJ/CPF
+        if(compra == null)
+        {
+            compra = new Objeto(String.valueOf(0));
+            compra.setParam8(String.valueOf(LocalDate.now()));
+        }
+        compra.setParam4(tfFornecedor.getText().substring(0, tfFornecedor.getText().indexOf(",")));
+        compra.setParam9(tfNotaFiscal.getText());
+        compra.setParam11(tfVendedor.getText());
+        compra.setParam10(String.valueOf(dpEmissao.getValue()));
+        compra.setParam13(tfFornecedor.getText().substring(tfFornecedor.getText().indexOf(", ") + 1).trim());
+        
+        compra.setList2(new ArrayList<>());
+        tvVeiculos.getItems().forEach((o) ->
+        {
+            compra.addList2(o);
+        });
+        
+        if(isCliente())
+        {
+            compra.setParam2(String.valueOf(false));
+            compra.setParam3(ctrCli.getByCPF(compra.getParam13()).get(0).getParam1());
+        }
+        else
+        {
+            compra.setParam2(String.valueOf(true));
+            compra.setParam3(ctrForn.getByCNPJ(compra.getParam13()).get(0).getParam1());
+        }
+        
     }
 }

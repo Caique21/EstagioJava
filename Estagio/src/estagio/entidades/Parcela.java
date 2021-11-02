@@ -6,7 +6,9 @@
 package estagio.entidades;
 
 import estagio.utilidades.Banco;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -168,6 +170,72 @@ public class Parcela
         sql = sql.replace("$3", String.valueOf(this.valor_parcela));
         
         return Banco.getCon().manipular(sql);
+    }
+
+    public boolean alterar()
+    {
+        Connection connection = Banco.getCon().getConnection();
+        PreparedStatement statement = null;
+
+        try
+        {
+            connection.setAutoCommit(false);
+            
+            statement = connection.prepareStatement("DELETE FROM parcela WHERE comp_codigo = " + 
+                    this.compra.getCodigo());
+            statement.executeUpdate();
+            
+            String sql = "INSERT INTO parcela(parc_datavencimento,parc_numero,parc_valorparcela,$5) "
+                + "VALUES ('$1',$2,$3,$4)";
+        
+            if(this.compra != null)
+            {
+                sql = sql.replace("$5", "comp_codigo");
+                sql = sql.replace("$4", String.valueOf(this.compra.getCodigo()));
+            }
+            else if(this.venda != null)
+            {
+                sql = sql.replace("$5", "ven_codigo");
+                //sql = sql.replace("$7", String.valueOf(this.venda.getClass()));
+            }
+
+            sql = sql.replace("$1", String.valueOf(this.vencimento));
+            sql = sql.replace("$2", String.valueOf(this.numero));
+            sql = sql.replace("$3", String.valueOf(this.valor_parcela));
+            
+            statement = connection.prepareStatement(sql);
+            
+            if(statement.executeUpdate() == 1)
+            {
+                connection.setAutoCommit(true);
+                connection.commit();
+                statement.close();
+                return true;
+            }
+            else
+                connection.rollback();
+            statement.close();
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Parcela.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public boolean apagar()
+    {
+        String sql = "DELETE FROM parcela WHERE ";
+        
+        if(this.compra != null)
+            sql += "comp_codigo = " + this.compra.getCodigo();
+        
+        return Banco.getCon().manipular(sql);
+    }
+
+    public boolean apagar(int codigo)
+    {
+        return Banco.getCon().manipular("DELETE FROM parcela WHERE parc_codigo = " + codigo);
     }
 
     public ArrayList<Parcela> getByCompra(Compra compra)

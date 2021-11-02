@@ -119,6 +119,17 @@ public class ItensCompra
         return true;
     }
 
+    public boolean apagar()
+    {
+        String sql = "DELETE FROM veiculo_compra WHERE ";
+        
+        if(this.compra != null)
+            sql += "comp_codigo = " + this.compra.getCodigo();
+        
+        apagarVeiculos();
+        return Banco.getCon().manipular(sql);
+    }
+
     public void apagarVeiculos()
     {
         ResultSet rs = Banco.getCon().consultar("SELECT vei_codigo FROM veiculo_compra WHERE comp_codigo = " + 
@@ -154,6 +165,4 @@ public class ItensCompra
         }
         return veiculos;
     }
-    
-    
 }

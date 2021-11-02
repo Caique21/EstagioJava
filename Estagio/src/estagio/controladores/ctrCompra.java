@@ -39,6 +39,230 @@ public class ctrCompra
         }
         return con;
     }
+
+    public boolean salvar(Objeto comp, LocalDate vencimento, String entrada,ArrayList<Objeto> veiculos)
+    {
+        Compra compra = convertToCompra(comp);
+        
+        boolean flag = compra.salvar();
+        compra.setCodigo(Banco.getCon().getMaxPK("compra", "comp_codigo"));
+        
+        if(compra.getQtd_parcelas() == 1 && flag)
+            flag = new Parcela(Date.valueOf(vencimento), 1, compra.getValor_total(),compra).salvar();
+        else
+        {
+            int i = 0,qtd_parc = compra.getQtd_parcelas();
+            double soma = 0.0, val = Utils.truncate(compra.getValor_total()/compra.getQtd_parcelas());
+            
+            ///PAGAMENTO COM ENTRADA
+            if(entrada != null && !entrada.trim().equals("0") && !entrada.trim().equals(""))
+            {
+                flag = new Parcela(Date.valueOf(LocalDate.now()), 1, Double.parseDouble(entrada.replace(".", "").replace(",", ".")), 
+                        compra).salvar();
+                
+                soma += Double.parseDouble(entrada.replace(".", "").replace(",", "."));
+                val = Utils.truncate((compra.getValor_total() - soma)/compra.getQtd_parcelas());
+                i = 1;
+                qtd_parc += 1;//ACRESCENTA UMA PARCELA, A 1ª SENDO A ENTRADA
+            }
+            
+            for(int j = 0; i < qtd_parc && flag; i++, j++)
+            {
+                Date aux = Date.valueOf(vencimento);
+                if(i < qtd_parc - 1)
+                    flag = new Parcela(Date.valueOf(aux.toLocalDate().plusMonths(j)),i + 1,val,compra).salvar();
+                else
+                    flag = new Parcela(Date.valueOf(aux.toLocalDate().plusMonths(j)),i + 1,
+                        compra.getValor_total() - soma,compra).salvar();
+
+                soma += val;
+            }
+        }
+        
+        for (int i = 0; i < veiculos.size() && flag; i++)
+        {
+            Objeto v = veiculos.get(i);
+            ItensCompra item = new ItensCompra(convertToVeiculo(v), compra, 
+                Double.parseDouble(v.getParam10().replace(".", "").replace(",", ".")));
+            flag = flag && item.salvar();
+        }
+        
+        if(!flag)
+        {
+            compra.apagar();
+            new ItensCompra(compra).apagarVeiculos();
+            return false;
+        }
+        return flag;
+    }
+
+    public boolean alterar(Objeto comp, LocalDate vencimento, String entrada,ArrayList<Objeto> veiculos)
+    {
+        Compra compra = convertToCompra(comp);
+        
+        boolean flag = compra.alterar();
+        
+        ArrayList<Parcela>parcelas_antigas = new Parcela().getByCompra(compra);
+        
+        if(compra.getQtd_parcelas() == 1 && flag)
+            flag = new Parcela(Date.valueOf(vencimento), 1, compra.getValor_total(),compra).salvar();
+        else
+        {
+            int i = 0,qtd_parc = compra.getQtd_parcelas();
+            double soma = 0.0, val = Utils.truncate(compra.getValor_total()/compra.getQtd_parcelas());
+            
+            ///PAGAMENTO COM ENTRADA
+            if(entrada != null && !entrada.trim().equals("0") && !entrada.trim().equals(""))
+            {
+                flag = new Parcela(Date.valueOf(LocalDate.now()), 1, Double.parseDouble(entrada.replace(".", "").replace(",", ".")), 
+                        compra).salvar();
+                
+                soma += Double.parseDouble(entrada.replace(".", "").replace(",", "."));
+                val = Utils.truncate((compra.getValor_total() - soma)/compra.getQtd_parcelas());
+                i = 1;
+                qtd_parc += 1;//ACRESCENTA UMA PARCELA, A 1ª SENDO A ENTRADA
+            }
+            
+            for(int j = 0; i < qtd_parc && flag; i++, j++)
+            {
+                Date aux = Date.valueOf(vencimento);
+                if(i < qtd_parc - 1)
+                    flag = new Parcela(Date.valueOf(aux.toLocalDate().plusMonths(j)),i + 1,val,compra).salvar();
+                else
+                    flag = new Parcela(Date.valueOf(aux.toLocalDate().plusMonths(j)),i + 1,
+                        compra.getValor_total() - soma,compra).salvar();
+
+                soma += val;
+            }
+        }
+        
+        new ItensCompra(compra).apagar();
+        for (int i = 0; i < veiculos.size() && flag; i++)
+        {
+            Objeto v = veiculos.get(i);
+            ItensCompra item = new ItensCompra(convertToVeiculo(v), compra, 
+                Double.parseDouble(v.getParam10().replace(".", "").replace(",", ".")));
+            flag = flag && item.salvar();
+        }
+        
+        if(!flag)
+        {
+            new ItensCompra(compra).apagarVeiculos();
+            return false;
+        }
+        else
+        {
+            parcelas_antigas.forEach((p) ->
+            {
+                p.apagar(p.getCodigo());
+            });
+        }
+        return flag;
+    }
+    
+    public boolean salvar(Objeto comp, LocalDate vencimento, String entrada,ArrayList<Objeto> veiculos,
+            ArrayList<Objeto> list_parcelas)
+    {
+        Compra compra = convertToCompra(comp);
+        
+        boolean flag = compra.salvar();
+        compra.setCodigo(Banco.getCon().getMaxPK("compra", "comp_codigo"));
+        
+        boolean has_entrada = false;
+        //ENTRADA//
+        if(flag)
+        {
+            if(entrada != null && !entrada.trim().equals("0") && !entrada.trim().equals(""))
+                has_entrada = flag = new Parcela(Date.valueOf(LocalDate.now()), 1, 
+                        Double.parseDouble(entrada.replace(".", "").replace(",", ".")), compra).salvar();
+        }
+        //ENTRADA//
+        
+        ////PARCELAS////
+        for (int i = 0; i < list_parcelas.size() && flag; i++)
+        {
+            Objeto p = list_parcelas.get(i);
+            if(has_entrada)
+                p.setParam1(String.valueOf(Integer.parseInt(p.getParam1()) + 1));
+            
+            flag = new Parcela(Date.valueOf(p.getParam3()), Integer.parseInt(p.getParam1()), 
+                    Utils.convertStringToDouble(p.getParam2()), compra).salvar();
+        }
+        ////PARCELAS////
+        
+        ////ITENS DA VENDA////
+        for (int i = 0; i < veiculos.size() && flag; i++)
+        {
+            Objeto v = veiculos.get(i);
+            ItensCompra item = new ItensCompra(convertToVeiculo(v), compra, 
+                Double.parseDouble(v.getParam10().replace(".", "").replace(",", ".")));
+            flag = flag && item.salvar();
+        }
+        ////ITENS DA VENDA////
+        
+        if(!flag)
+        {
+            compra.apagar();
+            new ItensCompra(compra).apagarVeiculos();
+            return false;
+        }
+        return flag;
+    }
+
+    public boolean alterar(Objeto comp, LocalDate vencimento, String entrada,ArrayList<Objeto> veiculos, 
+            ArrayList<Objeto> parcelas)
+    {
+        Compra compra = convertToCompra(comp);
+        
+        boolean flag = compra.alterar();
+        
+        ArrayList<Parcela>parcelas_antigas = new Parcela().getByCompra(compra);
+        
+        boolean has_entrada = false;
+        //ENTRADA//
+        if(flag)
+        {
+            if(entrada != null && !entrada.trim().equals("0") && !entrada.trim().equals(""))
+                has_entrada = flag = new Parcela(Date.valueOf(LocalDate.now()), 1, 
+                        Double.parseDouble(entrada.replace(".", "").replace(",", ".")), compra).salvar();
+        }
+        //ENTRADA//
+        
+        ////PARCELAS////
+        for (int i = 0; i < parcelas.size() && flag; i++)
+        {
+            Objeto p = parcelas.get(i);
+            if(has_entrada)
+                p.setParam1(String.valueOf(Integer.parseInt(p.getParam1()) + 1));
+            
+            flag = new Parcela(Date.valueOf(p.getParam3()), Integer.parseInt(p.getParam1()), 
+                    Utils.convertStringToDouble(p.getParam2()), compra).salvar();
+        }
+        ////PARCELAS////
+        
+        new ItensCompra(compra).apagar();
+        for (int i = 0; i < veiculos.size() && flag; i++)
+        {
+            Objeto v = veiculos.get(i);
+            ItensCompra item = new ItensCompra(convertToVeiculo(v), compra, 
+                Double.parseDouble(v.getParam10().replace(".", "").replace(",", ".")));
+            flag = flag && item.salvar();
+        }
+        
+        if(!flag)
+        {
+            new ItensCompra(compra).apagarVeiculos();
+            return false;
+        }
+        else
+        {
+            parcelas_antigas.forEach((p) ->
+            {
+                p.apagar(p.getCodigo());
+            });
+        }
+        return flag;
+    }
     
     public int salvar(String fornecedor, boolean cliente, String parcelas, String vencimento, String total, 
         double calculaAjuste, String notafiscal, String emissao, String vendedor,String entrada, ArrayList<Objeto> veiculos)
@@ -169,76 +393,68 @@ public class ctrCompra
         }
         return compra.getCodigo();
     }
-
-    private Veiculo convertToVeiculo(Objeto v)
-    {
-        Veiculo veiculo = new Veiculo();
-        veiculo.setPlaca(v.getParam2());
-        veiculo.setAno(Integer.parseInt(v.getParam5()));
-        veiculo.setChassi(v.getParam4());
-        veiculo.setCor(v.getParam6());
-        veiculo.setDescricao(v.getParam9());
-        veiculo.setModelo(new Modelo(v.getParam8()));
-        return veiculo;
-    }
-
-    /*public int salvar(JFXTextField fornecedor, boolean cliente, JFXTextField parcelas, JFXDatePicker vencimento, 
-        Label total, Double calculaAjuste, JFXTextField notafiscal, JFXDatePicker emissao, JFXTextField vendedor, 
-        JFXComboBox<String> pagamento, JFXTextField cheque, TableView<Objeto> veiculos)
+    
+    public int alterar(int codigo,String fornecedor, boolean cliente, String parcelas, String vencimento, 
+        String total, double calculaAjuste, String notafiscal, String emissao, String vendedor,String entrada, 
+        ArrayList<Objeto> veiculos, ArrayList<Objeto> list_parcelas)
     {
         Compra compra = new Compra();
-        compra.setQtd_parcelas(Integer.parseInt(parcelas.getText()));
+        compra.setCodigo(codigo);
+        compra.setQtd_parcelas(Integer.parseInt(parcelas));
         compra.setAjuste(calculaAjuste);
         compra.setData(Utils.convertToDate(LocalDate.now()));
-        compra.setData_emissao(Utils.convertToDate(emissao.getValue()));
-        compra.setNumero_nota_fiscal(notafiscal.getText());
-        compra.setVendedor(vendedor.getText());
-        compra.setValor_total(Double.parseDouble(total.getText().substring(total.getText().indexOf(":") + 1).replace("R$", "")));
+        compra.setData_emissao(Utils.convertStringToDateUTC(emissao));
+        compra.setNumero_nota_fiscal(notafiscal);
+        compra.setVendedor(vendedor);
+        compra.setValor_total(Utils.convertStringToDouble(total.substring(total.indexOf(":") + 1).replace("R$", "")));
         
         if(cliente)
-            compra.setCliente(new Cliente(fornecedor.getText()));
+            compra.setCliente(new Cliente(fornecedor));
         else
-            compra.setFornecedor(new Fornecedor(fornecedor.getText()));
+            compra.setFornecedor(new Fornecedor(fornecedor));
         
-        boolean flag = compra.salvar();
-        compra.setCodigo(Banco.getCon().getMaxPK("compra", "comp_codigo"));
+        boolean flag = compra.alterar();
         
-        if(flag)
+        ////PARCELAS////
+        new Parcela(compra).apagar();
+        boolean has_entrada = false;
+        
+        //ENTRADA//
+        if(entrada != null && !entrada.trim().equals("0") && !entrada.trim().equals(""))
+            has_entrada = flag = new Parcela(Date.valueOf(LocalDate.now()), 1, 
+                    Double.parseDouble(entrada.replace(".", "").replace(",", ".")), compra).salvar();
+        //ENTRADA//
+        
+        for (int i = 0; i < list_parcelas.size() && flag; i++)
         {
-            Date aux = Utils.convertToSqlDate(vencimento.getValue());
-            Double valor = compra.getValor_total()/compra.getQtd_parcelas();
+            Objeto p = list_parcelas.get(i);
+            if(has_entrada)
+                p.setParam1(String.valueOf(Integer.parseInt(p.getParam1()) + 1));
             
-            for (int i = 0; i < compra.getQtd_parcelas() && flag; i++)
-            {
-                Parcela p;
-                if(i < compra.getQtd_parcelas() - 1)
-                    p = new Parcela(aux,i + 1,valor,compra);
-                else
-                    p = new Parcela(aux,i + 1,compra.getValor_total() - valor,compra);
-                
-                flag = flag && p.salvar();
-                aux = Date.valueOf(aux.toLocalDate().plusMonths(1));
-            }
+            flag = new Parcela(Date.valueOf(p.getParam3()), Integer.parseInt(p.getParam1()), 
+                    Utils.convertStringToDouble(p.getParam2()), compra).salvar();
         }
+        ////PARCELAS////
         
-        if(flag)
+        ////ITENS DA VENDA////
+        new ItensCompra(compra).apagar();
+        for (int i = 0; i < veiculos.size() && flag; i++)
         {
-            for (int i = 0; i < veiculos.getItems().size() && flag; i++)
-            {
-                Objeto v = veiculos.getItems().get(i);
-                ItensCompra item = new ItensCompra(new Veiculo(Integer.parseInt(v.getParam1())), compra, 
-                    Double.parseDouble(v.getParam10().replace(".", "").replace(",", ".")));
-                flag = flag && item.salvar();
-            }
+            Objeto v = veiculos.get(i);
+            ItensCompra item = new ItensCompra(convertToVeiculo(v), compra, 
+                Double.parseDouble(v.getParam10().replace(".", "").replace(",", ".")));
+            flag = flag && item.salvar();
         }
+        ////ITENS DA VENDA////
         
         if(!flag)
         {
             compra.apagar();
+            new ItensCompra(compra).apagarVeiculos();
             return 0;
         }
         return compra.getCodigo();
-    }*/
+    }
     
     public ArrayList<Objeto> getAll()
     {
@@ -295,11 +511,60 @@ public class ctrCompra
         return ret;
     }
 
+    public boolean apagar(int codigo)
+    {
+        Compra c = new Compra();
+        c.setCodigo(codigo);
+        new ItensCompra(c).apagarVeiculos();
+        return c.apagar();
+    }
+
+    private ArrayList<Veiculo>convertToVeiculo(ArrayList<Objeto>v)
+    {
+        ArrayList<Veiculo>veiculos = new ArrayList<>();
+        
+        for (int i = 0; i < v.size(); i++)
+            veiculos.add(convertToVeiculo(v).get(i));
+        
+        return veiculos;
+    }
+    
+    private Veiculo convertToVeiculo(Objeto v)
+    {
+        Veiculo veiculo = new Veiculo();
+        veiculo.setPlaca(v.getParam2());
+        veiculo.setAno(Integer.parseInt(v.getParam5()));
+        veiculo.setChassi(v.getParam4());
+        veiculo.setCor(v.getParam6());
+        veiculo.setDescricao(v.getParam9());
+        veiculo.setModelo(new Modelo(v.getParam8()));
+        return veiculo;
+    }
+
+    private Compra convertToCompra(Objeto comp)
+    {
+        Compra compra = new Compra();
+        compra.setAjuste(Double.parseDouble(comp.getParam7()));
+        compra.setCodigo(Integer.parseInt(comp.getParam1()));
+        compra.setData(Date.valueOf(comp.getParam8()));
+        compra.setData_emissao(Date.valueOf(comp.getParam10()));
+        compra.setNumero_nota_fiscal(comp.getParam9());
+        compra.setQtd_parcelas(Integer.parseInt(comp.getParam5()));
+        compra.setValor_total(Double.parseDouble(comp.getParam6()));
+        compra.setVendedor(comp.getParam11());
+        
+        if(Boolean.valueOf(comp.getParam2()) == false)
+            compra.setCliente(new Cliente(Integer.parseInt(comp.getParam3())));
+        else
+            compra.setFornecedor(new Fornecedor(Integer.parseInt(comp.getParam3())));
+        return compra;
+    }
+    
     private Objeto convertToObjeto(Compra comp)
     {
         ///1 - CÓDIGO, 2 - TRUE SE FOR FORNECEDOR, 3 - CÓDIGO DO FORNECEDOR/CLIENTE, 4 - NOME DO FORNECEDOR/CLIENTE
         ///5 - QTD PARCELAS, 6 - VALOR TOTAL, 7 - AJUSTE, 8 - DATA DA COMPRA, 9 - NOTA FISCAL, 10 - DATA DE EMISSÃO
-        ///11 - VENDEDOR, LIST1 - PARCELAS, LIST2 - VEICULOS
+        ///11 - VENDEDOR, LIST1 - PARCELAS, LIST2 - VEICULOS, 13 - CNPJ/CPF
         
         Objeto obj = new Objeto();
         obj.setParam1(String.valueOf(comp.getCodigo()));
@@ -345,21 +610,20 @@ public class ctrCompra
         
         ArrayList<ItensCompra>veiculos = new ItensCompra().getByCompra(comp);
         obj.setList2ToString("");
-        for(ItensCompra item : veiculos)
+        for(ItensCompra veiculo : veiculos)
         {
             ///1 - VEICULO CODIGO, 2 - CODIGO COMPRA, 3 - VALOR
-            obj.addList2(new Objeto(String.valueOf(item.getVeiculo().getCodigo()), String.valueOf(comp.getCodigo()), 
+            Objeto item = ctrVeiculo.instancia().convertToObjeto(veiculo.getVeiculo());
+            item.setParam10(String.valueOf(veiculo.getValor()));
+            item.setParam11(String.valueOf(comp.getCodigo()));
+            obj.addList2(item);
+            obj.setList2ToString(obj.getList2ToString() + veiculo.getVeiculo().toString() + "\n\n");
+            /*obj.addList2(new Objeto(String.valueOf(item.getVeiculo().getCodigo()), String.valueOf(comp.getCodigo()), 
                 String.valueOf(item.getValor())));
             obj.setList2ToString(obj.getList2ToString() + item.getVeiculo().toString() + "\n\n");
+            */
         }
         
         return obj;
-    }
-
-    public boolean apagar(int codigo)
-    {
-        Compra c = new Compra();
-        c.setCodigo(codigo);
-        return c.apagar();
     }
 }

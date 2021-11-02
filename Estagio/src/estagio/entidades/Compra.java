@@ -6,6 +6,9 @@
 package estagio.entidades;
 
 import estagio.utilidades.Banco;
+import estagio.utilidades.Utils;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -236,6 +239,72 @@ public class Compra
         sql = sql.replace("$8", this.vendedor);
         
         return Banco.getCon().manipular(sql);
+    }
+
+    public boolean alterar()
+    {
+        String sql = "UPDATE compra SET $9 = $1, comp_qtd_parcelas = $2, comp_valor_total = $3, comp_ajuste = $4, "
+            + "comp_data_compra = '$5', comp_nota_fiscal = '$6', comp_data_emissao = '$7', comp_vendedor = '$8' "
+                + "WHERE comp_codigo = " + this.codigo;
+        
+        if(this.fornecedor != null)
+        {
+            sql = sql.replace("$9", "forn_codigo");
+            sql = sql.replace("$1", String.valueOf(this.fornecedor.getCodigo()));
+        }
+        else if(this.cliente != null)
+        {
+            sql = sql.replace("$9", "cli_codigo");
+            sql = sql.replace("$1", String.valueOf(this.cliente.getCodigo()));
+        }
+        
+        sql = sql.replace("$2", String.valueOf(this.qtd_parcelas));
+        sql = sql.replace("$3", String.valueOf(this.valor_total));
+        sql = sql.replace("$4", String.valueOf(this.ajuste));
+        sql = sql.replace("$5", String.valueOf(this.data));
+        sql = sql.replace("$6", this.numero_nota_fiscal);
+        sql = sql.replace("$7", String.valueOf(this.data_emissao));
+        sql = sql.replace("$8", this.vendedor);
+        
+        return Banco.getCon().manipular(sql);
+    }
+
+    public boolean alterar(Connection connection)
+    {
+        String sql = "UPDATE compra SET $9 = $1, comp_qtd_parcelas = $2, comp_valor_total = $3, comp_ajuste = $4, "
+            + "comp_data_compra = '$5', comp_nota_fiscal = '$6', comp_data_emissao = '$7', comp_vendedor = '$8' "
+                + "WHERE comp_codigo = " + this.codigo;
+        
+        if(this.fornecedor != null)
+        {
+            sql = sql.replace("$9", "forn_codigo");
+            sql = sql.replace("$1", String.valueOf(this.fornecedor.getCodigo()));
+        }
+        else if(this.cliente != null)
+        {
+            sql = sql.replace("$9", "cli_codigo");
+            sql = sql.replace("$1", String.valueOf(this.cliente.getCodigo()));
+        }
+        
+        sql = sql.replace("$2", String.valueOf(this.qtd_parcelas));
+        sql = sql.replace("$3", String.valueOf(this.valor_total));
+        sql = sql.replace("$4", String.valueOf(this.ajuste));
+        sql = sql.replace("$5", String.valueOf(this.data));
+        sql = sql.replace("$6", this.numero_nota_fiscal);
+        sql = sql.replace("$7", String.valueOf(this.data_emissao));
+        sql = sql.replace("$8", this.vendedor);
+        
+        PreparedStatement statement;
+        try
+        {
+            statement = connection.prepareStatement(sql);
+            return statement.executeUpdate() == 1;
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Compra.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     public boolean apagar()

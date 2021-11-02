@@ -12,6 +12,7 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.controladores.ctrCompra;
+import estagio.utilidades.Banco;
 import estagio.utilidades.MaskFieldUtil;
 import estagio.utilidades.Objeto;
 import estagio.utilidades.ToolTip;
@@ -21,14 +22,11 @@ import java.net.URL;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -59,10 +57,11 @@ public class ConfirmarTransacaoController implements Initializable
     private final ToggleGroup goup3 = new ToggleGroup();
     private final Tooltip tooltip = new Tooltip();
     
-    private boolean compra;
+    private boolean iscompra;
     private boolean resposta = false;
-    private Objeto obj;
+    private Objeto compra;
     private double total;
+    private int acao = -1;
     
     private ArrayList<Objeto>parcelas;
 
@@ -227,25 +226,34 @@ public class ConfirmarTransacaoController implements Initializable
     @FXML
     private void clickConfirmar(ActionEvent event)
     {
-        if(compra && obj != null)
+        if(iscompra && compra != null)
         {
             if(!dpVencimento.getEditor().getText().equals(""))
             {
-                if(parcelas == null)
+                if(acao == 0)
                 {
-                    resposta = ctrComp.salvar(obj.getParam1(), Boolean.valueOf(obj.getParam2()), 
-                        tfNumeroParcelas.getText(), String.valueOf(dpVencimento.getValue()),
-                        this.lbSubTotal.getText().substring(lbSubTotal.getText().indexOf("$") + 1),
-                        calculaAjuste(), obj.getParam7(), obj.getParam8(), obj.getParam9(), 
-                        tfEntrada.getText() ,obj.getList1()) > 0;
+                    completarCompra();
+                    if(parcelas == null)
+                    {
+                        resposta = ctrComp.salvar(compra, dpVencimento.getValue(),tfEntrada.getText(),
+                                compra.getList2());
+                    }
+                    else
+                    {
+                        resposta = ctrComp.salvar(compra, dpVencimento.getValue(),tfEntrada.getText(),
+                                compra.getList2(),parcelas);
+                    }
                 }
-                else
+                else if(acao == 1)
                 {
-                    resposta = ctrComp.salvar(obj.getParam1(), Boolean.valueOf(obj.getParam2()), 
-                        tfNumeroParcelas.getText(), String.valueOf(dpVencimento.getValue()),
-                        this.lbSubTotal.getText().substring(lbSubTotal.getText().indexOf("$") + 1),
-                        calculaAjuste(), obj.getParam7(), obj.getParam8(), obj.getParam9(), 
-                        tfEntrada.getText() ,obj.getList1(),parcelas) > 0;
+                    completarCompra();
+                    
+                    if(parcelas == null)
+                        resposta = ctrComp.alterar(compra, dpVencimento.getValue(),tfEntrada.getText(),
+                                compra.getList2());
+                    else
+                        resposta = ctrComp.alterar(compra, dpVencimento.getValue(),tfEntrada.getText(),
+                                compra.getList2(),parcelas);
                 }
                 
                 if(resposta)
@@ -253,6 +261,9 @@ public class ConfirmarTransacaoController implements Initializable
                     Stage stage = (Stage) btConfirmar.getScene().getWindow();
                     stage.close();
                 }
+                else
+                    new Alert(Alert.AlertType.ERROR, "Erro\n" + Banco.getCon().getMensagemErro(), ButtonType.OK)
+                            .showAndWait();
             }
         }
     }
@@ -455,24 +466,26 @@ public class ConfirmarTransacaoController implements Initializable
         ToolTip.bindTooltip(btCancelar, tooltip);
     }
 
-    void setCompra(JFXTextField tfFornecedor,boolean cliente, JFXTextField tfNotaFiscal, JFXTextField tfVendedor, 
-            JFXDatePicker dpEmissao, TableView<Objeto> tvVeiculos, Label lbSubTotal)
+    void setCompra(Objeto compra, Label lbSubTotal, int acao)
     {
         lbTitulo.setText(lbTitulo.getText() + "Compra");
         this.lbSubTotal.setText(lbSubTotal.getText().replace("%", "Compra"));
         total = Double.parseDouble(lbSubTotal.getText().substring(lbSubTotal.getText().indexOf("$") + 1)
                 .replace(".", "").replace(",", "."));
-        compra = true;
+        this.iscompra = true;
+        this.acao = acao;
+        this.compra = compra;
         
-        obj = new Objeto();
-        obj.setParam1(tfFornecedor.getText());
-        obj.setParam2(String.valueOf(cliente));
-        obj.setParam7(tfNotaFiscal.getText());
-        obj.setParam8(String.valueOf(dpEmissao.getValue()));
-        obj.setParam9(tfVendedor.getText());
-        
-        for(Objeto o : tvVeiculos.getItems())
-            obj.addList1(o);
+        if(compra.getParam7() != null && !compra.getParam7().equals(""))
+        {
+            double val = Double.parseDouble(compra.getParam7());
+            rbValor.setSelected(true);
+            if(val < 0)
+                rbDesconto.setSelected(true);
+            else
+                rbJuros.setSelected(true);
+            tfValorReajuste.setText(Utils.exibeCentavos(val));
+        }
     }
 
     private void setListeners()
@@ -583,8 +596,8 @@ public class ConfirmarTransacaoController implements Initializable
     private double calculaTotal()
     {
         double total = 0.0;
-        if(obj.getList1() != null && !obj.getList1().isEmpty())
-            for(Objeto obj : obj.getList1())
+        if(compra.getList2() != null && !compra.getList2().isEmpty())
+            for(Objeto obj : compra.getList2())
                 total += Double.parseDouble(obj.getParam10().replace(".", "").replace(",", "."));
         return total;
     }
@@ -598,6 +611,18 @@ public class ConfirmarTransacaoController implements Initializable
     {
         return Double.parseDouble(lbSubTotal.getText().substring(lbSubTotal.getText().indexOf("$") + 1).
             replace(".", "").replace(",", ".")) - calculaTotal();
+    }
+
+    private void completarCompra()
+    {
+        ///1 - CÓDIGO, 2 - TRUE SE FOR FORNECEDOR, 3 - CÓDIGO DO FORNECEDOR/CLIENTE, 4 - NOME DO FORNECEDOR/CLIENTE
+        ///5 - QTD PARCELAS, 6 - VALOR TOTAL, 7 - AJUSTE, 8 - DATA DA COMPRA, 9 - NOTA FISCAL, 10 - DATA DE EMISSÃO
+        ///11 - VENDEDOR, LIST1 - PARCELAS, LIST2 - VEICULOS, 13 - CNPJ/CPF
+        
+        compra.setParam5(tfNumeroParcelas.getText());
+        compra.setParam6(lbSubTotal.getText().substring(lbSubTotal.getText().indexOf(":") + 1).replace("R$", "")
+                .replace(".", "").replace(",", "."));
+        compra.setParam7(String.valueOf(calculaAjuste()));
     }
     
 }

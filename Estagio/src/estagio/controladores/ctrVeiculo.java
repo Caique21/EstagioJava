@@ -110,7 +110,7 @@ public class ctrVeiculo
         return veiculo.alterar();
     }
 
-    private Objeto convertToObjeto(Veiculo v)
+    public Objeto convertToObjeto(Veiculo v)
     {
         Objeto obj = new Objeto();
         obj.setParam1(String.valueOf(v.getCodigo()));
