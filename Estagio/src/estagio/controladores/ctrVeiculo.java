@@ -109,6 +109,11 @@ public class ctrVeiculo
         
         return veiculo.alterar();
     }
+    
+    public Double getPrecoSugerido(int codigo)
+    {
+        return new Veiculo(codigo).getPrecoSugerido();
+    }
 
     public Objeto convertToObjeto(Veiculo v)
     {

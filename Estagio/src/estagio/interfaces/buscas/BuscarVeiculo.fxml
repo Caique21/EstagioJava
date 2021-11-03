@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.buscas.BuscarVeiculoController">
+   <top>
+      <Label fx:id="lbTitulo" text="Pesquisa de Veículos" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Label>
+   </top>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Pane prefHeight="86.0" prefWidth="900.0">
+               <children>
+                  <JFXTextField fx:id="tfPlaca" labelFloat="true" layoutX="27.0" layoutY="25.0" promptText="Pesquisar por placa" />
+                  <JFXTextField fx:id="tfMarca" labelFloat="true" layoutX="27.0" layoutY="25.0" promptText="Pesquisar por Marca" visible="false" />
+                  <JFXTextField fx:id="tfModelo" labelFloat="true" layoutX="27.0" layoutY="25.0" promptText="Pesquisar por Modelo" visible="false" />
+                  <HBox layoutX="27.0" layoutY="58.0" prefHeight="17.0" prefWidth="328.0" spacing="15.0">
+                     <children>
+                        <JFXRadioButton fx:id="rbTodos" onAction="#clickTodos" text="Todos" />
+                        <JFXRadioButton fx:id="rbPlaca" onAction="#clickPlaca" text="Placa" />
+                        <JFXRadioButton fx:id="rbMarca" onAction="#clickMarca" text="Marca" />
+                        <JFXRadioButton fx:id="rbModelo" onAction="#clickModelo" text="Modelo" />
+                     </children>
+                  </HBox>
+                  <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="180.0" layoutY="25.0" onAction="#clickPesquisar" onMouseEntered="#pesquisarEnter" onMouseExited="#pesquisarExit" text="Pesquisar">
+                     <graphic>
+                        <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </Pane>
+            <TableView fx:id="tvVeiculos" prefHeight="230.0" prefWidth="880.0">
+              <columns>
+                <TableColumn fx:id="tcPlaca" prefWidth="107.0" text="Placa" />
+                <TableColumn fx:id="tcModelo" prefWidth="172.0" text="Modelo" />
+                  <TableColumn fx:id="tcMarca" prefWidth="152.0" text="Marca" />
+                  <TableColumn fx:id="tcChassi" prefWidth="116.0" text="Chassi" />
+                  <TableColumn fx:id="tcAno" prefWidth="55.0" text="Ano" />
+                  <TableColumn fx:id="tcCor" prefWidth="99.0" text="Cor" />
+                  <TableColumn fx:id="tcDescricao" prefWidth="178.0" text="Descrição" />
+              </columns>
+            </TableView>
+         </children>
+         <BorderPane.margin>
+            <Insets top="5.0" />
+         </BorderPane.margin>
+         <padding>
+            <Insets left="10.0" right="10.0" />
+         </padding>
+      </VBox>
+   </center>
+   <bottom>
+      <HBox alignment="CENTER_RIGHT" prefHeight="46.0" prefWidth="900.0" spacing="20.0" BorderPane.alignment="CENTER">
+         <children>
+            <JFXButton fx:id="btSelecionar" buttonType="RAISED" onAction="#clickSelecionar" onMouseEntered="#selecionarEnter" onMouseExited="#selecionarExit" text="Selecionar">
+               <graphic>
+                  <FontAwesomeIconView fx:id="faCheck" glyphName="CHECK" size="15" />
+               </graphic>
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="btCancelar" buttonType="RAISED" onAction="#clickCancelar" onMouseEntered="#cancelarEnter" onMouseExited="#cancelarExit" text="Cancelar">
+               <graphic>
+                  <FontAwesomeIconView fx:id="faClose" glyphName="CLOSE" size="15" />
+               </graphic>
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </JFXButton>
+         </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <padding>
+            <Insets right="30.0" />
+         </padding>
+      </HBox>
+   </bottom>
+</BorderPane>

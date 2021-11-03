@@ -6,7 +6,6 @@
 package estagio.entidades;
 
 import estagio.utilidades.Banco;
-import estagio.utilidades.Utils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

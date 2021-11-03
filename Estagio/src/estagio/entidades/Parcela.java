@@ -68,6 +68,14 @@ public class Parcela
         this.valor_parcela = valor_parcela;
         this.compra = compra;
     }
+    
+    public Parcela(Date vencimento, int numero, double valor_parcela, Venda venda)
+    {
+        this.vencimento = vencimento;
+        this.numero = numero;
+        this.valor_parcela = valor_parcela;
+        this.venda = venda;
+    }
 
     public int getCodigo()
     {
@@ -162,7 +170,7 @@ public class Parcela
         else if(this.venda != null)
         {
             sql = sql.replace("$5", "ven_codigo");
-            //sql = sql.replace("$7", String.valueOf(this.venda.getClass()));
+            sql = sql.replace("$4", String.valueOf(this.venda.getCodigo()));
         }
         
         sql = sql.replace("$1", String.valueOf(this.vencimento));
@@ -264,6 +272,32 @@ public class Parcela
         }
         return parcelas;
     }
-    
+
+    public ArrayList<Parcela> getByVenda(Venda venda)
+    {
+        ArrayList<Parcela> parcelas = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela WHERE ven_codigo = " + venda.getCodigo());
+        
+        try
+        {
+            while(rs != null && rs.next())            
+            {
+                Parcela p = new Parcela();
+                p.setCodigo(rs.getInt("parc_codigo"));
+                p.setValor_pago(rs.getDouble("parc_valorpago"));
+                p.setVenda(venda);
+                p.setNumero(rs.getInt("parc_numero"));
+                p.setPagamento(rs.getDate("parc_datapagamento"));
+                p.setValor_parcela(rs.getDouble("parc_valorparcela"));
+                p.setVencimento(rs.getDate("parc_datavencimento"));
+                parcelas.add(p);
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Parcela.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return parcelas;
+    }
     
 }

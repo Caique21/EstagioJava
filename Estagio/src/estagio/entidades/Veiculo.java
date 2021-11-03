@@ -249,6 +249,23 @@ public class Veiculo
                 
         return ret;
     }
+
+    public Double getPrecoSugerido()
+    {
+        String sql = "SELECT vei_comp_valor FROM veiculo_compra WHERE vei_codigo = "+ this.codigo;
+        ResultSet rs = Banco.getCon().consultar(sql);
+        
+        try
+        {
+            if(rs != null && rs.next())            
+                return rs.getDouble("vei_comp_valor");
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Veiculo.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0.0;
+    }
     
     
 }
