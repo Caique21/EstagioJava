@@ -168,6 +168,8 @@ public class CadastroVeiculoController implements Initializable
     private JFXTextField tfPlacaMercosul;
     @FXML
     private JFXTextArea taDescricao;
+    @FXML
+    private JFXCheckBox cbVendidos;
 
     /**
      * Initializes the controller class.
@@ -244,6 +246,8 @@ public class CadastroVeiculoController implements Initializable
         
         nodes.add(taDescricao);
         
+        nodes.add(cbVendidos);
+        
         nodes.add(lbVeiculo);
         nodes.add(lbPesquisa);
         nodes.add(lbTitulo);
@@ -299,6 +303,7 @@ public class CadastroVeiculoController implements Initializable
         limparCampos();
         inicializaLabels();
         setEstado(true, false, false, true, true, true, true);
+        cbVendidos.setSelected(false);
         
         autoCompletePopupMarcas.getSuggestions().clear();
         autoCompletePopupMarcas.getSuggestions().add("Nova Marca");
@@ -536,13 +541,25 @@ public class CadastroVeiculoController implements Initializable
     private void clickPesquisar(ActionEvent event)
     {
         if(rbTodos.isSelected())
-            tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getAll()));
+            if(cbVendidos.isSelected())
+                tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getAll()));
+            else
+                tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getAll(true)));
         else if(rbMarca.isSelected())
-            tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByMarca(tfMarcaPesquisa.getText())));
+            if(cbVendidos.isSelected())
+                tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByMarca(tfMarcaPesquisa.getText())));
+            else
+                tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByMarca(tfMarcaPesquisa.getText(),true)));
         else if(rbModelo.isSelected())
-            tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByModelo(tfModeloPesquisa.getText())));
+            if(cbVendidos.isSelected()) 
+                tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByModelo(tfModeloPesquisa.getText())));
+            else
+                tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByModelo(tfModeloPesquisa.getText(),true)));
         else if(rbPlaca.isSelected())
-            tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByPlaca(tfPlacaPesquisa.getText())));
+            if(cbVendidos.isSelected()) 
+                tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByPlaca(tfPlacaPesquisa.getText())));
+            else
+                tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByPlaca(tfPlacaPesquisa.getText(),true)));
     }
 
     @FXML
@@ -732,6 +749,11 @@ public class CadastroVeiculoController implements Initializable
     
     private void setListeners()
     {
+        cbVendidos.selectedProperty().addListener((observable) ->
+        {
+            clickPesquisar(new ActionEvent());
+        });
+        
         autoCompletePopupMarcas.setSelectionHandler(event ->
         {
             tfMarca.setText(event.getObject());

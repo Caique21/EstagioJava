@@ -126,6 +126,7 @@
                         <TableColumn fx:id="tcCor" prefWidth="150.0" text="Cor" />
                     </columns>
                   </TableView>
+                  <JFXCheckBox fx:id="cbVendidos" layoutX="411.0" layoutY="46.0" text="Exibir Vendidos" />
                </children>
             </Pane>
          </children>

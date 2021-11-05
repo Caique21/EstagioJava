@@ -178,11 +178,12 @@ public class TelaLoginController implements Initializable
 
             Scene scene = new Scene(decorator);
             scene.setFill(Paint.valueOf("black"));
-            URL url = new File("C:\\Users\\carlo\\OneDrive\\Documentos\\NetBeansProjects\\EstagioJava\\Estagio\\src\\estagio\\utilidades\\CSS\\Style.css").toURI().toURL();
-            scene.getStylesheets().add(url.toExternalForm());
+            //URL url = new File("C:\\Users\\carlo\\OneDrive\\Documentos\\NetBeansProjects\\EstagioJava\\Estagio\\src\\estagio\\utilidades\\CSS\\Style.css").toURI().toURL();
+            //scene.getStylesheets().add(url.toExternalForm());
 
             stage.setScene(scene);
             stage.setMaximized(true);
+            stage.setFullScreen(false);
             stage.setTitle("LGD");
             stage.setAlwaysOnTop(false);
             stage.setOnCloseRequest((WindowEvent event) ->

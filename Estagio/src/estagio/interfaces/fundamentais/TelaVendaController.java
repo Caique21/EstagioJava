@@ -19,6 +19,7 @@ import estagio.controladores.ctrFornecedor;
 import estagio.controladores.ctrVeiculo;
 import estagio.controladores.ctrVenda;
 import estagio.interfaces.buscas.BuscarVeiculoController;
+import estagio.interfaces.buscas.BuscarVendaController;
 import estagio.utilidades.Banco;
 import estagio.utilidades.MaskFieldUtil;
 import estagio.utilidades.Objeto;
@@ -26,6 +27,7 @@ import estagio.utilidades.TooltippedTableCell;
 import estagio.utilidades.Utils;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
@@ -346,13 +349,24 @@ public class TelaVendaController implements Initializable
     {
         limpaLabels();
         limpaCampoDados();
+        
+        rbAvista.setSelected(true);
+        rbJuros.setSelected(true);
+        rbValor.setSelected(true);
+        
         tvVeiculos.getItems().clear();
+        
         dpEmissao.setValue(LocalDate.now());
+        dpVencimento.setValue(LocalDate.now());
+        
         venda = null;
+        
         tfEntrada.setText("0");
+        tfEntrada.setEditable(false);
         tfNumeroParcelas.setText("1");
+        tfNumeroParcelas.setEditable(false);
+        tfValorReajuste.setPromptText("Juros(R$)");
         tfValorReajuste.setText("0");
-        tfEntrada.setDisable(true);
         
         atualizaListaFornecedores("");
         
@@ -367,15 +381,12 @@ public class TelaVendaController implements Initializable
         
         rbAvista.setToggleGroup(goup1);
         rbParcelado.setToggleGroup(goup1);
-        rbAvista.setSelected(true);
         
         rbJuros.setToggleGroup(goup2);
         rbDesconto.setToggleGroup(goup2);
-        rbJuros.setSelected(true);
         
         rbValor.setToggleGroup(goup3);
         rbPorcentagem.setToggleGroup(goup3);
-        rbValor.setSelected(true);
         
         MaskFieldUtil.monetaryField(tfEntrada);
         MaskFieldUtil.monetaryField(tfValorReajuste);
@@ -482,6 +493,63 @@ public class TelaVendaController implements Initializable
     @FXML
     private void clickPesquisar(ActionEvent event)
     {
+        try
+        {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/buscas/BuscarVenda.fxml"));
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            JFXDecorator decorator = new JFXDecorator(stage, root);
+
+            decorator.setStyle("-fx-decorator-color: #040921;");
+            BuscarVendaController controller = fxmlLoader.<BuscarVendaController>getController();
+            Scene scene = new Scene(decorator);
+
+            stage.setTitle("Buscar Venda");
+            stage.setScene(scene);
+            stage.showAndWait();
+            
+            inicializa();
+            venda = controller.getResposta();
+            if(venda != null)
+            {
+                tfCliente.setText(venda.getParam4() + ", " + venda.getParam13());
+                //pane = criarPaneFornecedor();
+                tfNotaFiscal.setText(venda.getParam9());
+                dpEmissao.setValue(LocalDate.parse(venda.getParam10()));
+                
+                TextField aux = new TextField();
+                MaskFieldUtil.monetaryField(aux);
+                tvVeiculos.getItems().clear();
+                for (int i = 0; i < venda.getList2().size(); i++)
+                {
+                    Objeto veiculo = ctrVei.getByCodigo(Integer.parseInt(venda.getList2().get(i).getParam1()));
+                    aux.setText(Utils.exibeCentavos(Double.parseDouble(venda.getList2().get(i).getParam10())));
+                    veiculo.setParam10(aux.getText());
+                    tvVeiculos.getItems().add(veiculo);
+                }
+                total_venda = calculaTotal();
+                
+                if(venda.getParam7() != null && Utils.convertStringToDouble(venda.getParam7()) != 0)
+                {
+                    if(Utils.convertStringToDouble(venda.getParam7()) > 0)
+                        rbJuros.setSelected(true);
+                    else
+                        rbDesconto.setSelected(true);
+                    
+                    rbValor.setSelected(true);
+                    tfValorReajuste.setVisible(true);
+                    tfValorReajuste.setText(Utils.exibeCentavos(Double.parseDouble(venda.getParam7())));
+                }
+                
+                atualizaTotal();
+                setEstado(true, true, false, true, false, false, false, false);
+            }
+        }
+        catch (IOException er)
+        {
+            new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Pesquisa! "
+                    + "\nErro: " + er.getMessage(), ButtonType.OK).showAndWait();
+        }
     }
 
     @FXML
@@ -507,8 +575,13 @@ public class TelaVendaController implements Initializable
             stage.setTitle("Buscar Compra");
             stage.setScene(scene);
             stage.showAndWait();
+            stage.setOnCloseRequest((e) ->
+            {
+                controller.resetVeiculos();
+            });
             
-            tvVeiculos.setItems(controller.getVeiculos());
+            if(controller.getVeiculos() != null && !controller.getVeiculos().isEmpty())
+                tvVeiculos.setItems(controller.getVeiculos());
         }
         catch (IOException er)
         {
@@ -547,28 +620,48 @@ public class TelaVendaController implements Initializable
         if (!tfNumeroParcelas.getText().trim().equals(""))
         {
             if (Integer.parseInt(tfNumeroParcelas.getText()) == 1)
-                tvParcelas.getItems().add(new Objeto(String.valueOf(total_venda), String.valueOf(1),
+                tvParcelas.getItems().add(new Objeto(NumberFormat.getCurrencyInstance().format(total_venda), String.valueOf(1),
                         String.valueOf(dpVencimento.getValue().toString())));
             else
             {
-                double val = 0.0;
-                for (int i = 0; i < Integer.parseInt(tfNumeroParcelas.getText()); i++)
+                int i = 0,max = Integer.parseInt(tfNumeroParcelas.getText());
+                double val = 0.0,valor_parcela = Utils.truncate(total_venda/max);
+                
+                if(!tfEntrada.getText().trim().equals("") && Utils.convertStringToDouble(tfEntrada.getText()) > 0)
                 {
-                    if (i < Integer.parseInt(tfNumeroParcelas.getText()) - 1)
+                    tvParcelas.getItems().add(new Objeto(
+                        NumberFormat.getCurrencyInstance().format(Utils.convertStringToDouble(tfEntrada.getText())),
+                        "1",
+                        LocalDate.now().toString()));
+                    
+                    val += Utils.convertStringToDouble(tfEntrada.getText());
+                    valor_parcela = Utils.truncate((total_venda - val)/max);
+                    i += 1;
+                    max += 1;
+                }
+                    
+                for (int j = 0; i < max; i++,j++)
+                {
+                    if (i < max - 1)
                     {
-                        val += Utils.truncate(total_venda / Integer.parseInt(tfNumeroParcelas.getText()));
-                        tvParcelas.getItems().add(new Objeto(
-                            String.valueOf(Utils.truncate(total_venda / Integer.parseInt(tfNumeroParcelas.getText()))), String.valueOf(i + 1),
-                            String.valueOf(dpVencimento.getValue().toString())));
+                        val += valor_parcela;
+                        tvParcelas.getItems().add(new Objeto(NumberFormat.getCurrencyInstance().format
+                            (valor_parcela), 
+                            String.valueOf(i + 1),
+                            String.valueOf(Date.valueOf(dpVencimento.getValue().plusMonths(j).toString()))));
                     }
                     else
                     {
-                        tvParcelas.getItems().add(new Objeto(String.valueOf(total_venda - val), 
-                            String.valueOf(i + 1), String.valueOf(dpVencimento.getValue().toString())));
+                        tvParcelas.getItems().add(new Objeto(NumberFormat.getCurrencyInstance().format
+                            (total_venda - val), 
+                            String.valueOf(i + 1), 
+                            String.valueOf(Date.valueOf(dpVencimento.getValue().plusMonths(j).toString()))));
                     }
                 }
             }
         }
+        dialog.getDialogPane().setContent(tvParcelas);
+        dialog.showAndWait();
     }
 
     @FXML
@@ -689,8 +782,8 @@ public class TelaVendaController implements Initializable
     private double calculaTotal()
     {
         double total = 0.0;
-        if(venda.getList2() != null && !venda.getList2().isEmpty())
-            for(Objeto obj : venda.getList2())
+        if(!tvVeiculos.getItems().isEmpty())
+            for(Objeto obj : tvVeiculos.getItems())
                 total += Double.parseDouble(obj.getParam10().replace(".", "").replace(",", "."));
         return total;
     }
@@ -702,7 +795,9 @@ public class TelaVendaController implements Initializable
             if(rbAvista.isSelected())
             {
                 tfNumeroParcelas.setText("1");
+                tfEntrada.setText("0");
                 tfEntrada.setEditable(false);
+                tfNumeroParcelas.setEditable(false);
             }
         });
         
@@ -710,6 +805,7 @@ public class TelaVendaController implements Initializable
         {
             if(rbParcelado.isSelected())
             {
+                tfNumeroParcelas.setEditable(true);
                 tfNumeroParcelas.requestFocus();
                 tfEntrada.setEditable(true);
             }
@@ -781,7 +877,17 @@ public class TelaVendaController implements Initializable
             {
                 tfPorcReajuste.setVisible(false);
                 tfValorReajuste.setVisible(true);
-                tfValorReajuste.clear();
+                
+                if(rbJuros.isSelected())
+                {
+                    tfValorReajuste.setPromptText("Juros(R$)");
+                    tfValorReajuste.setText("0");
+                }
+                else if(rbDesconto.isSelected())
+                {
+                    tfValorReajuste.setPromptText("Desconto(R$)");
+                    tfValorReajuste.setText("0");
+                }
                 atualizaTotal();
             }
         });
@@ -792,7 +898,17 @@ public class TelaVendaController implements Initializable
             {
                 tfPorcReajuste.setVisible(true);
                 tfValorReajuste.setVisible(false);
-                tfPorcReajuste.clear();
+                
+                if(rbJuros.isSelected())
+                {
+                    tfPorcReajuste.setPromptText("Juros(%)");
+                    tfPorcReajuste.setText("0");
+                }
+                else if(rbDesconto.isSelected())
+                {
+                    tfPorcReajuste.setPromptText("Desconto(%)");
+                    tfPorcReajuste.setText("0");
+                }
                 atualizaTotal();
             }
         });
@@ -804,6 +920,8 @@ public class TelaVendaController implements Initializable
                 if(Utils.convertStringToDouble(tfValorReajuste.getText()) < 0 || 
                     Utils.convertStringToDouble(tfValorReajuste.getText()) > total_venda)
                     tfValorReajuste.setText(oldValue);
+                else
+                    atualizaTotal();
             }
         });
         
@@ -819,8 +937,12 @@ public class TelaVendaController implements Initializable
         tfPorcReajuste.textProperty().addListener((observable, oldValue, newValue) ->
         {
             if(tfPorcReajuste.isVisible() && !tfPorcReajuste.getText().trim().equals(""))
+            {
                 if(Integer.parseInt(newValue) < 0 || Integer.parseInt(newValue) > 100)
                     tfPorcReajuste.setText(oldValue);
+                else
+                    atualizaTotal();
+            }
         });
         
         tfPorcReajuste.focusedProperty().addListener((observable, oldValue, newValue) ->
@@ -828,6 +950,11 @@ public class TelaVendaController implements Initializable
            if(!newValue)
                if(tfPorcReajuste.getText().trim().equals(""))
                    tfPorcReajuste.setText("0");
+        });
+        
+        tvVeiculos.itemsProperty().addListener((observable, oldValue, newValue) ->
+        {
+            atualizaTotal();
         });
         
         autoCompletePopupClientes.setSelectionHandler(event ->
@@ -856,7 +983,10 @@ public class TelaVendaController implements Initializable
                 if(tfCliente.isFocused())
                 {
                     autoCompletePopupClientes.show(tfCliente);
-                    paneCliente = criarPaneFornecedor();
+                    if(tfCliente.getText().equals("FORNECEDORES") || tfCliente.getText().equals("CLIENTES"))
+                        tfCliente.setText("");
+                    else
+                        paneCliente = criarPaneFornecedor();
                 }
             }
         });
@@ -1066,12 +1196,12 @@ public class TelaVendaController implements Initializable
         if(isCliente())
         {
             venda.setParam2(String.valueOf(false));
-            venda.setParam3(ctrForn.getByCNPJ(venda.getParam13()).get(0).getParam1());
+            venda.setParam3(ctrCli.getByCPF(venda.getParam13()).get(0).getParam1());
         }
         else
         {
             venda.setParam2(String.valueOf(true));
-            venda.setParam3(ctrCli.getByCPF(venda.getParam13()).get(0).getParam1());
+            venda.setParam3(ctrForn.getByCNPJ(venda.getParam13()).get(0).getParam1());
         }
         
         tvVeiculos.getItems().forEach((o) ->

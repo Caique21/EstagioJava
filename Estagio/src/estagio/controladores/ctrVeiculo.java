@@ -41,10 +41,15 @@ public class ctrVeiculo
         return v.apagar();
     }
 
-    public ArrayList<Objeto> getAll()
+    public ArrayList<Objeto> getAll(Boolean... estoque)
     {
         ArrayList<Objeto> ret = new ArrayList<>();
-        ArrayList<Veiculo> veiculos = new Veiculo().getAll();
+        ArrayList<Veiculo> veiculos;
+        
+        if(estoque.length == 0)
+            veiculos = new Veiculo().getAll();
+        else
+            veiculos = new Veiculo().getAllInInventory();
         
         for (int i = 0; i < veiculos.size(); i++)
             ret.add(convertToObjeto(veiculos.get(i)));
@@ -52,10 +57,15 @@ public class ctrVeiculo
         return ret;
     }
 
-    public ArrayList<Objeto> getByMarca(String marca)
+    public ArrayList<Objeto> getByMarca(String marca,Boolean... estoque)
     {
         ArrayList<Objeto> ret = new ArrayList<>();
-        ArrayList<Veiculo> veiculos = new Veiculo().getByMarca(marca);
+        ArrayList<Veiculo> veiculos;
+        
+        if(estoque.length == 0)
+            veiculos = new Veiculo().getByMarca(marca);
+        else
+            veiculos = new Veiculo().getByMarcaInInventory(marca);
         
         for (int i = 0; i < veiculos.size(); i++)
             ret.add(convertToObjeto(veiculos.get(i)));
@@ -63,10 +73,15 @@ public class ctrVeiculo
         return ret;
     }
 
-    public ArrayList<Objeto> getByModelo(String modelo)
+    public ArrayList<Objeto> getByModelo(String modelo,Boolean... estoque)
     {
         ArrayList<Objeto> ret = new ArrayList<>();
-        ArrayList<Veiculo> veiculos = new Veiculo().getByModelo(modelo);
+        ArrayList<Veiculo> veiculos;
+        
+        if(estoque.length == 0)
+            veiculos = new Veiculo().getByModelo(modelo);
+        else
+            veiculos = new Veiculo().getByModeloInVentory(modelo);
         
         for (int i = 0; i < veiculos.size(); i++)
             ret.add(convertToObjeto(veiculos.get(i)));
@@ -74,10 +89,15 @@ public class ctrVeiculo
         return ret;
     }
 
-    public ArrayList<Objeto> getByPlaca(String placa)
+    public ArrayList<Objeto> getByPlaca(String placa,Boolean... estoque)
     {
         ArrayList<Objeto> ret = new ArrayList<>();
-        ArrayList<Veiculo> veiculos = new Veiculo().getByPlaca(placa);
+        ArrayList<Veiculo> veiculos;
+        
+        if(estoque.length == 0)
+            veiculos = new Veiculo().getByPlaca(placa);
+        else
+            veiculos = new Veiculo().getByPlacaInInventory(placa);
         
         for (int i = 0; i < veiculos.size(); i++)
             ret.add(convertToObjeto(veiculos.get(i)));

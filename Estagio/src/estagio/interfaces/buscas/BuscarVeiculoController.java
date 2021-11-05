@@ -192,6 +192,7 @@ public class BuscarVeiculoController implements Initializable
                 descricao.setText(descricao.getText() + ", Modelo: " + vei.getParam8() + ", Chassi: " + vei.getParam4());
                 descricao.setText(descricao.getText() + ", Ano: " + vei.getParam5() + ", Cor: " + vei.getParam6());
                 
+                valor.clear();
                 valor.setText("" + Utils.exibeCentavos(ctrVei.getPrecoSugerido(Integer.parseInt(vei.getParam1()))));
                 
                 dialog.getDialogPane().setContent(vbox);
@@ -245,13 +246,13 @@ public class BuscarVeiculoController implements Initializable
     private void clickPesquisar(ActionEvent event)
     {
         if(rbTodos.isSelected())
-            tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getAll()));
+            tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getAll(true)));
         else if(rbMarca.isSelected())
-            tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByMarca(tfMarca.getText())));
+            tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByMarca(tfMarca.getText(),true)));
         else if(rbModelo.isSelected())
-            tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByModelo(tfModelo.getText())));
+            tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByModelo(tfModelo.getText(),true)));
         else if(rbPlaca.isSelected())
-            tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByPlaca(tfPlaca.getText())));
+            tvVeiculos.setItems(FXCollections.observableArrayList(ctrVei.getByPlaca(tfPlaca.getText(),true)));
     }
 
     @FXML
@@ -338,6 +339,11 @@ public class BuscarVeiculoController implements Initializable
     public ObservableList<Objeto> getVeiculos()
     {
         return FXCollections.observableArrayList(veiculos);
+    }
+
+    public void resetVeiculos()
+    {
+        veiculos = new ArrayList<>();
     }
     
 }

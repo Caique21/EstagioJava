@@ -6,6 +6,7 @@
 package estagio.utilidades;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  *
@@ -500,5 +501,131 @@ public class Objeto
     public void setList2ToString(String list2ToString)
     {
         this.list2ToString = list2ToString;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 3;
+        hash = 59 * hash + Objects.hashCode(this.param1);
+        hash = 59 * hash + Objects.hashCode(this.param2);
+        hash = 59 * hash + Objects.hashCode(this.param3);
+        hash = 59 * hash + Objects.hashCode(this.param4);
+        hash = 59 * hash + Objects.hashCode(this.param5);
+        hash = 59 * hash + Objects.hashCode(this.param6);
+        hash = 59 * hash + Objects.hashCode(this.param7);
+        hash = 59 * hash + Objects.hashCode(this.param8);
+        hash = 59 * hash + Objects.hashCode(this.param9);
+        hash = 59 * hash + Objects.hashCode(this.param10);
+        hash = 59 * hash + Objects.hashCode(this.param11);
+        hash = 59 * hash + Objects.hashCode(this.param12);
+        hash = 59 * hash + Objects.hashCode(this.param13);
+        hash = 59 * hash + Objects.hashCode(this.param14);
+        hash = 59 * hash + Objects.hashCode(this.param15);
+        hash = 59 * hash + Objects.hashCode(this.list1);
+        hash = 59 * hash + Objects.hashCode(this.list1ToString);
+        hash = 59 * hash + Objects.hashCode(this.list2);
+        hash = 59 * hash + Objects.hashCode(this.list2ToString);
+        hash = 59 * hash + Objects.hashCode(this.list3);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final Objeto other = (Objeto) obj;
+        if (!Objects.equals(this.param1, other.param1))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param2, other.param2))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param3, other.param3))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param4, other.param4))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param5, other.param5))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param6, other.param6))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param7, other.param7))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param8, other.param8))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param9, other.param9))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param10, other.param10))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param11, other.param11))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param12, other.param12))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param13, other.param13))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param14, other.param14))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.param15, other.param15))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.list1ToString, other.list1ToString))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.list2ToString, other.list2ToString))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.list1, other.list1))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.list2, other.list2))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.list3, other.list3))
+        {
+            return false;
+        }
+        return true;
     }
 }

@@ -74,9 +74,10 @@ public class ItensVenda
     public boolean salvar()
     {
         String sql = "INSERT INTO veiculo_venda(ven_codigo,vei_codigo,"
-                    + "vei_ven_valor) VALUES($1,CURRVAL('veiculo_vei_codigo_seq'),$2)";
+                    + "vei_ven_valor) VALUES($1,$2,$3)";
         sql = sql.replace("$1", String.valueOf(this.venda.getCodigo()));
-        sql = sql.replace("$2", String.valueOf(this.valor));
+        sql = sql.replace("$2", String.valueOf(this.veiculo.getCodigo()));
+        sql = sql.replace("$3", String.valueOf(this.valor));
 
         return Banco.getCon().manipular(sql);
     }
@@ -101,7 +102,7 @@ public class ItensVenda
             while(rs != null && rs.next())            
             {
                 veiculos.add(new ItensVenda(new Veiculo(rs.getInt("vei_codigo")), venda, 
-                        rs.getDouble("vei_comp_valor")));
+                        rs.getDouble("vei_ven_valor")));
             }
         }
         catch (SQLException ex)

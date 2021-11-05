@@ -14,9 +14,13 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import java.net.URL?>
 
 <BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.fundamentais.TelaVendaController">
-   <top>
+   <stylesheets>
+        <URL value="@/estagio/utilidades/CSS/Style.css" />
+    </stylesheets>
+    <top>
       <Label fx:id="lbTitulo" alignment="CENTER" prefHeight="35.0" prefWidth="1222.0" text="Vender" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="24.0" />

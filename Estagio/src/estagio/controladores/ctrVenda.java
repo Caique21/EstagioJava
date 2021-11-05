@@ -220,6 +220,7 @@ public class ctrVenda
     private Veiculo convertToVeiculo(Objeto v)
     {
         Veiculo veiculo = new Veiculo();
+        veiculo.setCodigo(Integer.parseInt(v.getParam1()));
         veiculo.setPlaca(v.getParam2());
         veiculo.setAno(Integer.parseInt(v.getParam5()));
         veiculo.setChassi(v.getParam4());

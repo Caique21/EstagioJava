@@ -182,12 +182,26 @@ public class Veiculo
     {
         return  ler(Banco.getCon().consultar("SELECT * FROM veiculo"));
     }
+    
+    public ArrayList<Veiculo> getAllInInventory()
+    {
+        return  ler(Banco.getCon().consultar("SELECT * FROM veiculo WHERE vei_codigo NOT IN "
+                + "(SELECT vei_codigo FROM veiculo_venda)"));
+    }
 
     public ArrayList<Veiculo> getByMarca(String marca)
     {
-        return  ler(Banco.getCon().consultar("SELECT * FROM veiculo WHERE modelo_codigo in "
+        return  ler(Banco.getCon().consultar("SELECT * FROM veiculo WHERE modelo_codigo IN "
             + "(SELECT modelo_codigo FROM marca INNER JOIN modelo ON marca.marca_codigo = modelo.marca_codigo "
                 + "AND marca_nome Ilike '%" + marca + "%')"));
+    }
+    
+    public ArrayList<Veiculo> getByMarcaInInventory(String marca)
+    {
+        return  ler(Banco.getCon().consultar("SELECT * FROM veiculo WHERE modelo_codigo IN "
+            + "(SELECT modelo_codigo FROM marca INNER JOIN modelo ON marca.marca_codigo = modelo.marca_codigo "
+                + "AND marca_nome Ilike '%" + marca + "%') AND vei_codigo NOT IN "
+                + "(SELECT vei_codigo FROM veiculo_venda)"));
     }
 
     public ArrayList<Veiculo> getByModelo(String modelo)
@@ -195,10 +209,23 @@ public class Veiculo
         return  ler(Banco.getCon().consultar("SELECT * FROM veiculo INNER JOIN modelo ON "
             + "modelo.modelo_codigo = veiculo.modelo_codigo AND modelo_nome Ilike '%" + modelo + "%'"));
     }
+    
+    public ArrayList<Veiculo> getByModeloInVentory(String modelo)
+    {
+        return  ler(Banco.getCon().consultar("SELECT * FROM veiculo INNER JOIN modelo ON "
+            + "modelo.modelo_codigo = veiculo.modelo_codigo AND modelo_nome Ilike '%" + modelo + "%'"
+                + " AND vei_codigo NOT IN (SELECT vei_codigo FROM veiculo_venda)"));
+    }
 
     public ArrayList<Veiculo> getByPlaca(String placa)
     {
         return  ler(Banco.getCon().consultar("SELECT * FROM veiculo WHERE vei_placa Ilike '%" + placa + "%'"));
+    }
+    
+    public ArrayList<Veiculo> getByPlacaInInventory(String placa)
+    {
+        return  ler(Banco.getCon().consultar("SELECT * FROM veiculo WHERE vei_placa Ilike '%" + placa + "%' "
+            + "AND vei_codigo NOT IN (SELECT vei_codigo FROM veiculo_venda)"));
     }
 
     private void get()
