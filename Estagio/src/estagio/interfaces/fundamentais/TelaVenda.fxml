@@ -5,6 +5,7 @@
 <?import com.jfoenix.controls.JFXRadioButton?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -14,7 +15,6 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import java.net.URL?>
 
 <BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.fundamentais.TelaVendaController">
    <stylesheets>
@@ -74,7 +74,7 @@
                   <Label fx:id="lbErroCliente" layoutX="30.0" layoutY="55.0" text="Label" textFill="RED" />
                   <Label fx:id="lbEmissao" layoutX="585.0" layoutY="32.0" text="Data de Emissão:" />
                   <Label fx:id="lbErroNotaFiscal" layoutX="352.0" layoutY="54.0" text="Label" textFill="RED" />
-                  <FontAwesomeIconView fx:id="faView" glyphName="EYE" layoutX="279.0" layoutY="46.0" onMouseMoved="#clienteEnter" onMousePressed="#clienteExit" size="18" />
+                  <FontAwesomeIconView fx:id="faView" glyphName="EYE" layoutX="282.0" layoutY="46.0" onMouseClicked="#clienteClicked" onMouseEntered="#clienteEnter" onMouseExited="#clienteExit" onMouseMoved="#clienteEnter" onMousePressed="#clienteExit" size="18" wrappingWidth="31.0" />
                   <Label fx:id="lbDados" text="Dados do Venda">
                      <font>
                         <Font name="System Bold" size="15.0" />
@@ -90,7 +90,7 @@
                         <Font name="System Bold Italic" size="12.0" />
                      </font>
                   </Label>
-                  <TableView fx:id="tvVeiculos" prefHeight="345.0" prefWidth="1100.0">
+                  <TableView fx:id="tvVeiculos" onKeyPressed="#keyPressedVeiculos" onMouseClicked="#selecionaVeiculo" prefHeight="345.0" prefWidth="1100.0">
                     <columns>
                       <TableColumn fx:id="tcMarca" prefWidth="191.99998474121094" text="Marca" />
                         <TableColumn fx:id="tcModelo" prefWidth="221.0" text="Modelo" />
@@ -105,7 +105,7 @@
                      <children>
                         <Pane fx:id="pane1" prefHeight="31.0" prefWidth="550.0">
                            <children>
-                              <JFXButton fx:id="btPesquisarVeiculo" buttonType="RAISED" layoutX="46.0" layoutY="-2.0" onAction="#clickPesquisarVeiculo" text="Pesquisar Veículo(s)">
+                              <JFXButton fx:id="btPesquisarVeiculo" buttonType="RAISED" layoutX="46.0" layoutY="-2.0" onAction="#clickPesquisarVeiculo" onMouseEntered="#pesquisarVeiculoEnter" onMouseExited="#pesquisarVeiculoExit" text="Pesquisar Veículo(s)">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>

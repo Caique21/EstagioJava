@@ -23,6 +23,7 @@ import estagio.interfaces.buscas.BuscarVendaController;
 import estagio.utilidades.Banco;
 import estagio.utilidades.MaskFieldUtil;
 import estagio.utilidades.Objeto;
+import estagio.utilidades.ToolTip;
 import estagio.utilidades.TooltippedTableCell;
 import estagio.utilidades.Utils;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.Observable;
 import javafx.event.ActionEvent;
@@ -51,13 +53,17 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.controlsfx.control.PopOver;
 
 /**
  * FXML Controller class
@@ -79,6 +85,8 @@ public class TelaVendaController implements Initializable
     private double total_venda;
     
     private BorderPane paneCliente;
+    private PopOver pop;
+    private final Tooltip tooltip = new Tooltip();
     
     private final ToggleGroup goup1 = new ToggleGroup();
     private final ToggleGroup goup2 = new ToggleGroup();
@@ -263,6 +271,7 @@ public class TelaVendaController implements Initializable
         btCancelar.setStyle(btCancelar.getStyle() + ";-fx-cursor: default;");
         btPesquisar.setStyle(btPesquisar.getStyle() + ";-fx-cursor: default;");
         btRemover.setStyle(btRemover.getStyle() + ";-fx-cursor: default;");
+        btPesquisarVeiculo.setStyle(btPesquisarVeiculo.getStyle() + ";-fx-font-weight: bold;-fx-font-size: 12;");
         btPesquisarVeiculo.setStyle(btPesquisarVeiculo.getStyle() + ";-fx-cursor: default;");
         btVisualizar.setStyle(btVisualizar.getStyle() + ";-fx-cursor: default;");
         faView.setStyle(faView.getStyle() + ";-fx-cursor: default;");
@@ -354,8 +363,6 @@ public class TelaVendaController implements Initializable
         rbJuros.setSelected(true);
         rbValor.setSelected(true);
         
-        tvVeiculos.getItems().clear();
-        
         dpEmissao.setValue(LocalDate.now());
         dpVencimento.setValue(LocalDate.now());
         
@@ -367,6 +374,9 @@ public class TelaVendaController implements Initializable
         tfNumeroParcelas.setEditable(false);
         tfValorReajuste.setPromptText("Juros(R$)");
         tfValorReajuste.setText("0");
+        
+        tvVeiculos.getItems().clear();
+        atualizaTotal();
         
         atualizaListaFornecedores("");
         
@@ -473,21 +483,27 @@ public class TelaVendaController implements Initializable
     @FXML
     private void clickRemover(ActionEvent event)
     {
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Deseja excluir venda?", ButtonType.YES,ButtonType.NO);
-        a.showAndWait();
-        
-        if(a.getResult() == ButtonType.YES && venda != null)
+        if(TelaPrincipalController.usuario_logado.getParam5().equals("alto"))
         {
-            if(ctrVen.apagar(Integer.parseInt(venda.getParam1())))
-            {
-                inicializa();
-                a = new Alert(Alert.AlertType.CONFIRMATION, "Venda excluída com sucesso!!!!", ButtonType.OK);
-            }
-            else
-                a = new Alert(Alert.AlertType.ERROR, "Erro na remoção da venda\n" + 
-                        Banco.getCon().getMensagemErro(), ButtonType.OK);
+            Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Deseja excluir venda?", ButtonType.YES,ButtonType.NO);
             a.showAndWait();
+
+            if(a.getResult() == ButtonType.YES && venda != null)
+            {
+                if(ctrVen.apagar(Integer.parseInt(venda.getParam1())))
+                {
+                    inicializa();
+                    a = new Alert(Alert.AlertType.CONFIRMATION, "Venda excluída com sucesso!!!!", ButtonType.OK);
+                }
+                else
+                    a = new Alert(Alert.AlertType.ERROR, "Erro na remoção da venda\n" + 
+                            Banco.getCon().getMensagemErro(), ButtonType.OK);
+                a.showAndWait();
+            }
         }
+        else
+            new Alert(Alert.AlertType.ERROR, "Usuário não possui permissão de remover a venda", ButtonType.OK)
+                    .showAndWait();
     }
 
     @FXML
@@ -513,7 +529,7 @@ public class TelaVendaController implements Initializable
             if(venda != null)
             {
                 tfCliente.setText(venda.getParam4() + ", " + venda.getParam13());
-                //pane = criarPaneFornecedor();
+                paneCliente = criarPaneFornecedor();
                 tfNotaFiscal.setText(venda.getParam9());
                 dpEmissao.setValue(LocalDate.parse(venda.getParam10()));
                 
@@ -581,7 +597,29 @@ public class TelaVendaController implements Initializable
             });
             
             if(controller.getVeiculos() != null && !controller.getVeiculos().isEmpty())
-                tvVeiculos.setItems(controller.getVeiculos());
+            {
+                boolean repetido;
+                
+                for(Objeto aux1 : controller.getVeiculos())
+                {
+                    repetido = false;
+                    
+                    for (int i = 0; i < tvVeiculos.getItems().size(); i++)
+                        if(Integer.parseInt(aux1.getParam1()) == 
+                                Integer.parseInt(tvVeiculos.getItems().get(i).getParam1()))
+                        {
+                            repetido = true;
+                            tvVeiculos.getItems().get(i).setParam10(aux1.getParam10());
+                            tvVeiculos.refresh();
+                        }
+                    
+                    if(!repetido)
+                        tvVeiculos.getItems().add(aux1);
+                }
+                atualizaTotal();
+                //tvVeiculos.getItems().addAll(controller.getVeiculos());
+            }
+                //tvVeiculos.setItems(controller.getVeiculos());
         }
         catch (IOException er)
         {
@@ -667,82 +705,141 @@ public class TelaVendaController implements Initializable
     @FXML
     private void novoExit(MouseEvent event)
     {
+        btNovo.setStyle(btNovo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void novoEnter(MouseEvent event)
     {
+        btNovo.setStyle(btNovo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Nova Venda");
+        ToolTip.bindTooltip(btNovo, tooltip);
     }
 
     @FXML
     private void confirmarExit(MouseEvent event)
     {
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void confirmarEnter(MouseEvent event)
     {
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Confirmar Ação");
+        ToolTip.bindTooltip(btConfirmar, tooltip);
     }
 
     @FXML
     private void alterarExit(MouseEvent event)
     {
+        btAlterar.setStyle(btAlterar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void alterarEnter(MouseEvent event)
     {
+        btAlterar.setStyle(btAlterar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Alterar Venda");
+        ToolTip.bindTooltip(btAlterar, tooltip);
     }
 
     @FXML
     private void removerExit(MouseEvent event)
     {
+        btRemover.setStyle(btRemover.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void removerEnter(MouseEvent event)
     {
+        btRemover.setStyle(btRemover.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Excluir Venda");
+        ToolTip.bindTooltip(btRemover, tooltip);
     }
 
     @FXML
     private void pesquisarExit(MouseEvent event)
     {
+        btPesquisar.setStyle(btPesquisar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void pesquisarEnter(MouseEvent event)
     {
+        btPesquisar.setStyle(btPesquisar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Pesquisar Venda");
+        ToolTip.bindTooltip(btPesquisar, tooltip);
+    }
+
+    @FXML
+    private void pesquisarVeiculoExit(MouseEvent event)
+    {
+        btPesquisarVeiculo.setStyle(btPesquisarVeiculo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+    }
+
+    @FXML
+    private void pesquisarVeiculoEnter(MouseEvent event)
+    {
+        btPesquisarVeiculo.setStyle(btPesquisarVeiculo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Pesquisar Veículo");
+        ToolTip.bindTooltip(btPesquisarVeiculo, tooltip);
     }
 
     @FXML
     private void cancelarExit(MouseEvent event)
     {
+        btCancelar.setStyle(btCancelar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void cancelarEnter(MouseEvent event)
     {
+        btCancelar.setStyle(btCancelar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Cancelar Ação");
+        ToolTip.bindTooltip(btCancelar, tooltip);
     }
-
 
     @FXML
     private void clienteEnter(MouseEvent event)
     {
+        faView.setStyle(faView.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        
+        if(paneCliente != null)
+        {
+            pop.show(faView);
+        }
     }
 
     @FXML
     private void clienteExit(MouseEvent event)
     {
+        faView.setStyle(faView.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        if(pop != null && pop.isShowing())
+            pop.hide();
+    }
+
+    @FXML
+    private void clienteClicked(MouseEvent event)
+    {
+        if(pop != null && !pop.isShowing())
+            pop.show(faView);
+        else
+            pop.hide();
     }
 
     @FXML
     private void visualizarExit(MouseEvent event)
     {
+        btVisualizar.setStyle(btVisualizar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void visualizarEnter(MouseEvent event)
     {
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Confirmar Ação");
+        ToolTip.bindTooltip(btConfirmar, tooltip);
     }
     
     private double calculaAjuste()
@@ -986,7 +1083,10 @@ public class TelaVendaController implements Initializable
                     if(tfCliente.getText().equals("FORNECEDORES") || tfCliente.getText().equals("CLIENTES"))
                         tfCliente.setText("");
                     else
+                    {
                         paneCliente = criarPaneFornecedor();
+                        pop = new PopOver(paneCliente);
+                    }
                 }
             }
         });
@@ -1185,6 +1285,8 @@ public class TelaVendaController implements Initializable
             venda = new Objeto("0");
             venda.setParam8(String.valueOf(LocalDate.now()));
         }
+        else
+            venda.setList2(new ArrayList<>());
         venda.setParam4(tfCliente.getText().substring(0, tfCliente.getText().indexOf(",")));
         venda.setParam5(tfNumeroParcelas.getText());
         venda.setParam6(String.valueOf(total_venda));
@@ -1208,6 +1310,73 @@ public class TelaVendaController implements Initializable
         {
             venda.addList2(o);
         });
+    }
+
+    @FXML
+    private void keyPressedVeiculos(KeyEvent event)
+    {
+        if(event.getCode() == KeyCode.DELETE)
+        {
+            if(!tvVeiculos.getItems().isEmpty() && tvVeiculos.getSelectionModel().getSelectedIndex() >= 0)
+            {
+                Alert alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja remover veículos da tabela?", 
+                        ButtonType.YES,ButtonType.NO);
+                alerta.showAndWait();
+                
+                if(alerta.getResult() == ButtonType.YES)
+                {
+                    for(Objeto o : tvVeiculos.getSelectionModel().getSelectedItems())
+                        tvVeiculos.getItems().remove(o);
+                    atualizaTotal();
+                }
+            }
+        }       
+    }
+
+    @FXML
+    private void selecionaVeiculo(MouseEvent event)
+    {
+        if(event.getClickCount() == 2 && !tvVeiculos.getItems().isEmpty() && 
+                tvVeiculos.getSelectionModel().getSelectedIndex() >= 0)
+        {
+            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION, "Alterar valor do veículo?", ButtonType.YES,ButtonType.NO);
+            alerta.showAndWait();
+            
+            if(alerta.getResult() == ButtonType.YES)
+            {
+                Dialog<String> dialog = new Dialog<>();
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.YES, ButtonType.CANCEL);
+                dialog.getDialogPane().setPrefWidth(300);
+                dialog.getDialogPane().setPrefHeight(80);
+                dialog.setTitle("Alteração do Valor do Veículo");
+
+                JFXTextField valor = new JFXTextField();
+                valor.setLabelFloat(true);
+                valor.setPromptText("Novo valor(*)");
+                MaskFieldUtil.monetaryField(valor);
+                
+                valor.requestFocus();
+                
+                dialog.getDialogPane().setContent(valor);
+                dialog.setResultConverter(dialogButton ->
+                {
+                    if (dialogButton == ButtonType.YES)
+                    {
+                        if(!valor.getText().trim().equals("") && Utils.convertStringToDouble(valor.getText()) > 0)
+                            return valor.getText();
+                    }
+                    return null;
+                });
+                Optional<String> result = dialog.showAndWait();
+
+                if (result.isPresent())
+                {
+                    tvVeiculos.getSelectionModel().getSelectedItem().setParam10(result.get());
+                    tvVeiculos.refresh();
+                    atualizaTotal();
+                }
+            }
+        }
     }
     
 }

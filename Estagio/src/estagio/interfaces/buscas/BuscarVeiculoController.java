@@ -24,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -31,10 +32,12 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -156,6 +159,15 @@ public class BuscarVeiculoController implements Initializable
         tfPlaca.setEditable(false);
         
         clickPesquisar(new ActionEvent());
+        
+        tvVeiculos.setOnKeyPressed((event) ->
+        {
+            if(event.getCode() == KeyCode.ENTER)
+            {
+                if(!tvVeiculos.getItems().isEmpty() && tvVeiculos.getSelectionModel().getSelectedIndex() >= 0)
+                    clickSelecionar(new ActionEvent());
+            }
+        });
     }    
 
     @FXML

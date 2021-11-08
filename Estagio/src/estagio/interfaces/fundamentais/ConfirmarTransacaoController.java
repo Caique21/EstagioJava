@@ -62,8 +62,6 @@ public class ConfirmarTransacaoController implements Initializable
     private Objeto compra;
     private double total;
     private int acao = -1;
-    
-    private ArrayList<Objeto>parcelas;
 
     @FXML
     private JFXRadioButton rbJuros;
@@ -86,15 +84,11 @@ public class ConfirmarTransacaoController implements Initializable
     @FXML
     private JFXDatePicker dpVencimento;
     @FXML
-    private JFXButton btParcelasManuais;
-    @FXML
     private Label lbVencimento;
     @FXML
     private Label lbSubTotal;
     @FXML
     private Label lbTitulo;
-    @FXML
-    private Label lbLimparParcelas;
     @FXML
     private JFXButton btVisualizar;
     @FXML
@@ -148,8 +142,6 @@ public class ConfirmarTransacaoController implements Initializable
         MaskFieldUtil.numericField(tfPorcReajuste);
         MaskFieldUtil.numericField(tfNumeroParcelas);
         
-        lbLimparParcelas.setVisible(false);
-        
         dpVencimento.setValue(LocalDate.now());
         tfEntrada.setText("0");
         tfNumeroParcelas.setText("1");
@@ -157,7 +149,6 @@ public class ConfirmarTransacaoController implements Initializable
         tfEntrada.setDisable(true);
         
         btConfirmar.setStyle(btConfirmar.getStyle() + ";-fx-cursor: default;");
-        btParcelasManuais.setStyle(btParcelasManuais.getStyle() + ";-fx-cursor: default;");
         btCancelar.setStyle(btCancelar.getStyle() + ";-fx-cursor: default;");
         btVisualizar.setStyle(btVisualizar.getStyle() + ";-fx-cursor: default;");
         
@@ -187,36 +178,31 @@ public class ConfirmarTransacaoController implements Initializable
         tcVencimento.setCellValueFactory(new PropertyValueFactory<>("param3"));
         tvParcelas.getColumns().addAll(tcValor,tcNumero,tcVencimento);
         
-        if(parcelas == null)
+        if (!tfNumeroParcelas.getText().trim().equals(""))
         {
-            if(!tfNumeroParcelas.getText().trim().equals(""))
+            if (Integer.parseInt(tfNumeroParcelas.getText()) == 1)
             {
-                if(Integer.parseInt(tfNumeroParcelas.getText()) == 1)
-                    tvParcelas.getItems().add(new Objeto(String.valueOf(total),String.valueOf(1),
-                                String.valueOf(dpVencimento.getValue().toString())));
-                else
+                tvParcelas.getItems().add(new Objeto(String.valueOf(total), String.valueOf(1),
+                        String.valueOf(dpVencimento.getValue().toString())));
+            }
+            else
+            {
+                double val = 0.0;
+                for (int i = 0; i < Integer.parseInt(tfNumeroParcelas.getText()); i++)
                 {
-                    double val = 0.0;
-                    for (int i = 0; i < Integer.parseInt(tfNumeroParcelas.getText()); i++)
+                    if (i < Integer.parseInt(tfNumeroParcelas.getText()) - 1)
                     {
-                        if(i < Integer.parseInt(tfNumeroParcelas.getText()) - 1)
-                        {
-                            val += Utils.truncate(total/Integer.parseInt(tfNumeroParcelas.getText()));
-                            tvParcelas.getItems().add(new Objeto(String.valueOf(Utils.truncate(total/Integer.parseInt(tfNumeroParcelas.getText()))),String.valueOf(i + 1),
-                                    String.valueOf(dpVencimento.getValue().toString())));
-                        }
-                        else
-                            tvParcelas.getItems().add(new Objeto(String.valueOf(total - val),String.valueOf(i + 1),
-                                    String.valueOf(dpVencimento.getValue().toString())));
+                        val += Utils.truncate(total / Integer.parseInt(tfNumeroParcelas.getText()));
+                        tvParcelas.getItems().add(new Objeto(String.valueOf(Utils.truncate(total / Integer.parseInt(tfNumeroParcelas.getText()))), String.valueOf(i + 1),
+                                String.valueOf(dpVencimento.getValue().toString())));
+                    }
+                    else
+                    {
+                        tvParcelas.getItems().add(new Objeto(String.valueOf(total - val), String.valueOf(i + 1),
+                                String.valueOf(dpVencimento.getValue().toString())));
                     }
                 }
             }
-        }
-        else
-        {
-            for (int i = 0; i < parcelas.size(); i++)
-                tvParcelas.getItems().add(new Objeto(parcelas.get(i).getParam2(), parcelas.get(i).getParam1(), 
-                        parcelas.get(i).getParam3()));
         }
             
         dialog.getDialogPane().setContent(tvParcelas);
@@ -230,31 +216,13 @@ public class ConfirmarTransacaoController implements Initializable
         {
             if(!dpVencimento.getEditor().getText().equals(""))
             {
+                completarCompra();
                 if(acao == 0)
-                {
-                    completarCompra();
-                    if(parcelas == null)
-                    {
-                        resposta = ctrComp.salvar(compra, dpVencimento.getValue(),tfEntrada.getText(),
-                                compra.getList2());
-                    }
-                    else
-                    {
-                        resposta = ctrComp.salvar(compra, dpVencimento.getValue(),tfEntrada.getText(),
-                                compra.getList2(),parcelas);
-                    }
-                }
+                    resposta = ctrComp.salvar(compra, dpVencimento.getValue(), tfEntrada.getText(),
+                            compra.getList2());
                 else if(acao == 1)
-                {
-                    completarCompra();
-                    
-                    if(parcelas == null)
-                        resposta = ctrComp.alterar(compra, dpVencimento.getValue(),tfEntrada.getText(),
+                    resposta = ctrComp.alterar(compra, dpVencimento.getValue(),tfEntrada.getText(),
                                 compra.getList2());
-                    else
-                        resposta = ctrComp.alterar(compra, dpVencimento.getValue(),tfEntrada.getText(),
-                                compra.getList2(),parcelas);
-                }
                 
                 if(resposta)
                 {
@@ -274,50 +242,6 @@ public class ConfirmarTransacaoController implements Initializable
         resposta = false;
         Stage stage = (Stage) btConfirmar.getScene().getWindow();
         stage.close();
-    }
-
-    @FXML
-    private void clickGerarParcelas(ActionEvent event)
-    {
-        try
-        {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/fundamentais/ParcelasManuais.fxml"));
-            Parent root = (Parent) fxmlLoader.load();
-            Stage stage = new Stage();
-            JFXDecorator decorator = new JFXDecorator(stage, root);
-
-            decorator.setStyle("-fx-decorator-color: #040921;");
-
-            Scene scene = new Scene(decorator);
-            ParcelasManuaisController controller = fxmlLoader.<ParcelasManuaisController>getController();
-
-            if(tfEntrada.getText().trim().equals("0") || tfEntrada.getText().trim().equals(""))
-                controller.setTotal(lbSubTotal.getText().substring(lbSubTotal.getText().indexOf("$") + 1));
-            else
-                controller.setTotal(String.valueOf(NumberFormat.getCurrencyInstance().format
-                    (Utils.convertStringToDouble(lbSubTotal.getText().substring(lbSubTotal.getText().indexOf("$") + 1))
-                            - Utils.convertStringToDouble(tfEntrada.getText()))));
-
-            
-            stage.setTitle("Gerar Parcelas");
-            stage.setScene(scene);
-            stage.showAndWait();
-
-            parcelas = controller.getParcelas();
-            if (parcelas != null && !parcelas.isEmpty())
-            {
-                tfNumeroParcelas.setText("" + parcelas.size());
-                rbParcelado.setSelected(true);
-                dpVencimento.setValue(LocalDate.parse(parcelas.get(0).getParam3()));
-                lbLimparParcelas.setVisible(true);
-            }
-        }
-        catch (IOException er)
-        {
-            Alert a = new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Busca de Compra! \nErro: " + er.getMessage(), ButtonType.OK);
-            System.out.println(er.getMessage());
-            a.showAndWait();
-        }
     }
 
     @FXML
@@ -397,34 +321,6 @@ public class ConfirmarTransacaoController implements Initializable
     }
 
     @FXML
-    private void gerarParcelasExit(MouseEvent event)
-    {
-        btParcelasManuais.setStyle(btParcelasManuais.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
-    }
-
-    @FXML
-    private void gerarParcelasEnter(MouseEvent event)
-    {
-        btParcelasManuais.setStyle(btParcelasManuais.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
-        tooltip.setText("Gerar Parcelas Manualmente");
-        ToolTip.bindTooltip(btParcelasManuais, tooltip);
-    }
-
-    @FXML
-    private void limparParcelasExit(MouseEvent event)
-    {
-        lbLimparParcelas.setStyle(lbLimparParcelas.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
-    }
-
-    @FXML
-    private void limparParcelasEnter(MouseEvent event)
-    {
-        lbLimparParcelas.setStyle(lbLimparParcelas.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
-        tooltip.setText("Limpar Parcelas Geradas Manualmente");
-        ToolTip.bindTooltip(lbLimparParcelas, tooltip);
-    }
-
-    @FXML
     private void visualizarExit(MouseEvent event)
     {
         btVisualizar.setStyle(btVisualizar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
@@ -490,19 +386,12 @@ public class ConfirmarTransacaoController implements Initializable
 
     private void setListeners()
     {
-        lbLimparParcelas.setOnMouseClicked((event) ->
-        {
-            parcelas = null;
-            lbLimparParcelas.setVisible(false);
-        });
         
         tfEntrada.textProperty().addListener((observable, oldValue, newValue) ->
         {
             double val = Double.parseDouble(tfEntrada.getText().replace(".", "").replace(",", "."));
             if(val < 0 || val > total)
                 tfEntrada.setText(oldValue);
-            else
-                lbLimparParcelas.setVisible(false);
         });
         
         tfEntrada.focusedProperty().addListener((observable, oldValue, newValue) ->
@@ -515,8 +404,6 @@ public class ConfirmarTransacaoController implements Initializable
         {
             if(Integer.parseInt(tfNumeroParcelas.getText()) <= 0 || Integer.parseInt(tfNumeroParcelas.getText()) > 96)
                 tfNumeroParcelas.setText(oldValue);
-            else
-                lbLimparParcelas.setVisible(false);
         });
         
         tfNumeroParcelas.focusedProperty().addListener((observable, oldValue, newValue) ->
@@ -550,18 +437,6 @@ public class ConfirmarTransacaoController implements Initializable
         {
             if(rbPorcentagem.isSelected() && !newValue && tfPorcReajuste.getText().trim().equals(""))
                 tfPorcReajuste.setText("0");
-        });
-        
-        dpVencimento.valueProperty().addListener((observable, oldValue, newValue) ->
-        {
-            if(newValue.compareTo(oldValue) != 0)
-                lbLimparParcelas.setVisible(false);
-        });
-        
-        lbSubTotal.textProperty().addListener((observable, oldValue, newValue) ->
-        {
-            if(!newValue.equals(oldValue))
-                lbLimparParcelas.setVisible(false);
         });
     }
 

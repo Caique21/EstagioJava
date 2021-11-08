@@ -141,7 +141,7 @@ public class ctrVenda
             Objeto v = ven.getList2().get(i);
             ItensVenda item = new ItensVenda(convertToVeiculo(v), venda, 
                 Double.parseDouble(v.getParam10().replace(".", "").replace(",", ".")));
-            flag = flag && item.salvar();
+            flag = item.salvar();
         }
         
         if(!flag)

@@ -182,21 +182,45 @@ public class TelaFinancasController implements Initializable
     @FXML
     private void compraExit(MouseEvent event)
     {
+        folderCompra.setStyle("-fx-cursor: default; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
     }
 
     @FXML
     private void compraEnter(MouseEvent event)
     {
+        folderCompra.setStyle("-fx-cursor: hand; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
     }
 
     @FXML
     private void vendaExit(MouseEvent event)
     {
+        folderVenda.setStyle("-fx-cursor: default; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
     }
 
     @FXML
     private void vendaEnter(MouseEvent event)
     {
+        folderVenda.setStyle("-fx-cursor: hand; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
     }
 
     @FXML

@@ -87,7 +87,7 @@ public class ItensVenda
         String sql = "DELETE FROM veiculo_venda WHERE ";
         
         if(this.venda != null)
-            sql += "comp_codigo = " + this.venda.getCodigo();
+            sql += "ven_codigo = " + this.venda.getCodigo();
         
         return Banco.getCon().manipular(sql);
     }

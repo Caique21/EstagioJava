@@ -45,17 +45,7 @@
                </children>
             </HBox>
             <JFXDatePicker fx:id="dpVencimento" layoutX="379.0" layoutY="78.0" />
-            <JFXButton fx:id="btParcelasManuais" buttonType="RAISED" layoutX="581.0" layoutY="71.0" onAction="#clickGerarParcelas" onMouseEntered="#gerarParcelasEnter" onMouseExited="#gerarParcelasExit" text="Gerar Parcelas Manuais">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </JFXButton>
             <Label fx:id="lbVencimento" layoutX="361.0" layoutY="63.0" prefHeight="17.0" prefWidth="171.0" text="Data de Vencimento 1ª Parcela:" />
-            <Label fx:id="lbLimparParcelas" layoutX="650.0" layoutY="96.0" onMouseEntered="#limparParcelasEnter" onMouseExited="#limparParcelasExit" text="Limpar Parcelas Manuais">
-               <font>
-                  <Font name="System Italic" size="12.0" />
-               </font>
-            </Label>
             <Label fx:id="lbSubTotal" layoutX="333.0" layoutY="114.0" prefHeight="30.0" prefWidth="458.0" text="Total da %: R$">
                <font>
                   <Font name="System Bold" size="18.0" />

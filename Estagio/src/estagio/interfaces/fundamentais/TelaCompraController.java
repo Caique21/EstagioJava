@@ -25,6 +25,7 @@ import estagio.interfaces.buscas.BuscarCompraController;
 import estagio.utilidades.Banco;
 import estagio.utilidades.MaskFieldUtil;
 import estagio.utilidades.Objeto;
+import estagio.utilidades.ToolTip;
 import estagio.utilidades.TooltippedTableCell;
 import estagio.utilidades.Utils;
 import java.io.IOException;
@@ -56,6 +57,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -91,6 +93,7 @@ public class TelaCompraController implements Initializable
     
     private PopOver pop;
     private BorderPane pane;
+    private final Tooltip tooltip = new Tooltip();
     
     private int acao;
     private Objeto compra;
@@ -368,6 +371,7 @@ public class TelaCompraController implements Initializable
         {
             paneDadosCompra.setDisable(true);
             paneVeiculo.setDisable(true);
+            tvVeiculos.setDisable(true);
             btNovo.setDisable(true);
             btConfirmar.setDisable(true);
             btRemover.setDisable(true);
@@ -377,6 +381,7 @@ public class TelaCompraController implements Initializable
         {
             paneDadosCompra.setDisable(b1);
             paneVeiculo.setDisable(b2);
+            tvVeiculos.setDisable(b2);
             btNovo.setDisable(b3);
             btConfirmar.setDisable(b4);
             btRemover.setDisable(b5);
@@ -661,20 +666,33 @@ public class TelaCompraController implements Initializable
     @FXML
     private void clickRemover(ActionEvent event)
     {
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Deseja excluir a compra?", ButtonType.YES,ButtonType.NO);
-        a.showAndWait();
-        
-        if(a.getResult() == ButtonType.YES && compra != null)
+        if(TelaPrincipalController.usuario_logado.getParam5().equals("alto"))
         {
-            if(ctrComp.apagar(Integer.parseInt(compra.getParam1())))
-            {
-                inicializa();
-                a = new Alert(Alert.AlertType.CONFIRMATION, "Compra excluída com sucesso!!!!", ButtonType.OK);
-            }
-            else
-                a = new Alert(Alert.AlertType.ERROR, "Erro na remoção da compra", ButtonType.OK);
+            Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Deseja excluir a compra?", ButtonType.YES,ButtonType.NO);
             a.showAndWait();
+
+            if(a.getResult() == ButtonType.YES)
+            {
+                a = new Alert(Alert.AlertType.WARNING, "Atenção: remover a compra removerá os veículos do Banco de"
+                    + " Dados, deseja confirmar?", ButtonType.YES,ButtonType.NO);
+                a.showAndWait();
+                
+                if(a.getResult() == ButtonType.YES && compra != null)
+                {
+                    if(ctrComp.apagar(Integer.parseInt(compra.getParam1())))
+                    {
+                        inicializa();
+                        a = new Alert(Alert.AlertType.CONFIRMATION, "Compra excluída com sucesso!!!!", ButtonType.OK);
+                    }
+                    else
+                        a = new Alert(Alert.AlertType.ERROR, "Erro na remoção da compra", ButtonType.OK);
+                    a.showAndWait();
+                }
+            }
         }
+        else
+            new Alert(Alert.AlertType.ERROR, "Usuário não possui permissão de remover a compra", ButtonType.OK)
+                    .showAndWait();
     }
 
     @FXML
@@ -988,81 +1006,113 @@ public class TelaCompraController implements Initializable
     @FXML
     private void addVeiculoExit(MouseEvent event)
     {
+        btAdicionarVeiculo.setStyle(btAdicionarVeiculo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void addVeiculoEnter(MouseEvent event)
     {
+        btAdicionarVeiculo.setStyle(btAdicionarVeiculo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Adicionar Veículo");
+        ToolTip.bindTooltip(btAdicionarVeiculo, tooltip);
     }
 
     @FXML
     private void delVeiculoExit(MouseEvent event)
     {
+        btRemoverVeiculo.setStyle(btRemoverVeiculo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void delVeiculoEnter(MouseEvent event)
     {
+        btRemoverVeiculo.setStyle(btRemoverVeiculo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Remover Veículo");
+        ToolTip.bindTooltip(btRemoverVeiculo, tooltip);
     }
 
     @FXML
     private void novoExit(MouseEvent event)
     {
+        btNovo.setStyle(btNovo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void novoEnter(MouseEvent event)
     {
+        btNovo.setStyle(btNovo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Nova Venda");
+        ToolTip.bindTooltip(btNovo, tooltip);
     }
 
     @FXML
     private void confirmarExit(MouseEvent event)
     {
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void confirmarEnter(MouseEvent event)
     {
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Confirmar Ação");
+        ToolTip.bindTooltip(btConfirmar, tooltip);
     }
 
     @FXML
     private void alterarExit(MouseEvent event)
     {
+        btAlterar.setStyle(btAlterar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void alterarEnter(MouseEvent event)
     {
+        btAlterar.setStyle(btAlterar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Alterar Venda");
+        ToolTip.bindTooltip(btAlterar, tooltip);
     }
 
     @FXML
     private void removerExit(MouseEvent event)
     {
+        btRemover.setStyle(btRemover.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void removerEnter(MouseEvent event)
     {
+        btRemover.setStyle(btRemover.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Excluir Venda");
+        ToolTip.bindTooltip(btRemover, tooltip);
     }
 
     @FXML
     private void pesquisarExit(MouseEvent event)
     {
+        btPesquisar.setStyle(btPesquisar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void pesquisarEnter(MouseEvent event)
     {
+        btPesquisar.setStyle(btPesquisar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Pesquisar Venda");
+        ToolTip.bindTooltip(btPesquisar, tooltip);
     }
 
     @FXML
     private void cancelarExit(MouseEvent event)
     {
+        btCancelar.setStyle(btCancelar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void cancelarEnter(MouseEvent event)
     {
+        btCancelar.setStyle(btCancelar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Cancelar Ação");
+        ToolTip.bindTooltip(btCancelar, tooltip);
     }
 
     @FXML
