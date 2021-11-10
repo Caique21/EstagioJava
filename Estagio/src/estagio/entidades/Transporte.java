@@ -6,6 +6,8 @@
 package estagio.entidades;
 
 import estagio.utilidades.Banco;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -22,7 +24,7 @@ public class Transporte
 {
     private int codigo;
     private Funcionario motorista;
-    private Veiculo cegonha;
+    private String cegonha;
     private Date saida;
     private Date chegada;
     private String status;
@@ -40,7 +42,7 @@ public class Transporte
         get();
     }
 
-    public Transporte(int codigo, Funcionario motorista, Veiculo cegonha, Date saida, Date chegada, String status, String tipo, Timestamp alteracao)
+    public Transporte(int codigo, Funcionario motorista, String cegonha, Date saida, Date chegada, String status, String tipo, Timestamp alteracao)
     {
         this.codigo = codigo;
         this.motorista = motorista;
@@ -53,7 +55,7 @@ public class Transporte
         this.veiculos_transportados = lerVeiculosTransportados();
     }
 
-    public Transporte(Funcionario motorista, Veiculo cegonha, Date saida, Date chegada, String status, String tipo, Timestamp alteracao)
+    public Transporte(Funcionario motorista, String cegonha, Date saida, Date chegada, String status, String tipo, Timestamp alteracao)
     {
         this.motorista = motorista;
         this.cegonha = cegonha;
@@ -85,12 +87,12 @@ public class Transporte
         this.motorista = motorista;
     }
 
-    public Veiculo getCegonha()
+    public String getCegonha()
     {
         return cegonha;
     }
 
-    public void setCegonha(Veiculo cegonha)
+    public void setCegonha(String cegonha)
     {
         this.cegonha = cegonha;
     }
@@ -178,7 +180,7 @@ public class Transporte
             if(rs != null && rs.next())            
             {
                 this.alteracao = rs.getTimestamp("trans_data_alteracao");
-                this.cegonha = new Veiculo(rs.getInt("vei_codigo"));
+                this.cegonha = rs.getString("vei_codigo");
                 this.chegada = rs.getDate("trans_data_chegada");
                 this.saida = rs.getDate("trans_data_saida");
                 this.motorista = new Funcionario(rs.getInt("func_codigo"));
@@ -224,7 +226,7 @@ public class Transporte
             while(rs != null && rs.next())            
             {   
                 transportes.add(new Transporte(rs.getInt("trans_codigo"), new Funcionario(rs.getInt("func_codigo")), 
-                    new Veiculo(rs.getInt("vei_codigo")), rs.getDate("trans_data_saida"), 
+                    rs.getString("vei_codigo"), rs.getDate("trans_data_saida"), 
                     rs.getDate("trans_data_chegada"), rs.getString("trans_status"), rs.getString("trans_tipo"), 
                     rs.getTimestamp("trans_data_alteracao")));
             }
@@ -240,6 +242,142 @@ public class Transporte
     public ArrayList<Transporte> getAll()
     {
         return ler(Banco.getCon().consultar("SELECT * FROM transporte"));
+    }
+
+    public boolean salvar()
+    {
+        Connection connection = Banco.getCon().getConnection();
+        PreparedStatement stmt = null;
+        boolean flag = false;
+        
+        try
+        {
+            connection.setAutoCommit(false);
+            
+            stmt = connection.prepareStatement("INSERT INTO transporte(func_codigo,trans_vei_placa,trans_data_saida,"
+                + "trans_data_chegada,trans_status,trans_tipo,trans_data_alteracao) VALUES(?,?,?,?,?,?,?,?)");
+            
+            stmt.setInt(1, this.motorista.getCodigo());
+            stmt.setString(2, this.cegonha);
+            stmt.setDate(3, (java.sql.Date) this.saida);
+            stmt.setDate(4, (java.sql.Date) this.chegada);
+            stmt.setString(5, this.status);
+            stmt.setString(6, this.tipo);
+            stmt.setTimestamp(7, this.alteracao);
+            
+            flag = stmt.executeUpdate() == 1;
+            
+            if(flag)
+            {
+                stmt = connection.prepareStatement("INSERT INTO veiculo_transportado(trans_codigo,vei_codigo)"
+                        + " VALUES (CURRVAL('transporte_trans_codigo_seq'),?)");
+                
+                for (int i = 0; i < this.veiculos_transportados.size(); i++)
+                {
+                    stmt.setInt(2, this.veiculos_transportados.get(i).getCodigo());
+                    stmt.addBatch();
+                }
+                
+                for(int i : stmt.executeBatch())
+                    if(i >= 0)
+                        flag = true;
+                    else
+                    {
+                        flag = false;
+                        break;
+                    }
+                
+                if(flag)
+                    connection.commit();
+            }
+            
+            if(!flag)
+                connection.rollback();
+            connection.close();
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Transporte.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return flag;
+    }
+
+    public boolean alterar()
+    {
+        Connection connection = Banco.getCon().getConnection();
+        PreparedStatement stmt = null;
+        boolean flag = false;
+        
+        try
+        {
+            connection.setAutoCommit(false);
+            
+            stmt = connection.prepareStatement("INSERT INTO transporte(func_codigo,trans_vei_placa,trans_data_saida,"
+                + "trans_data_chegada,trans_status,trans_tipo,trans_data_alteracao) VALUES(?,?,?,?,?,?,?,?)");
+            
+            stmt = connection.prepareStatement("UPDATE transporte SET func_codigo = ?, trans_vei_placa = ?, "
+                + "trans_data_saida = ?, trans_data_chegada = ?, trans_status = ?, trans_tipo = ?, "
+                    + "trans_data_alteracao = ? WHERE trans_codigo = " + this.codigo);
+            
+            stmt.setInt(1, this.motorista.getCodigo());
+            stmt.setString(2, this.cegonha);
+            stmt.setDate(3, (java.sql.Date) this.saida);
+            stmt.setDate(4, (java.sql.Date) this.chegada);
+            stmt.setString(5, this.status);
+            stmt.setString(6, this.tipo);
+            stmt.setTimestamp(7, this.alteracao);
+            
+            flag = stmt.executeUpdate() == 1;
+            
+            if(flag)
+            {
+                stmt = connection.prepareStatement("DELETE FROM transporte WHERE trans_codigo = " + this.codigo);
+                stmt.addBatch();
+                
+                stmt = connection.prepareStatement("INSERT INTO veiculo_transportado(trans_codigo,vei_codigo)"
+                        + " VALUES (?,?)");
+                stmt.setInt(1, this.codigo);
+                
+                for (int i = 0; i < this.veiculos_transportados.size(); i++)
+                {
+                    stmt.setInt(2, this.veiculos_transportados.get(i).getCodigo());
+                    stmt.addBatch();
+                }
+                
+                for(int i : stmt.executeBatch())
+                    if(i >= 0)
+                        flag = true;
+                    else
+                    {
+                        flag = false;
+                        break;
+                    }
+                
+                if(flag)
+                    connection.commit();
+            }
+            
+            if(!flag)
+                connection.rollback();
+            connection.close();
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Transporte.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return flag;
+    }
+
+    public boolean apagar(int... codigo)
+    {
+        String sql = "DELETE FROM transporte WHERE trans_codigo = ";
+        
+        if(codigo.length == 0)
+            sql += this.codigo;
+        else
+            sql += codigo;
+        
+        return Banco.getCon().manipular(sql);
     }
     
     

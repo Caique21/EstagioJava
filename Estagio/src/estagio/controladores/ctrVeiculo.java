@@ -10,6 +10,7 @@ import com.jfoenix.controls.JFXTextField;
 import estagio.entidades.Marca;
 import estagio.entidades.Modelo;
 import estagio.entidades.Veiculo;
+import estagio.utilidades.Banco;
 import estagio.utilidades.Objeto;
 import java.util.ArrayList;
 
@@ -55,6 +56,18 @@ public class ctrVeiculo
             ret.add(convertToObjeto(veiculos.get(i)));
         
         return ret;
+    }
+    
+    
+
+    public ArrayList<String> getAllPlacas(String string)
+    {
+        ArrayList<String> veiculos = new ArrayList<>();
+        
+        for(Veiculo v : new Veiculo().getAll())
+            if(v.getPlaca() != null && !v.getPlaca().trim().equals(""))
+                veiculos.add(v.getPlaca());
+        return veiculos;
     }
 
     public ArrayList<Objeto> getByMarca(String marca,Boolean... estoque)
@@ -148,5 +161,10 @@ public class ctrVeiculo
         obj.setParam8(v.getModelo().getNome());
         obj.setParam9(v.getDescricao());
         return obj;
+    }
+
+    public Objeto getLastInsert()
+    {
+        return convertToObjeto(new Veiculo(Banco.getCon().getMaxPK("veiculo", "vei_codigo")));
     }
 }

@@ -5,10 +5,15 @@
  */
 package estagio.controladores;
 
+import estagio.entidades.Funcionario;
 import estagio.entidades.Transporte;
 import estagio.entidades.Veiculo;
 import estagio.utilidades.Objeto;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  *
@@ -31,6 +36,30 @@ public class ctrTransporte
         return con;
     }
 
+    public Objeto getByCodigo(int codigo)
+    {
+        return convertToObjeto(new Transporte(codigo));
+    }
+
+    public boolean salvar(Objeto t)
+    {
+        Transporte transporte = convertToTransporte(t);
+        
+        return transporte.salvar();
+    }
+
+    public boolean alterar(Objeto t)
+    {
+        Transporte transporte = convertToTransporte(t);
+        
+        return transporte.alterar();
+    }
+    
+    public boolean apagar(int codigo)
+    {
+        return new Transporte().apagar(codigo);
+    }
+
     public ArrayList<Objeto> getAll(Boolean... finalizado)
     {
         ArrayList<Objeto> ret = new ArrayList<>();
@@ -45,24 +74,52 @@ public class ctrTransporte
         }    
         return ret;
     }
+    
+    private Transporte convertToTransporte(Objeto transporte)
+    {
+        ///1 - CÓDIGO, 2 - CÓDIGO MOTORISTA, 3 - PLACA VEÍCULO, 4 - SAÍDA, 5 - CHEGADA, 6 - STATUS, 7 - TIPO
+        ///8 - ALTERAÇÃO, 9 - NOME DO MOTORISTA
+        ///LIST1 - VEÍCULOS TRANSPORTADOS
+        
+        Transporte t = new Transporte();
+        t.setCodigo(Integer.parseInt(transporte.getParam1()));
+        t.setMotorista(new Funcionario(Integer.parseInt(transporte.getParam2())));
+        t.setCegonha(transporte.getParam3());
+        t.setStatus(transporte.getParam6());
+        t.setTipo(transporte.getParam7());
+        
+        try
+        {
+            t.setSaida(new SimpleDateFormat("yyy-MM-dd").parse(transporte.getParam4()));
+            t.setChegada(new SimpleDateFormat("yyy-MM-dd").parse(transporte.getParam5()));
+            
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+            Date parsedDate = dateFormat.parse(transporte.getParam8());
+            Timestamp timestamp = new java.sql.Timestamp(parsedDate.getTime());
+            t.setAlteracao(timestamp);
+        }
+        catch (ParseException e)
+        { //this generic but you can control another types of exception
+            // look the origin of excption 
+        }
+        return t;
+    }
 
     private Objeto convertToObjeto(Transporte t)
     {
-        ///1 - CÓDIGO, 2 - CÓDIGO MOTORISTA, 3 - CÓDIGO VEÍCULO, 4 - SAÍDA, 5 - CHEGADA, 6 - STATUS, 7 - TIPO
-        ///8 - ALTERAÇÃO, 9 - NOME DO MOTORISTA,10 - PLACA DA CEGONHA,  11 - INFORMAÇÕES DO VÉICULO, 
+        ///1 - CÓDIGO, 2 - CÓDIGO MOTORISTA, 3 - PLACA VEÍCULO, 4 - SAÍDA, 5 - CHEGADA, 6 - STATUS, 7 - TIPO
+        ///8 - ALTERAÇÃO, 9 - NOME DO MOTORISTA
         ///LIST1 - VEÍCULOS TRANSPORTADOS
         Objeto obj = new Objeto();
         obj.setParam1(String.valueOf(t.getCodigo()));
         obj.setParam2(String.valueOf(t.getMotorista().getCodigo()));
-        obj.setParam3(String.valueOf(t.getCegonha().getCodigo()));
+        obj.setParam3(String.valueOf(t.getCegonha()));
         obj.setParam4(String.valueOf(t.getSaida()));
         obj.setParam5(String.valueOf(t.getChegada()));
         obj.setParam6(t.getStatus());
         obj.setParam7(t.getTipo());
         obj.setParam8(String.valueOf(t.getAlteracao()));
         obj.setParam9(t.getMotorista().getNome());
-        obj.setParam10(t.getCegonha().getPlaca());
-        obj.setParam11(t.getCegonha().toString());
         
         for(Veiculo v : t.getVeiculos_transportados())
             obj.addList1(convertToObjeto(v));
@@ -83,10 +140,5 @@ public class ctrTransporte
         obj.setParam8(v.getModelo().getNome());
         obj.setParam9(v.getDescricao());
         return obj;
-    }
-
-    public Objeto getByCodigo(int parseInt)
-    {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

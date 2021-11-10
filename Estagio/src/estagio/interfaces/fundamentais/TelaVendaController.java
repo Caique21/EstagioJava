@@ -585,6 +585,7 @@ public class TelaVendaController implements Initializable
             JFXDecorator decorator = new JFXDecorator(stage, root);
 
             BuscarVeiculoController controller = fxmlLoader.<BuscarVeiculoController>getController();
+            controller.setFlag(true);
             decorator.setStyle("-fx-decorator-color: #040921;");
             Scene scene = new Scene(decorator);
 

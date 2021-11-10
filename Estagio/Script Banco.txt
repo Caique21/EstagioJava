@@ -326,7 +326,7 @@ CREATE TABLE transporte
 (
 	trans_codigo serial NOT NULL,
 	func_codigo INTEGER NOT NULL,
-	vei_codigo INTEGER NOT NULL,
+	trans_vei_placa VARCHAR(8) NOT NULL,
 	trans_data_saida DATE NOT NULL,
 	trans_data_chegada DATE,
 	trans_status VARCHAR(45) NOT NULL,
@@ -336,10 +336,7 @@ CREATE TABLE transporte
 		PRIMARY KEY(trans_codigo),
 	CONSTRAINT fk_transporte_funcionario
 		FOREIGN KEY(func_codigo)
-		REFERENCES funcionario,
-	CONSTRAINT fk_transporte_veiculo
-		FOREIGN KEY(vei_codigo)
-		REFERENCES veiculo
+		REFERENCES funcionario
 );
 
 CREATE TABLE veiculos_transportados

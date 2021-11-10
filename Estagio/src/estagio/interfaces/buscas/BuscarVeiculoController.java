@@ -24,7 +24,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -32,7 +31,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
@@ -54,6 +52,7 @@ public class BuscarVeiculoController implements Initializable
     private final ToggleGroup goup1 = new ToggleGroup();
     private final ctrVeiculo ctrVei = ctrVeiculo.instancia();
     private final Tooltip tooltip = new Tooltip();
+    private boolean retornaValor;
 
     @FXML
     private BorderPane panePrincipal;
@@ -174,71 +173,82 @@ public class BuscarVeiculoController implements Initializable
     private void clickSelecionar(ActionEvent event)
     {
         if(!tvVeiculos.getItems().isEmpty() && !tvVeiculos.getSelectionModel().getSelectedItems().isEmpty())
-        {
+        {   
             veiculos = new ArrayList<>();
-            Dialog<String> dialog = new Dialog<>();
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.YES, ButtonType.CANCEL);
-            dialog.getDialogPane().setPrefWidth(500);
             
-            JFXTextField valor = new JFXTextField();
-            valor.setLabelFloat(true);
-            valor.setPromptText("Valor sugerido");
-            MaskFieldUtil.monetaryField(valor);
-            
-            Label descricao = new Label();
-            
-            VBox vbox = new VBox(10);
-            
-            boolean flag = true;
-            vbox.getChildren().addAll(descricao, valor);
-            for (int i = 0; i < tvVeiculos.getSelectionModel().getSelectedItems().size() && flag; i++)
+            if(!retornaValor)
             {
-                Objeto vei = tvVeiculos.getSelectionModel().getSelectedItems().get(i);
-                descricao.setText("Veículo " + (i + 1) + " de " + tvVeiculos.getSelectionModel().getSelectedItems().size());
-                descricao.setText(descricao.getText() + "\nPlaca: ");
-                if(vei.getParam2() == null || (vei.getParam2() != null && vei.getParam2().equals("")))
-                    descricao.setText(descricao.getText() + " ");
-                else
-                    descricao.setText(descricao.getText() + vei.getParam2());
-                descricao.setText(descricao.getText() + ", Marca: " + vei.getParam7());
-                descricao.setText(descricao.getText() + ", Modelo: " + vei.getParam8() + ", Chassi: " + vei.getParam4());
-                descricao.setText(descricao.getText() + ", Ano: " + vei.getParam5() + ", Cor: " + vei.getParam6());
-                
-                valor.clear();
-                valor.setText("" + Utils.exibeCentavos(ctrVei.getPrecoSugerido(Integer.parseInt(vei.getParam1()))));
-                
-                dialog.getDialogPane().setContent(vbox);
-                dialog.setResultConverter(dialogButton ->
-                {
-                    if (dialogButton == ButtonType.YES)
-                    {
-                        if(!valor.getText().trim().equals("") && Utils.convertStringToDouble(valor.getText()) > 0)
-                            return valor.getText();
-                    }
-                    return null;
-                });
-                Optional<String> result = dialog.showAndWait();
-
-                if (result.isPresent())
-                {
-                    vei.setParam10(result.get());
-                    veiculos.add(vei);
-                }
-                else
-                {
-                    flag = false;
-                    veiculos = new ArrayList<>();
-                }
-            }
-            
-            if(flag)
-            {
+                for(Objeto obj : tvVeiculos.getSelectionModel().getSelectedItems())
+                    veiculos.add(obj);
                 Stage stage = (Stage) btSelecionar.getScene().getWindow();
                 stage.close();
             }
             else
-                new Alert(Alert.AlertType.ERROR, "Erro durante preenchimento dos valores, digite novamente", ButtonType.OK)
-                        .showAndWait();
+            {
+                Dialog<String> dialog = new Dialog<>();
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.YES, ButtonType.CANCEL);
+                dialog.getDialogPane().setPrefWidth(500);
+
+                JFXTextField valor = new JFXTextField();
+                valor.setLabelFloat(true);
+                valor.setPromptText("Valor sugerido");
+                MaskFieldUtil.monetaryField(valor);
+
+                Label descricao = new Label();
+
+                VBox vbox = new VBox(10);
+
+                boolean flag = true;
+                vbox.getChildren().addAll(descricao, valor);
+                for (int i = 0; i < tvVeiculos.getSelectionModel().getSelectedItems().size() && flag; i++)
+                {
+                    Objeto vei = tvVeiculos.getSelectionModel().getSelectedItems().get(i);
+                    descricao.setText("Veículo " + (i + 1) + " de " + tvVeiculos.getSelectionModel().getSelectedItems().size());
+                    descricao.setText(descricao.getText() + "\nPlaca: ");
+                    if(vei.getParam2() == null || (vei.getParam2() != null && vei.getParam2().equals("")))
+                        descricao.setText(descricao.getText() + " ");
+                    else
+                        descricao.setText(descricao.getText() + vei.getParam2());
+                    descricao.setText(descricao.getText() + ", Marca: " + vei.getParam7());
+                    descricao.setText(descricao.getText() + ", Modelo: " + vei.getParam8() + ", Chassi: " + vei.getParam4());
+                    descricao.setText(descricao.getText() + ", Ano: " + vei.getParam5() + ", Cor: " + vei.getParam6());
+
+                    valor.clear();
+                    valor.setText("" + Utils.exibeCentavos(ctrVei.getPrecoSugerido(Integer.parseInt(vei.getParam1()))));
+
+                    dialog.getDialogPane().setContent(vbox);
+                    dialog.setResultConverter(dialogButton ->
+                    {
+                        if (dialogButton == ButtonType.YES)
+                        {
+                            if(!valor.getText().trim().equals("") && Utils.convertStringToDouble(valor.getText()) > 0)
+                                return valor.getText();
+                        }
+                        return null;
+                    });
+                    Optional<String> result = dialog.showAndWait();
+
+                    if (result.isPresent())
+                    {
+                        vei.setParam10(result.get());
+                        veiculos.add(vei);
+                    }
+                    else
+                    {
+                        flag = false;
+                        veiculos = new ArrayList<>();
+                    }
+                }
+
+                if(flag)
+                {
+                    Stage stage = (Stage) btSelecionar.getScene().getWindow();
+                    stage.close();
+                }
+                else
+                    new Alert(Alert.AlertType.ERROR, "Erro durante preenchimento dos valores, digite novamente", ButtonType.OK)
+                            .showAndWait();
+            }
         }
         else if(tvVeiculos.getItems().isEmpty())
             new Alert(Alert.AlertType.ERROR, "Pesquisa vazia", ButtonType.OK).showAndWait();
@@ -356,6 +366,11 @@ public class BuscarVeiculoController implements Initializable
     public void resetVeiculos()
     {
         veiculos = new ArrayList<>();
+    }
+
+    public void setFlag(boolean b)
+    {
+        retornaValor = b;
     }
     
 }

@@ -5,35 +5,55 @@
  */
 package estagio.interfaces.fundamentais;
 
+import com.jfoenix.controls.JFXAutoCompletePopup;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.TelaPrincipalController;
+import estagio.controladores.ctrFuncionario;
 import estagio.controladores.ctrTransporte;
+import estagio.controladores.ctrVeiculo;
+import estagio.interfaces.basicas.CadastroVeiculoController;
+import estagio.interfaces.buscas.BuscarVeiculoController;
+import estagio.utilidades.Banco;
+import estagio.utilidades.MaskFieldUtil;
 import estagio.utilidades.Objeto;
+import estagio.utilidades.ToolTip;
+import estagio.utilidades.TooltippedTableCell;
 import estagio.utilidades.Utils;
+import java.io.IOException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -43,8 +63,11 @@ import javafx.scene.layout.VBox;
 public class TelaTransporteController implements Initializable
 {
     private final Tooltip tooltip = new Tooltip();
+    private final JFXAutoCompletePopup<String> autoCompletePopupFuncionarios = new JFXAutoCompletePopup<>();
     
-    private ctrTransporte ctrTran = ctrTransporte.instancia();
+    private final ctrTransporte ctrTran = ctrTransporte.instancia();
+    private final ctrFuncionario ctrFunc = ctrFuncionario.instancia();
+    private final ctrVeiculo ctrVei = ctrVeiculo.instancia();
     
     private int acao;
     private Objeto transporte;
@@ -201,10 +224,11 @@ public class TelaTransporteController implements Initializable
         Utils.setDesign(1, nodes);
         
         btNovo.setStyle(btNovo.getStyle() + ";-fx-cursor: default;");
+        btConfirmar.setStyle(btConfirmar.getStyle() + ";-fx-cursor: default;");
         btAlterar.setStyle(btAlterar.getStyle() + ";-fx-cursor: default;");
+        btRemover.setStyle(btRemover.getStyle() + ";-fx-cursor: default;");
         btCancelar.setStyle(btCancelar.getStyle() + ";-fx-cursor: default;");
         btPesquisar.setStyle(btPesquisar.getStyle() + ";-fx-cursor: default;");
-        btRemover.setStyle(btRemover.getStyle() + ";-fx-cursor: default;");
         btRemoverVeiculo.setStyle(btRemoverVeiculo.getStyle() + ";-fx-cursor: default;");
         btAdicionarVeiculo.setStyle(btAdicionarVeiculo.getStyle() + ";-fx-cursor: default;");
     }
@@ -217,15 +241,17 @@ public class TelaTransporteController implements Initializable
         
         //PAINEL CENTRAL TIRANDO TITULO E BOTÕES DE COMANDOS
         painelCentral.setPrefHeight(panePrincipal.getPrefHeight() - 47 - 45);
-        //PAINEL DE PESQUISA FICA COM O RESTANTE DA TELA
+        painelCentral.setPrefWidth(panePrincipal.getPrefWidth() - paneLateral.getPrefWidth() - 30);
+        
         paneVeiculos.setPrefHeight(painelCentral.getPrefHeight() - paneDados.getPrefHeight() - 10);
         
         vboxTable.setPrefHeight(paneVeiculos.getPrefHeight() - 70);
         vboxTable.setPrefWidth(paneVeiculos.getPrefWidth());
         tvVeiculos.setPrefHeight(painelCentral.getPrefHeight() - 30);
+        tvVeiculos.setPrefWidth(vboxTable.getPrefWidth()- 20);
         
         //REORGANIZA OS TAMANHOS DAS COLUNAS DA TABELA
-        int sobra = (int)((tvVeiculos.getPrefWidth() - 1130)/2);
+        int sobra = (int)((tvVeiculos.getPrefWidth() - 953)/2);
         tcMarca.setPrefWidth(tcMarca.getPrefWidth() + sobra);
         tcModelo.setPrefWidth(tcModelo.getPrefWidth() + sobra);
     }
@@ -268,6 +294,13 @@ public class TelaTransporteController implements Initializable
         }
         btCancelar.setDisable(b6);
     }
+
+    private void atualizaListaFornecedores(String text)
+    {
+        autoCompletePopupFuncionarios.getSuggestions().clear();
+        autoCompletePopupFuncionarios.getSuggestions().add("NOVO FUNCIONÁRIO");
+        autoCompletePopupFuncionarios.getSuggestions().addAll(ctrFunc.getAllNames(text));
+    }
     
     private void inicializa()
     {
@@ -289,6 +322,8 @@ public class TelaTransporteController implements Initializable
         acao = -1;
         transporte = null;
         transporte_selecionado = null;
+        
+        atualizaListaFornecedores("");
     }
     
     @Override
@@ -298,8 +333,20 @@ public class TelaTransporteController implements Initializable
         redimensiona();
         
         cbStatus.getItems().addAll("Á Iniciar","Em Progresso","Parado","Finalizado");
-        
         cbTipo.getItems().addAll("Agregado","Terceirizado");
+        
+        MaskFieldUtil.toUpperCase(tfPlacaCegonha);
+        MaskFieldUtil.maxField(tfPlacaCegonha, 8);
+        
+        tcAno.setCellValueFactory(new PropertyValueFactory<>("param5"));
+        tcChassi.setCellValueFactory(new PropertyValueFactory<>("param4"));
+        tcCor.setCellValueFactory(new PropertyValueFactory<>("param6"));
+        tcMarca.setCellValueFactory(new PropertyValueFactory<>("param7"));
+        tcModelo.setCellValueFactory(new PropertyValueFactory<>("param8"));
+        tcPlaca.setCellValueFactory(new PropertyValueFactory<>("param2"));
+        
+        tcMarca.setCellFactory(TooltippedTableCell.forTableColumn());
+        tcModelo.setCellFactory(TooltippedTableCell.forTableColumn());
         
         inicializa();
         setlisteners();
@@ -316,6 +363,50 @@ public class TelaTransporteController implements Initializable
     @FXML
     private void clickConfirmar(ActionEvent event)
     {
+        if(validaTransporte())
+        {
+            Alert a;
+            gerarTransporte();
+            if(acao == 0 && transporte != null)
+            {
+                a = new Alert(Alert.AlertType.CONFIRMATION, "Confirmar cadastro da transporte", ButtonType.YES,
+                        ButtonType.NO);
+                a.showAndWait();
+                
+                if(a.getResult() == ButtonType.YES)
+                {
+                    if(ctrTran.salvar(transporte))
+                    {
+                        inicializa();
+                        a = new Alert(Alert.AlertType.INFORMATION, "Transporte salvo com sucesso!!!", ButtonType.OK);
+                    }
+                    else
+                        a = new Alert(Alert.AlertType.ERROR, "Erro no cadastro do transporte\n" + 
+                                Banco.getCon().getMensagemErro(), ButtonType.OK);
+                    a.showAndWait();
+                }
+            }
+            else if(acao == 1 && transporte != null)
+            {
+                a = new Alert(Alert.AlertType.CONFIRMATION, "Alterar cadastro da transporte", ButtonType.YES,
+                        ButtonType.NO);
+                a.showAndWait();
+                
+                if(a.getResult() == ButtonType.YES)
+                {
+                    if(ctrTran.alterar(transporte))
+                    {
+                        inicializa();
+                        a = new Alert(Alert.AlertType.INFORMATION, "Transporte alterado com sucesso!!!", 
+                                ButtonType.OK);
+                    }
+                    else
+                        a = new Alert(Alert.AlertType.ERROR, "Erro na alteração do transporte\n" + 
+                                Banco.getCon().getMensagemErro(), ButtonType.OK);
+                    a.showAndWait();
+                }
+            }
+        }
     }
 
     @FXML
@@ -339,16 +430,99 @@ public class TelaTransporteController implements Initializable
     @FXML
     private void clickPesquisar(ActionEvent event)
     {
+        try
+        {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/buscas/BuscarVeiculo.fxml"));
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            JFXDecorator decorator = new JFXDecorator(stage, root);
+
+            BuscarVeiculoController controller = fxmlLoader.<BuscarVeiculoController>getController();
+            decorator.setStyle("-fx-decorator-color: #040921;");
+            controller.setFlag(false);
+            Scene scene = new Scene(decorator);
+
+            stage.setTitle("Buscar Veículo");
+            stage.setScene(scene);
+            stage.showAndWait();
+            stage.setOnCloseRequest((e) ->
+            {
+                controller.resetVeiculos();
+            });
+            
+            if(controller.getVeiculos() != null && !controller.getVeiculos().isEmpty())
+            {
+                boolean repetido;
+                
+                for(Objeto aux1 : controller.getVeiculos())
+                {
+                    repetido = false;
+                    
+                    for (int i = 0; i < tvVeiculos.getItems().size(); i++)
+                        if(Integer.parseInt(aux1.getParam1()) == 
+                                Integer.parseInt(tvVeiculos.getItems().get(i).getParam1()))
+                            repetido = true;
+                    
+                    if(!repetido)
+                        tvVeiculos.getItems().add(aux1);
+                }
+            }
+        }
+        catch (IOException er)
+        {
+            new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Pesquisa de Veículo! "
+                    + "\nErro: " + er.getMessage(), ButtonType.OK).showAndWait();
+        }
     }
 
     @FXML
     private void clickAdd(ActionEvent event)
     {
+        try
+        {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/basicas/CadastroVeiculo.fxml"));
+            Parent root = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            JFXDecorator decorator = new JFXDecorator(stage, root);
+
+            CadastroVeiculoController controller = fxmlLoader.<CadastroVeiculoController>getController();
+            decorator.setStyle("-fx-decorator-color: #040921;");
+            controller.setAcao(2);
+            Scene scene = new Scene(decorator);
+
+            stage.setTitle("Buscar Veículo");
+            stage.setScene(scene);
+            stage.showAndWait();
+            stage.setOnCloseRequest((e) ->
+            {
+                //controller.resetVeiculos();
+            });
+            tvVeiculos.getItems().add(controller.getVeiculo());
+        }
+        catch (IOException er)
+        {
+            new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Pesquisa de Veículo! "
+                    + "\nErro: " + er.getMessage(), ButtonType.OK).showAndWait();
+        }
     }
 
     @FXML
     private void clickDel(ActionEvent event)
     {
+        if(!tvVeiculos.getItems().isEmpty() && tvVeiculos.getSelectionModel().getFocusedIndex() >= 0)
+        {
+            Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Deseja remover veículo(s) do transporte?", 
+                    ButtonType.YES,ButtonType.NO);
+            a.showAndWait();
+            
+            if(a.getResult() == ButtonType.YES)
+                tvVeiculos.getSelectionModel().getSelectedItems().stream().map((obj) -> {
+                    tvVeiculos.getItems().remove(obj);
+                return obj;
+            }).forEachOrdered((_item) -> {
+                tvVeiculos.refresh();
+            });
+        }
     }
 
     @FXML
@@ -381,81 +555,113 @@ public class TelaTransporteController implements Initializable
     @FXML
     private void novoExit(MouseEvent event)
     {
+        btNovo.setStyle(btNovo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void novoEnter(MouseEvent event)
     {
+        btNovo.setStyle(btNovo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Novo Transporte");
+        ToolTip.bindTooltip(btNovo, tooltip);
     }
 
     @FXML
     private void confirmarExit(MouseEvent event)
     {
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void confirmarEnter(MouseEvent event)
     {
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Confirmar Ação");
+        ToolTip.bindTooltip(btConfirmar, tooltip);
     }
 
     @FXML
     private void alterarExit(MouseEvent event)
     {
+        btAlterar.setStyle(btAlterar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void alterarEnter(MouseEvent event)
     {
+        btAlterar.setStyle(btAlterar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Alterar Transporte");
+        ToolTip.bindTooltip(btAlterar, tooltip);
     }
 
     @FXML
     private void removerExit(MouseEvent event)
     {
+        btRemover.setStyle(btRemover.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void removerEnter(MouseEvent event)
     {
+        btRemover.setStyle(btRemover.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Excluir Transporte");
+        ToolTip.bindTooltip(btRemover, tooltip);
     }
 
     @FXML
     private void cancelarExit(MouseEvent event)
     {
+        btCancelar.setStyle(btCancelar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void cancelarEnter(MouseEvent event)
     {
+        btCancelar.setStyle(btCancelar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Cancelar Ação");
+        ToolTip.bindTooltip(btCancelar, tooltip);
     }
 
     @FXML
     private void pesquisarExit(MouseEvent event)
     {
+        btPesquisar.setStyle(btPesquisar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void pesquisarEnter(MouseEvent event)
     {
+        btPesquisar.setStyle(btPesquisar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Pesquisar Venda");
+        ToolTip.bindTooltip(btPesquisar, tooltip);
     }
 
     @FXML
     private void addVeiculoExit(MouseEvent event)
     {
+        btAdicionarVeiculo.setStyle(btAdicionarVeiculo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void addVeiculoEnter(MouseEvent event)
     {
+        btAdicionarVeiculo.setStyle(btAdicionarVeiculo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Adicionar Veículo");
+        ToolTip.bindTooltip(btAdicionarVeiculo, tooltip);
     }
 
     @FXML
     private void delVeiculoExit(MouseEvent event)
     {
+        btRemoverVeiculo.setStyle(btRemoverVeiculo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void delVeiculoEnter(MouseEvent event)
     {
+        btRemoverVeiculo.setStyle(btRemoverVeiculo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Remover Veículo");
+        ToolTip.bindTooltip(btRemoverVeiculo, tooltip);
     }
 
     @FXML
@@ -488,6 +694,193 @@ public class TelaTransporteController implements Initializable
                             "Motorista " + objeto.getParam9()  + " Com "
                             + objeto.getList1() != null && !objeto.getList1().isEmpty() ? objeto.getList1().size() + "" : "0" + "Veículos");
                 });
+        });
+        
+        autoCompletePopupFuncionarios.setSelectionHandler(event ->
+        {
+            tfMotorista.setText(event.getObject());
+        });
+        
+        tfMotorista.focusedProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(!newValue)
+                if(tfMotorista.getText().equals("NOVO FUNCIONÁRIO"))
+                    tfMotorista.setText("");
+        });
+
+        tfMotorista.textProperty().addListener((Observable observable) ->
+        {
+            //autoCompletePopupClientes.filter(string -> strings.toLowerCase().contains(tfCliente.getText().toLowerCase()));
+            atualizaListaFornecedores(tfMotorista.getText());
+            
+            if(autoCompletePopupFuncionarios.getSuggestions().isEmpty())
+            {
+                autoCompletePopupFuncionarios.hide();
+            }
+            else
+            {    
+                if(tfMotorista.isFocused())
+                {
+                    autoCompletePopupFuncionarios.show(tfMotorista);
+                    if(tfMotorista.getText().equals("NOVO FUNCIONÁRIO"))
+                    tfMotorista.setText("");
+                }
+            }
+        });
+        
+        tfMotorista.setOnMouseClicked((event) ->
+        {
+            tfMotorista.requestFocus();
+            if(!autoCompletePopupFuncionarios.isShowing())
+            {
+                autoCompletePopupFuncionarios.show(tfMotorista);
+            }
+            else
+                autoCompletePopupFuncionarios.hide();
+        });
+        
+        tfPlacaCegonha.textProperty().addListener((observable, oldValue, newValue) ->
+        {
+            String texto = newValue;
+            int pos = texto.length(), max = 8;
+            String ultimo_caractere = texto.substring(pos - 1, pos);
+            
+            if(texto.contains("-"))
+                max = 9;
+                
+            if(pos < max)
+            {
+                if(pos < 4)
+                {
+                    if(!ultimo_caractere.matches("[A-Z]"))
+                        if(pos == 1)
+                            texto = "";
+                        else
+                            texto = texto.substring(0, pos - 1);
+                }
+                else if(pos == 4 || pos == 6 || pos == 7)
+                {
+                    if(!ultimo_caractere.matches("[0-9]"))
+                        texto = texto.substring(0, pos - 1);
+                }
+                else if(pos == 5)
+                {
+                    if(!ultimo_caractere.matches("[A-Z0-9]"))
+                        texto = texto.substring(0, pos - 1);
+                }
+                tfPlacaCegonha.setText(texto);
+            }
+            else
+                tfPlacaCegonha.setText(oldValue);
+        });
+        
+        tfPlacaCegonha.focusedProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(!newValue)
+            {
+                if(tfPlacaCegonha.getText().length() == 7)
+                    if(tfPlacaCegonha.getText().substring(4, 5).matches("[0-9]"))
+                        tfPlacaCegonha.setText(tfPlacaCegonha.getText().substring(0, 3) + "-" + 
+                                tfPlacaCegonha.getText().substring(3));
+            }
+        });
+    }
+
+    private boolean validaTransporte()
+    {
+        String erros = "";
+        limpaLabels();
+        
+        if(tfMotorista.getText().trim().equals(""))
+        {
+            erros += "Digite o nome do Motorista\n";
+            lbErroMotorista.setText("Campo requerido");
+        }
+        else if(!autoCompletePopupFuncionarios.getSuggestions().contains(tfMotorista.getText()))
+        {
+            erros += "Motorista não cadastrado\n";
+            lbErroMotorista.setText("Motorista não cadastrado");
+        }
+        
+        if(tfPlacaCegonha.getText().trim().equals(""))
+        {
+            erros += "Digite a placa do Veículo(Cegonha)\n";
+            lbErroPlacaCegonha.setText("Campo requerido");
+        }
+        else if(tfPlacaCegonha.getText().length() < 7)
+        {
+            erros += "Digite a placa do Veículo(Cegonha)\n";
+            lbErroPlacaCegonha.setText("Placa incompleta");
+        }
+        
+        if(!cbStatus.getSelectionModel().getSelectedItem().equals("Á Iniciar") && 
+            dpSaida.getEditor().getText().trim().equals(""))
+        {
+            erros += "Seleciona a data de Saída\n";
+            lbErroSaida.setText("Campo requerido");
+        }
+        else
+        {
+            if(cbStatus.getSelectionModel().getSelectedItem().equals("Finalizado") 
+                && dpChegada.getEditor().getText().trim().equals(""))
+            {
+                erros += "Selecione a data do término do transporte\n";
+                lbErroChegada.setText("Campo requerido");
+            }
+            else if(!dpChegada.getEditor().getText().trim().equals("") && 
+                    dpChegada.getValue().compareTo(dpSaida.getValue()) < 0)
+            {
+                erros += "Data de chegada inferior ao de saída\n";
+                lbErroChegada.setText("Data inválida");
+            }
+        }
+        
+        if(cbStatus.getSelectionModel().getSelectedIndex() < 0)
+        {
+            erros += "Selecione o status do transporte\n";
+            lbErroStatus.setText("Campo requerido");
+        }
+        
+        if(cbTipo.getSelectionModel().getSelectedIndex() < 0)
+        {
+            erros += "Selecione o tipo do transporte\n";
+            lbErroTipo.setText("Campo requerido");
+        }
+        
+        if(tvVeiculos.getItems().isEmpty())
+            erros += "Tabela de veículos vazia\n";
+        
+        if(!erros.trim().equals(""))
+            new Alert(Alert.AlertType.ERROR, erros, ButtonType.OK).showAndWait();
+        
+        return erros.trim().equals("");
+    }
+
+    private void gerarTransporte()
+    {
+        ///1 - CÓDIGO, 2 - CÓDIGO MOTORISTA, 3 - PLACA VEÍCULO, 4 - SAÍDA, 5 - CHEGADA, 6 - STATUS, 7 - TIPO
+        ///8 - ALTERAÇÃO, 9 - NOME DO MOTORISTA
+        ///LIST1 - VEÍCULOS TRANSPORTADOS
+        
+        if(transporte == null)
+        {
+            transporte = new Objeto("0");
+        }
+        
+        transporte.setParam2(ctrFunc.getByName(tfMotorista.getText()).get(0).getParam1());
+        transporte.setParam3(tfPlacaCegonha.getText());
+        transporte.setParam4(String.valueOf(dpSaida.getValue()));
+        transporte.setParam5(dpChegada.getEditor().getText().trim().equals("")? 
+                "" : String.valueOf(dpChegada.getValue()));
+        transporte.setParam6(cbStatus.getSelectionModel().getSelectedItem());
+        transporte.setParam7(cbTipo.getSelectionModel().getSelectedItem());
+        transporte.setParam8(String.valueOf(new Timestamp(new java.util.Date().getTime())));
+        transporte.setParam9(tfMotorista.getText());
+        
+        transporte.setList1(new ArrayList<>());
+        tvVeiculos.getItems().forEach((t) ->
+        {
+            transporte.addList1(t);
         });
     }
     

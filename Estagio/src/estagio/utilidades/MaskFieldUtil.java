@@ -414,7 +414,7 @@ public abstract class MaskFieldUtil
         );
     }
 
-    private static void positionCaret(TextField textField)
+    public static void positionCaret(TextField textField)
     {
         Platform.runLater(() ->
         {

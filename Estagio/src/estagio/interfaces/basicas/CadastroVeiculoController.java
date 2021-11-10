@@ -50,6 +50,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
@@ -361,7 +362,7 @@ public class CadastroVeiculoController implements Initializable
             Alert alerta;
             String placa = rbMercosul.isSelected()? tfPlacaMercosul.getText() : tfPlaca.getText();
             
-            if(acao == 0)
+            if(acao == 0 || acao == 2)
             {
                 alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja cadastrar véiculo?", ButtonType.YES,ButtonType.NO);
                 alerta.showAndWait();
@@ -370,9 +371,17 @@ public class CadastroVeiculoController implements Initializable
                 {
                     if(ctrVei.salvar(placa,tfMarca,tfModelo,tfChassi,tfCor,tfAno,taDescricao))
                     {
-                        inicializa();
                         alerta = new Alert(Alert.AlertType.INFORMATION, "Veículo cadastrado com sucesso!!!", 
                                 ButtonType.OK);
+                        
+                        if(acao == 2)
+                        {
+                            veiculo = ctrVei.getLastInsert();
+                            Stage stage = (Stage) btConfirmar.getScene().getWindow();
+                            stage.close();
+                        }
+                        else
+                            inicializa();
                     }
                     else
                         alerta = new Alert(Alert.AlertType.ERROR, "Erro no cadastramento do veículo\n" + 
@@ -1059,5 +1068,17 @@ public class CadastroVeiculoController implements Initializable
     {
         if(event.getCode() == KeyCode.ENTER)
             clickConfirmar(new ActionEvent());
+    }
+
+    public void setAcao(int i)
+    {
+        inicializa();
+        acao = i;
+        clickNovo(new ActionEvent());
+    }
+
+    public Objeto getVeiculo()
+    {
+        return veiculo;
     }
 }
