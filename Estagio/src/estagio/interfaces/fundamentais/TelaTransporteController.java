@@ -44,6 +44,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -272,6 +273,9 @@ public class TelaTransporteController implements Initializable
         tfPlacaCegonha.clear();
         dpSaida.setValue(LocalDate.now());
         dpChegada.getEditor().clear();
+        tvVeiculos.getItems().clear();
+        cbStatus.getSelectionModel().select(-1);
+        cbTipo.getSelectionModel().select(-1);
     }
     
     public void setEstado(Boolean b1,Boolean b2,Boolean b3,Boolean b4,Boolean b5,Boolean b6)
@@ -308,22 +312,20 @@ public class TelaTransporteController implements Initializable
         limpaCampos();
         
         lvTransportes.getItems().clear();
-        
         ctrTran.getAll().forEach((objeto) ->
         {
-            lvTransportes.getItems().add("Código de Transporte: " + objeto.getParam1() + " - " + objeto.getParam6() + 
-                            "Motorista " + objeto.getParam9()  + " Com "
-                            + objeto.getList1() != null && !objeto.getList1().isEmpty() ? objeto.getList1().size() + "" : "0" + "Veículos");
+            lvTransportes.getItems().add("Código de Transporte: " + objeto.getParam1() + "\nStatus: " + 
+                    objeto.getParam6());
         });
-        
-        tvVeiculos.getItems().clear();
-        setEstado(true, false, true, true, true, false);
         
         acao = -1;
         transporte = null;
         transporte_selecionado = null;
+        lbUltimaAlteracao.setText("Data da Última Alteração: ");
         
         atualizaListaFornecedores("");
+        
+        setEstado(true, false, true, true, true, false);
     }
     
     @Override
@@ -350,6 +352,8 @@ public class TelaTransporteController implements Initializable
         
         inicializa();
         setlisteners();
+        
+        inicializaToolTipListView();
     }    
 
     @FXML
@@ -419,6 +423,24 @@ public class TelaTransporteController implements Initializable
     @FXML
     private void clickRemover(ActionEvent event)
     {
+        if(!lvTransportes.getItems().isEmpty() && lvTransportes.getSelectionModel().getSelectedIndex() >= 0)
+        {
+            Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Remover transporte?", ButtonType.YES,ButtonType.NO);
+            a.showAndWait();
+            
+            if(a.getResult() == ButtonType.YES && transporte != null)
+            {
+                if(ctrTran.apagar(Integer.parseInt(transporte.getParam1())))
+                {
+                    inicializa();
+                    a = new Alert(Alert.AlertType.INFORMATION, "Transporte removido com sucesso!!", ButtonType.OK);
+                }
+                else
+                    a = new Alert(Alert.AlertType.ERROR, "Erro na remoção do transporte\n" + 
+                            Banco.getCon().getMensagemErro(), ButtonType.OK);
+                a.showAndWait();
+            }
+        }
     }
 
     @FXML
@@ -495,7 +517,7 @@ public class TelaTransporteController implements Initializable
             stage.showAndWait();
             stage.setOnCloseRequest((e) ->
             {
-                //controller.resetVeiculos();
+                controller.resetVeiculos();
             });
             tvVeiculos.getItems().add(controller.getVeiculo());
         }
@@ -530,21 +552,29 @@ public class TelaTransporteController implements Initializable
     {
         if(!lvTransportes.getItems().isEmpty() && lvTransportes.getSelectionModel().getSelectedIndex() >= 0)
         {
+            setEstado(true, false, true, false, false, false);
+            limpaCampos();
             transporte_selecionado = lvTransportes.getSelectionModel().getSelectedItem();
+            String s = transporte_selecionado.substring
+                (transporte_selecionado.indexOf(":") + 1,transporte_selecionado.indexOf("\n"));
             
-            transporte = ctrTran.getByCodigo(Integer.parseInt
-            (transporte_selecionado.substring
-                (transporte_selecionado.indexOf(":") + 1),transporte_selecionado.indexOf(" -")));
+            transporte = ctrTran.getByCodigo(Integer.parseInt(s.replace(" ", "")));
             
             if(transporte != null)
             {
                 tfMotorista.setText(transporte.getParam9());
-                tfPlacaCegonha.setText(transporte.getParam10());
-                dpChegada.setValue(LocalDate.parse(transporte.getParam5()));
+                tfPlacaCegonha.setText(transporte.getParam3());
+                
                 dpSaida.setValue(LocalDate.parse(transporte.getParam4()));
                 cbStatus.getSelectionModel().select(transporte.getParam6());
                 cbTipo.getSelectionModel().select(transporte.getParam7());
                 
+                if(transporte.getParam5() != null && !transporte.getParam5().equals("") 
+                        && !transporte.getParam5().equals("null"))
+                {
+                    dpChegada.setValue(LocalDate.parse(transporte.getParam5()));
+                    //dpChegada.getEditor().setText(transporte.getParam5());
+                }
                 lbUltimaAlteracao.setText("Data da Última Alteração: " + transporte.getParam8());
                 
                 tvVeiculos.setItems(FXCollections.observableArrayList(transporte.getList1()));
@@ -683,17 +713,16 @@ public class TelaTransporteController implements Initializable
             if(cbFinalizados.isSelected())
                 ctrTran.getAll(true).forEach((objeto) ->
                 {
-                    lvTransportes.getItems().add("Código de Transporte: " + objeto.getParam1() + " - " + objeto.getParam6() + 
-                            "Motorista " + objeto.getParam9()  + " Com "
-                            + objeto.getList1() != null && !objeto.getList1().isEmpty() ? objeto.getList1().size() + "" : "0" + "Veículos");
+                    lvTransportes.getItems().add("Código de Transporte: " + objeto.getParam1() + "\nStatus: " + 
+                    objeto.getParam6());
                 });
             else
                 ctrTran.getAll().forEach((objeto) ->
                 {
-                    lvTransportes.getItems().add("Código de Transporte: " + objeto.getParam1() + " - " + objeto.getParam6() + 
-                            "Motorista " + objeto.getParam9()  + " Com "
-                            + objeto.getList1() != null && !objeto.getList1().isEmpty() ? objeto.getList1().size() + "" : "0" + "Veículos");
+                    lvTransportes.getItems().add("Código de Transporte: " + objeto.getParam1() + "\nStatus: " + 
+                    objeto.getParam6());
                 });
+            inicializaToolTipListView();
         });
         
         autoCompletePopupFuncionarios.setSelectionHandler(event ->
@@ -812,8 +841,12 @@ public class TelaTransporteController implements Initializable
             erros += "Digite a placa do Veículo(Cegonha)\n";
             lbErroPlacaCegonha.setText("Placa incompleta");
         }
-        
-        if(!cbStatus.getSelectionModel().getSelectedItem().equals("Á Iniciar") && 
+        if(cbStatus.getSelectionModel().getSelectedIndex() < 0)
+        {
+            erros += "Selecione o status do transporte\n";
+            lbErroStatus.setText("Campo requerido");
+        }
+        else if(!cbStatus.getSelectionModel().getSelectedItem().equals("Á Iniciar") && 
             dpSaida.getEditor().getText().trim().equals(""))
         {
             erros += "Seleciona a data de Saída\n";
@@ -827,18 +860,14 @@ public class TelaTransporteController implements Initializable
                 erros += "Selecione a data do término do transporte\n";
                 lbErroChegada.setText("Campo requerido");
             }
-            else if(!dpChegada.getEditor().getText().trim().equals("") && 
-                    dpChegada.getValue().compareTo(dpSaida.getValue()) < 0)
-            {
-                erros += "Data de chegada inferior ao de saída\n";
-                lbErroChegada.setText("Data inválida");
-            }
         }
         
-        if(cbStatus.getSelectionModel().getSelectedIndex() < 0)
+        if(!dpSaida.getEditor().getText().trim().equals("") && 
+            !dpChegada.getEditor().getText().trim().equals("") && 
+            dpChegada.getValue().compareTo(dpSaida.getValue()) < 0)
         {
-            erros += "Selecione o status do transporte\n";
-            lbErroStatus.setText("Campo requerido");
+            erros += "Data de chegada inferior ao de saída\n";
+            lbErroChegada.setText("Data inválida");
         }
         
         if(cbTipo.getSelectionModel().getSelectedIndex() < 0)
@@ -882,6 +911,44 @@ public class TelaTransporteController implements Initializable
         {
             transporte.addList1(t);
         });
+    }
+
+    private void inicializaToolTipListView()
+    {
+        lvTransportes.setCellFactory((ListView<String> param) ->
+        {
+            final Tooltip t = new Tooltip();
+            final ListCell<String> cell = new ListCell<String>() {
+                @Override
+                public void updateItem(String item, boolean empty)
+                {
+                    super.updateItem(item, empty);
+                    if (item != null)
+                    {
+                        setText(item);
+                        t.setText(preencheTooltip(item.substring(0, item.indexOf("\n"))));
+                        ToolTip.bindTooltip(this, t);
+                    }
+                    else
+                        setText(null);
+                }
+                
+                private String preencheTooltip(String item)
+                {
+                    ArrayList<Objeto>objetos = cbFinalizados.isSelected() ? ctrTran.getAll(true) : ctrTran.getAll();
+                    for(Objeto objeto : objetos)
+                    {
+                        String s = "Motorista: " + objeto.getParam9() + " Com ";
+                        s += objeto.getList1() != null && !objeto.getList1().isEmpty()
+                                ? objeto.getList1().size() + "" : "0";
+                        s += " Veículo(s)";
+                        return s;
+                    }
+                    return null;
+                }
+            }; // ListCell
+            return cell;
+        }); 
     }
     
 }

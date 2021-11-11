@@ -1081,4 +1081,9 @@ public class CadastroVeiculoController implements Initializable
     {
         return veiculo;
     }
+
+    public void resetVeiculos()
+    {
+        this.veiculo = null;
+    }
 }

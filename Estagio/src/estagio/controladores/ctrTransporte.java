@@ -66,10 +66,13 @@ public class ctrTransporte
         
         for(Transporte t : new Transporte().getAll())
         {
-            if(finalizado.length > 0 && finalizado[0])
-                ret.add(convertToObjeto(t));
-            else
+            if(finalizado.length == 0 || !finalizado[0])
+            {
                 if(!t.getStatus().equals("Finalizado"))
+                    ret.add(convertToObjeto(t));
+            }
+            else
+                if(t.getStatus().equals("Finalizado"))
                     ret.add(convertToObjeto(t));
         }    
         return ret;
@@ -87,6 +90,9 @@ public class ctrTransporte
         t.setCegonha(transporte.getParam3());
         t.setStatus(transporte.getParam6());
         t.setTipo(transporte.getParam7());
+        
+        for(Objeto vei : transporte.getList1())
+            t.addVeiculo(Integer.parseInt(vei.getParam1()));
         
         try
         {

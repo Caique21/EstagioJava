@@ -347,10 +347,10 @@ CREATE TABLE veiculos_transportados
 		PRIMARY KEY(trans_codigo,vei_codigo),
 	CONSTRAINT fk_vei_transportados_transporte
 		FOREIGN KEY(trans_codigo)
-		REFERENCES transporte,
+		REFERENCES transporte ON DELETE CASCADE,
 	CONSTRAINT fk_vei_transportados_veiculos
 		FOREIGN KEY(vei_codigo)
-		REFERENCES veiculo
+		REFERENCES veiculo ON DELETE CASCADE
 );
 
 CREATE TABLE despesa
