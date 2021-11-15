@@ -6,9 +6,14 @@
 package estagio.entidades;
 
 import estagio.utilidades.Banco;
+import estagio.utilidades.Utils;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +36,17 @@ public class Pagamento
     {
     }
 
+    public Pagamento(int codigo, Date data, double valor, Parcela parcela, String forma_pagamento, String forma_pagamento_desc, boolean ativo)
+    {
+        this.codigo = codigo;
+        this.data = data;
+        this.valor = valor;
+        this.parcela = parcela;
+        this.forma_pagamento = forma_pagamento;
+        this.forma_pagamento_desc = forma_pagamento_desc;
+        this.ativo = ativo;
+    }
+
     public Pagamento(int codigo)
     {
         this.codigo = codigo;
@@ -42,13 +58,14 @@ public class Pagamento
         get();
     }
 
-    public Pagamento(int codigo, Date data, double valor, Despesa despesa, String forma_pagamento, boolean ativo)
+    public Pagamento(int codigo, Date data, double valor, Despesa despesa, String forma_pagamento,String forma_pagamento_desc, boolean ativo)
     {
         this.codigo = codigo;
         this.data = data;
         this.valor = valor;
         this.despesa = despesa;
         this.forma_pagamento = forma_pagamento;
+        this.forma_pagamento_desc = forma_pagamento_desc;
         this.ativo = ativo;
     }
 
@@ -176,17 +193,92 @@ public class Pagamento
         this.forma_pagamento_desc = forma_pagamento_desc;
     }
 
-    public boolean pagarDespesa()
+    public boolean pagar()
     {
         String sql = "INSERT INTO pagamento(pag_data,pag_valor,pag_form_pagamento,pag_form_pagamento_desc,pag_ativo,"
                 + "$aux) VALUES('$1',$2,'$3','$4','$5',$6)";
         
         if(this.despesa != null)
             sql = sql.replace("$aux", "desp_codigo").replace("$6", String.valueOf(this.despesa.getCodigo()));
-        //else
-            //sql = sql.replace("$aux", "parc_codigo").replace("$6", String.valueOf(this.parcela.getCodigo()));
+        else
+            sql = sql.replace("$aux", "parc_codigo").replace("$6", String.valueOf(this.parcela.getCodigo()));
+        sql = sql.replace("$1", String.valueOf(this.data));
+        sql = sql.replace("$2", String.valueOf(this.valor));
+        sql = sql.replace("$3", this.forma_pagamento);
+        sql = sql.replace("$4", this.forma_pagamento_desc);
+        sql = sql.replace("$5", String.valueOf(true));
             
        return Banco.getCon().manipular(sql);
+    }
+
+    public boolean pagarParcial()
+    {
+        Connection con = Banco.getCon().getConnection();
+        PreparedStatement stmt,stmt2;
+        boolean flag = false;
+        
+        try
+        {
+            con.setAutoCommit(false);
+            String sql;
+        
+            if(this.despesa != null || this.parcela != null)
+            {    
+                if(this.despesa != null)
+                {
+                    stmt = con.prepareStatement("INSERT INTO pagamento(pag_data,pag_valor,pag_form_pagamento,"
+                        + "pag_form_pagamento_desc,pag_ativo,desp_codigo) VALUES(?,?,?,?,?,?)");
+                    stmt.setInt(6, this.despesa.getCodigo());
+                    
+                    sql = "INSERT INTO despesa(desp_nome,desp_fixo,desp_preco,desp_data_vencimento,desp_descricao $7)"
+                        + " VALUES(?,?,?,?,?,$6)";
+                    if(this.despesa.getTransporte() == null)
+                        sql = sql.replace(" $7", "").replace(",$6", "");
+                    else
+                        sql = sql.replace(" $7", ",trans_codigo").replace(",$6", "?");
+                    
+                    stmt2 = con.prepareStatement(sql);
+                    stmt2.setString(1, this.despesa.getNome());
+                    stmt2.setBoolean(2, this.despesa.isFixo());
+                    stmt2.setDouble(3, this.despesa.getValor() - this.valor);
+                    stmt2.setDate(4, this.getDespesa().getVencimento());
+                    stmt2.setString(5, this.getDespesa().getDescricao());
+                    
+                    if(this.getDespesa().getTransporte() != null)
+                        stmt.setInt(6, this.getDespesa().getTransporte().getCodigo());
+                }
+                else
+                {
+                    stmt = con.prepareStatement("INSERT INTO pagamento(pag_data,pag_valor,pag_form_pagamento,"
+                        + "pag_form_pagamento_desc,pag_ativo,parc_codigo) VALUES(?,?,?,?,?,?)");
+                    stmt.setInt(6, this.parcela.getCodigo());
+                    
+                    sql = "INSERT INTO parcela(parc_datavencimento,parc_numero,parc_valor_parcela,comp_codigo)"
+                        + "VALUES (?,?,?,?)";
+                    stmt2 = con.prepareStatement(sql);
+                    stmt2.setDate(1, this.getParcela().getVencimento());
+                    stmt2.setInt(2, new Parcela().getQtdParcelas(this.parcela.getCompra()) + 1);
+                    stmt2.setDouble(3, Utils.truncate(this.parcela.getValor_parcela() - this.valor));
+                    stmt2.setInt(4, this.parcela.getCompra().getCodigo());
+                }
+                stmt.setDate(1, this.data);
+                stmt.setDouble(2, this.valor);
+                stmt.setString(3, this.forma_pagamento);
+                stmt.setString(4, this.forma_pagamento_desc);
+                stmt.setBoolean(5, true);
+                
+                if(flag = stmt.executeUpdate() == 1 && stmt2.executeUpdate() == 1)
+                    con.commit();
+                else
+                    con.rollback();
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return flag;
     }
 
     private void get()
@@ -233,6 +325,203 @@ public class Pagamento
         //else
             //sql += "parc_codigo = " + this.parcela.getCodigo();
        return Banco.getCon().manipular(sql);
+    }
+
+    public ArrayList<Pagamento> getAll()
+    {
+        ArrayList<Pagamento>pagamentos = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
+                + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE comp_codigo > 0");
+        
+        try            
+        {
+            while(rs != null && rs.next())
+                pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
+                        rs.getBoolean("pag_ativo")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        
+        rs = Banco.getCon().consultar("SELECT * FROM despesa LEFT JOIN pagamento "
+                + "ON despesa.desp_codigo = pagamento.desp_codigo");
+        
+        try            
+        {
+            while(rs != null && rs.next())
+                pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Despesa(rs.getInt("desp_codigo")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
+                        rs.getBoolean("pag_ativo")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return pagamentos;
+    }
+
+    public ArrayList<Pagamento> getByFornecedor(String fornecedor)
+    {
+        ArrayList<Pagamento>pagamentos = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
+            + "ON pagamento.parc_codigo = parcela.parc_codigo WHERE parcela.parc_codigo "
+                + "IN(SELECT parc_codigo from parcela INNER JOIN compra ON parcela.comp_codigo = compra.comp_codigo "
+                + "AND compra.comp_codigo "
+                    + "IN(SELECT comp_codigo FROM compra INNER JOIN cliente ON compra.cli_codigo = cliente.cli_codigo "
+                        + "AND cli_nome Ilike '%" + fornecedor + "%' \n" 
+                    +"UNION \n" 
+                    + "SELECT comp_codigo FROM compra INNER JOIN fornecedor "
+                        + "ON compra.forn_codigo = fornecedor.forn_codigo AND forn_nome Ilike '%"+fornecedor+"%'))");
+        
+        try            
+        {
+            while(rs != null && rs.next())
+                pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
+                        rs.getBoolean("pag_ativo")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return pagamentos;
+    }
+
+    public ArrayList<Pagamento> getByNotaFiscal(String nota_fiscal)
+    {
+        ArrayList<Pagamento>pagamentos = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
+            + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE parcela.parc_codigo IN "
+                + "(SELECT parc_codigo FROM parcela INNER JOIN compra ON parcela.comp_codigo = compra.comp_codigo "
+                + "AND comp_nota_fiscal Ilike '%" + nota_fiscal + "%')");
+        
+        try            
+        {
+            while(rs != null && rs.next())
+                pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
+                        rs.getBoolean("pag_ativo")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return pagamentos;
+    }
+
+    public ArrayList<Pagamento> getByDespesa(String despesa)
+    {
+        ArrayList<Pagamento>pagamentos = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM despesa LEFT JOIN pagamento "
+            + "ON despesa.desp_codigo = pagamento.desp_codigo WHERE desp_nome Ilike '%" + despesa + "%'");
+        
+        try            
+        {
+            while(rs != null && rs.next())
+                pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Despesa(rs.getInt("desp_codigo")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
+                        rs.getBoolean("pag_ativo")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return pagamentos;
+    }
+
+    public ArrayList<Pagamento> getByVencimento(LocalDate data)
+    {
+        ArrayList<Pagamento>pagamentos = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
+            + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE comp_codigo > 0 AND "
+                + "parc_datavencimento <= '" + data.toString() + "'");
+        
+        try            
+        {
+            while(rs != null && rs.next())
+                pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
+                        rs.getBoolean("pag_ativo")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        
+        rs = Banco.getCon().consultar("SELECT * FROM despesa LEFT JOIN pagamento "
+            + "ON despesa.desp_codigo = pagamento.desp_codigo WHERE desp_data_vencimento <= '"+data.toString()+"'");
+        
+        try            
+        {
+            while(rs != null && rs.next())
+                pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Despesa(rs.getInt("desp_codigo")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
+                        rs.getBoolean("pag_ativo")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return pagamentos;
+    }
+
+    public ArrayList<Pagamento> getByPeriodo(LocalDate inicial, LocalDate fim)
+    {
+        ArrayList<Pagamento>pagamentos = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
+            + "ON parcela.parc_codigo = pagamento.parc_codigo "
+               + "WHERE comp_codigo > 0 AND parc_datavencimento >= '" + inicial.toString() + "' "
+               + "AND parc_datavencimento <= '" + fim.toString() + "'");
+        
+        try            
+        {
+            while(rs != null && rs.next())
+                pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
+                        rs.getBoolean("pag_ativo")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        
+        rs = Banco.getCon().consultar("SELECT * FROM despesa LEFT JOIN pagamento "
+            + "ON despesa.desp_codigo = pagamento.desp_codigo "
+            + "WHERE desp_data_vencimento >= '" + inicial.toString() +"' "
+            + "AND desp_data_vencimento <= '" + fim.toString() + "'");
+        
+        try            
+        {
+            while(rs != null && rs.next())
+                pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Despesa(rs.getInt("desp_codigo")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
+                        rs.getBoolean("pag_ativo")));
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return pagamentos;
     }
     
     

@@ -6,11 +6,9 @@
 package estagio.entidades;
 
 import estagio.utilidades.Banco;
-import estagio.utilidades.Utils;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;

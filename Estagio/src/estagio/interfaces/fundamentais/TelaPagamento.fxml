@@ -15,9 +15,13 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import java.net.URL?>
 
 <BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.fundamentais.TelaPagamentoController">
-   <top>
+   <stylesheets>
+        <URL value="@/estagio/utilidades/CSS/Style.css" />
+    </stylesheets>
+    <top>
       <Label fx:id="lbTitulo" text="Pagamento" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="20.0" />
@@ -30,9 +34,9 @@
             <Pane fx:id="panePesquisa" prefHeight="89.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                <children>
                   <JFXTextField fx:id="tfFornecedorDespesa" labelFloat="true" layoutX="31.0" layoutY="19.0" prefHeight="25.0" prefWidth="270.0" promptText="Digite nome do Fornecedor para pesquisar" />
-                  <JFXDatePicker layoutX="31.0" layoutY="19.0" prefHeight="25.0" prefWidth="270.0" visible="false" />
-                  <JFXDatePicker layoutX="31.0" layoutY="19.0" prefHeight="25.0" prefWidth="114.0" visible="false" />
-                  <JFXDatePicker layoutX="187.0" layoutY="19.0" prefHeight="25.0" prefWidth="114.0" visible="false" />
+                  <JFXDatePicker fx:id="dpVencimento" layoutX="31.0" layoutY="19.0" prefHeight="25.0" prefWidth="270.0" visible="false" />
+                  <JFXDatePicker fx:id="dpInicial" layoutX="31.0" layoutY="19.0" prefHeight="25.0" prefWidth="114.0" visible="false" />
+                  <JFXDatePicker fx:id="dpFinal" layoutX="187.0" layoutY="19.0" prefHeight="25.0" prefWidth="114.0" visible="false" />
                   <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="309.0" layoutY="17.0" onAction="#clickPesquisar" onMouseEntered="#pesquisarEnter" onMouseExited="#pesquisarExit" text="PESQUISAR">
                      <graphic>
                         <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" />
@@ -42,13 +46,14 @@
                      </font>
                   </JFXButton>
                   <JFXCheckBox fx:id="cbPagas" layoutX="417.0" layoutY="23.0" text="Exibir Contas Pagas" />
-                  <HBox layoutX="31.0" layoutY="55.0" prefHeight="17.0" prefWidth="576.0" spacing="20.0">
+                  <HBox layoutX="31.0" layoutY="55.0" prefHeight="17.0" prefWidth="623.0" spacing="20.0">
                      <children>
-                        <JFXRadioButton fx:id="rbTodos" text="Listar Todos" />
-                        <JFXRadioButton fx:id="rbFornecedor" text="Fornecedor" />
-                        <JFXRadioButton fx:id="rbDespesa" text="Despesa" />
-                        <JFXRadioButton fx:id="rbData" text="Vence Até" />
-                        <JFXRadioButton fx:id="rbPeriodo" text="Período" />
+                        <JFXRadioButton fx:id="rbTodos" onAction="#clickTodos" text="Listar Todos" />
+                        <JFXRadioButton fx:id="rbNotaFiscal" onAction="#clickNotaFiscal" text="Nota Fiscal" />
+                        <JFXRadioButton fx:id="rbFornecedor" onAction="#clickFornecedor" text="Fornecedor" />
+                        <JFXRadioButton fx:id="rbDespesa" onAction="#clickDespesa" text="Despesa" />
+                        <JFXRadioButton fx:id="rbData" onAction="#clickData" text="Vence Até" />
+                        <JFXRadioButton fx:id="rbPeriodo" onAction="#clickPeriodo" text="Período" />
                      </children>
                   </HBox>
                   <Label fx:id="lbAte" layoutX="157.0" layoutY="19.0" text="Até" visible="false" />

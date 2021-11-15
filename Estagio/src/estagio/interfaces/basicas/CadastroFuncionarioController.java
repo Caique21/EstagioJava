@@ -709,7 +709,7 @@ public class CadastroFuncionarioController implements Initializable
         if(validaFuncionario())
         {
             Alert alerta;
-            if(acao == 0)//NOVO
+            if(acao == 0 || acao == 2)//NOVO
             {
                 alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja confirmar cadastro do funcionário " + 
                     tfNome.getText() + "?", ButtonType.YES,ButtonType.NO);
@@ -729,6 +729,12 @@ public class CadastroFuncionarioController implements Initializable
                         {
                             new Alert(Alert.AlertType.INFORMATION, "Funcionáio cadastrado com sucesso!!!", 
                                     ButtonType.OK).showAndWait();
+                            
+                            if(acao == 2)
+                            {
+                                Stage stage = (Stage) btCancelar.getScene().getWindow();
+                                stage.close();
+                            }
                             inicializa();
                         }
                         else
@@ -761,6 +767,11 @@ public class CadastroFuncionarioController implements Initializable
                         }
                         new Alert(Alert.AlertType.INFORMATION, "Funcionário cadastrado com sucesso!!!", ButtonType.OK)
                             .showAndWait();
+                        if(acao == 2)
+                        {
+                            Stage stage = (Stage) btCancelar.getScene().getWindow();
+                            stage.close();
+                        }
                     }
                     else
                         new Alert(Alert.AlertType.ERROR, "Erro no cadastro do Funcionário\n" + 
@@ -1076,6 +1087,11 @@ public class CadastroFuncionarioController implements Initializable
     @FXML
     private void clickCancelar(ActionEvent event)
     {
+        if(acao == 2)
+        {
+            Stage stage = (Stage) btCancelar.getScene().getWindow();
+            stage.close();
+        }
         inicializa();
     }
 
@@ -1706,5 +1722,18 @@ public class CadastroFuncionarioController implements Initializable
                 }
             }
         }
+    }
+
+    public void setFuncionario(String... nome)
+    {
+        clickNovo(new ActionEvent());
+        acao = 2;
+        if(nome.length > 0)
+        {
+            tfNome.setText(nome[0]);
+            tfCPF.requestFocus();
+        }
+        else
+            tfNome.requestFocus();
     }
 }

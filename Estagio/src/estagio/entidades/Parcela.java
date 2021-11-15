@@ -45,6 +45,12 @@ public class Parcela
         this.venda = venda;
     }
 
+    public Parcela(int codigo)
+    {
+        this.codigo = codigo;
+        get();
+    }
+
     public Parcela(int codigo, Date vencimento, int numero, Date pagamento, double valor_parcela, double valor_pago, Compra compra)
     {
         this.codigo = codigo;
@@ -246,6 +252,33 @@ public class Parcela
         return Banco.getCon().manipular("DELETE FROM parcela WHERE parc_codigo = " + codigo);
     }
 
+    private void get()
+    {
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela WHERE parc_codigo = " + this.codigo);
+        
+        try
+        {
+            if(rs != null && rs.next())            
+            {
+                this.numero = rs.getInt("parc_numero");
+                this.pagamento = rs.getDate("parc_datapagamento");
+                this.valor_pago = rs.getDouble("parc_valorpago");
+                this.valor_parcela = rs.getDouble("parc_valorparcela");
+                this.vencimento = rs.getDate("parc_datavencimento");
+                
+                if(rs.getInt("comp_codigo") > 0)
+                    this.compra = new Compra(rs.getInt("comp_codigo"));
+                else
+                    this.venda = new Venda(rs.getInt("ven_codigo"));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Parcela.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+    }
+
     public ArrayList<Parcela> getByCompra(Compra compra)
     {
         ArrayList<Parcela> parcelas = new ArrayList<>();
@@ -300,4 +333,20 @@ public class Parcela
         return parcelas;
     }
     
+    public int getQtdParcelas(Compra compra)
+    {
+        ResultSet rs = Banco.getCon().consultar("SELECT MAX(parc_numero) AS qtd FROM parcela WHERE comp_codigo = "
+            + compra.getCodigo());
+        
+        try
+        {
+            if(rs != null && rs.next())            
+                return rs.getInt("qtd");
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Parcela.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    }
 }

@@ -17,6 +17,7 @@ import estagio.TelaPrincipalController;
 import estagio.controladores.ctrFuncionario;
 import estagio.controladores.ctrTransporte;
 import estagio.controladores.ctrVeiculo;
+import estagio.interfaces.basicas.CadastroFuncionarioController;
 import estagio.interfaces.basicas.CadastroVeiculoController;
 import estagio.interfaces.buscas.BuscarVeiculoController;
 import estagio.utilidades.Banco;
@@ -32,6 +33,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -271,7 +274,7 @@ public class TelaTransporteController implements Initializable
     {
         tfMotorista.clear();
         tfPlacaCegonha.clear();
-        dpSaida.setValue(LocalDate.now());
+        dpSaida.getEditor().clear();
         dpChegada.getEditor().clear();
         tvVeiculos.getItems().clear();
         cbStatus.getSelectionModel().select(-1);
@@ -733,8 +736,39 @@ public class TelaTransporteController implements Initializable
         tfMotorista.focusedProperty().addListener((observable, oldValue, newValue) ->
         {
             if(!newValue)
-                if(tfMotorista.getText().equals("NOVO FUNCIONÁRIO"))
-                    tfMotorista.setText("");
+            {
+                if(!autoCompletePopupFuncionarios.getSuggestions().contains(tfMotorista.getText()))
+                {
+                    Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Cadastrar novo funionário " + 
+                            tfMotorista.getText() + "?", ButtonType.YES,ButtonType.NO);
+                    a.showAndWait();
+                    
+                    if(a.getResult() == ButtonType.YES)
+                    {
+                        try 
+                        {
+                            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/basicas/CadastroFuncionario.fxml"));
+                            Parent root = (Parent) fxmlLoader.load();
+                            Stage stage = new Stage();
+                            JFXDecorator decorator = new JFXDecorator(stage, root);
+                            
+                            CadastroFuncionarioController controller = fxmlLoader.<CadastroFuncionarioController>getController();
+                            decorator.setStyle("-fx-decorator-color: #040921;");
+                            controller.setFuncionario(tfMotorista.getText());
+                            Scene scene = new Scene(decorator);
+                            
+                            stage.setTitle("Cadastrar Funcionário");
+                            stage.setScene(scene);
+                            stage.showAndWait();
+                            
+                            atualizaListaFornecedores(tfMotorista.getText());
+                        }
+                        catch (IOException ex) {
+                            Logger.getLogger(TelaTransporteController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
         });
 
         tfMotorista.textProperty().addListener((Observable observable) ->
@@ -752,7 +786,38 @@ public class TelaTransporteController implements Initializable
                 {
                     autoCompletePopupFuncionarios.show(tfMotorista);
                     if(tfMotorista.getText().equals("NOVO FUNCIONÁRIO"))
-                    tfMotorista.setText("");
+                    {
+                        Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Iniciar cadastro de novo funcionário?", 
+                            ButtonType.YES,ButtonType.NO);
+                        a.showAndWait();
+
+                        if (a.getResult() == ButtonType.YES)
+                        {
+                            try
+                            {
+                                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/basicas/CadastroFuncionario.fxml"));
+                                Parent root = (Parent) fxmlLoader.load();
+                                Stage stage = new Stage();
+                                JFXDecorator decorator = new JFXDecorator(stage, root);
+
+                                CadastroFuncionarioController controller = fxmlLoader.<CadastroFuncionarioController>getController();
+                                decorator.setStyle("-fx-decorator-color: #040921;");
+                                controller.setFuncionario();
+                                Scene scene = new Scene(decorator);
+
+                                stage.setTitle("Cadastrar Funcionário");
+                                stage.setScene(scene);
+                                stage.showAndWait();
+                                
+                                tfMotorista.setText("");
+                                atualizaListaFornecedores("");
+                            }
+                            catch (IOException ex)
+                            {
+                                Logger.getLogger(TelaTransporteController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -811,6 +876,14 @@ public class TelaTransporteController implements Initializable
                     if(tfPlacaCegonha.getText().substring(4, 5).matches("[0-9]"))
                         tfPlacaCegonha.setText(tfPlacaCegonha.getText().substring(0, 3) + "-" + 
                                 tfPlacaCegonha.getText().substring(3));
+            }
+        });
+        
+        cbStatus.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+        {
+            if(!newValue.equals("Á Iniciar"))
+            {
+                dpSaida.setValue(LocalDate.now());
             }
         });
     }
