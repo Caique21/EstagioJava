@@ -310,6 +310,7 @@ public class Transporte
                         break;
                     }
                 
+                
                 if(flag)
                     connection.commit();
             }
@@ -376,6 +377,16 @@ public class Transporte
                         flag = false;
                         break;
                     }
+                
+                if(this.chegada != null && this.status.equals("Finalizado"))
+                {
+                    stmt = connection.prepareStatement("UPDATE despesa SET desp_data_vencimento = ? "
+                        + "WHERE trans_codigo = ?");
+                    stmt.setDate(1, new java.sql.Date(this.chegada.getTime()));
+                    stmt.setInt(2, this.codigo);
+                    
+                    flag = stmt.executeUpdate() == 1;
+                }
                 
                 if(flag)
                     connection.commit();

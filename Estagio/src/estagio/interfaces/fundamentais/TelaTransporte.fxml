@@ -120,7 +120,7 @@
       </VBox>
    </left>
    <bottom>
-      <HBox alignment="CENTER" prefHeight="47.0" prefWidth="1200.0" spacing="10.0" BorderPane.alignment="CENTER">
+      <HBox fx:id="hbComandos" alignment="CENTER" prefHeight="47.0" prefWidth="1200.0" spacing="10.0" BorderPane.alignment="CENTER">
          <children>
             <JFXButton fx:id="btNovo" buttonType="RAISED" onAction="#clickNovo" onMouseEntered="#novoEnter" onMouseExited="#novoExit" text="NOVO">
                <graphic>

@@ -10,6 +10,7 @@ import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import estagio.entidades.Despesa;
+import estagio.entidades.Transporte;
 import estagio.utilidades.Objeto;
 import estagio.utilidades.Utils;
 import java.sql.Date;
@@ -38,12 +39,25 @@ public class ctrDespesa
         return con;
     }
 
-    public boolean salvar(JFXTextField nome, JFXRadioButton fixo, JFXTextField valor, JFXDatePicker data, JFXTextArea descricao)
+    public boolean salvar(JFXTextField nome, JFXRadioButton fixo, JFXTextField valor, JFXDatePicker data, 
+        JFXTextArea descricao, int... transporte)
     {
-        Despesa despesa = new Despesa(nome.getText(), fixo.isSelected(), 
-             Double.parseDouble(valor.getText().replace(".", "").replace(",", ".")), Date.valueOf(data.getValue()), descricao.getText());
-       
+        Despesa despesa = new Despesa();
+        despesa.setNome(nome.getText());
+        despesa.setFixo(fixo.isSelected());
+        despesa.setDescricao(descricao.getText());
+        despesa.setValor(Double.parseDouble(valor.getText().replace(".", "").replace(",", ".")));
+        
+        if(data != null && data.getValue() != null)
+            despesa.setVencimento(Date.valueOf(data.getValue()));
+        if(transporte.length > 0)
+            despesa.setTransporte(new Transporte(transporte[0]));
+        
         boolean flag = despesa.salvar();
+        
+        if(despesa.getVencimento() == null)
+            return flag;
+        
         int qtd = LocalDate.now().getMonthValue() - data.getValue().getMonthValue();
         if(qtd > 0 && flag && fixo.isSelected())
         {
@@ -56,21 +70,32 @@ public class ctrDespesa
     }
 
     public boolean alterar(int cod, JFXTextField nome, JFXRadioButton fixo, JFXTextField valor, JFXDatePicker data, 
-        JFXTextArea descricao,String...outros)
+        JFXTextArea descricao, int transporte,String...outros)
     {
-        Despesa despesa = new Despesa(cod,nome.getText(), fixo.isSelected(), 
-             Double.parseDouble(valor.getText().replace(".", "").replace(",", ".")), Date.valueOf(data.getValue()), descricao.getText());
+        Despesa despesa = new Despesa();
+        despesa.setCodigo(cod);
+        despesa.setNome(nome.getText());
+        despesa.setFixo(fixo.isSelected());
+        despesa.setDescricao(descricao.getText());
+        despesa.setValor(Double.parseDouble(valor.getText().replace(".", "").replace(",", ".")));
+        
+        if(data != null && data.getValue() != null)
+            despesa.setVencimento(Date.valueOf(data.getValue()));
+        if(transporte > 0)
+            despesa.setTransporte(new Transporte(transporte));
         
         boolean flag;
-        int qtd;
+        int qtd = 0;
         if(outros.length == 0)
         {
             flag = despesa.alterar();
-            qtd = LocalDate.now().getMonthValue() - data.getValue().getMonthValue();
+            if(despesa.getVencimento() != null)
+                qtd = LocalDate.now().getMonthValue() - data.getValue().getMonthValue();
         }
         else 
         {
-            qtd = despesa.getMinMonthByName(outros[0]) - data.getValue().getMonthValue() - 1;
+            if(despesa.getVencimento() != null)
+                qtd = despesa.getMinMonthByName(outros[0]) - data.getValue().getMonthValue() - 1;
             flag = despesa.alterar(outros[0]);
         }
         
@@ -81,9 +106,14 @@ public class ctrDespesa
             for (int i = min; i <= 12 && flag && i < max; i++)
                 if(!meses.contains(i))
                 {
-                    flag = flag && new Despesa(nome.getText(), fixo.isSelected(), 
+                    Despesa d = new Despesa(nome.getText(), fixo.isSelected(), 
                         Double.parseDouble(valor.getText().replace(".", "").replace(",", ".")), 
-                            Utils.setMonth(Date.valueOf(data.getValue()),i - 1), descricao.getText()).salvar();
+                            Utils.setMonth(Date.valueOf(data.getValue()),i - 1), descricao.getText());
+                    d.setTransporte(despesa.getTransporte());
+                    flag = d.salvar();
+                    /*flag = flag && new Despesa(nome.getText(), fixo.isSelected(), 
+                        Double.parseDouble(valor.getText().replace(".", "").replace(",", ".")), 
+                            Utils.setMonth(Date.valueOf(data.getValue()),i - 1), descricao.getText()).salvar();*/
                 }
         }
         return flag;
@@ -125,6 +155,17 @@ public class ctrDespesa
         return ret;
     }
 
+    public ArrayList<Objeto> getByTransporte(int codigo)
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        ArrayList<Despesa>despesas = new Despesa().getByTransporte(codigo);
+        
+        for (int i = 0; i < despesas.size(); i++)
+            ret.add(convertToObjeto(despesas.get(i)));
+        
+        return ret;
+    }
+
     public void gerarDespesasAutomatica()
     {
         ArrayList<Despesa>despesas = new Despesa().getFixos();
@@ -151,11 +192,24 @@ public class ctrDespesa
         obj.setParam2(desp.getNome());
         obj.setParam3(String.valueOf(desp.isFixo()));
         obj.setParam4(String.valueOf(desp.getValor()));
-        obj.setParam5(String.valueOf(desp.getVencimento()));
         obj.setParam6(desp.getDescricao() != null ? desp.getDescricao() : "");
-        //obj.setParam2(String.valueOf(desp.getTransporte().getCodigo()));
         obj.setParam7(desp.isFixo()? "Sim" : "Não");
-        obj.setParam8(Utils.convertData(desp.getVencimento()));
+        
+        if(desp.getTransporte() != null)
+            obj.setParam9(String.valueOf(desp.getTransporte().getCodigo()));
+        else
+            obj.setParam9("0");
+        
+        if(desp.getVencimento() != null)
+        {
+            obj.setParam5(String.valueOf(desp.getVencimento()));
+            obj.setParam8(Utils.convertData(desp.getVencimento()));
+        }
+        else
+        {
+            obj.setParam5("");
+            obj.setParam8("");
+        }
         return obj;
     }
 

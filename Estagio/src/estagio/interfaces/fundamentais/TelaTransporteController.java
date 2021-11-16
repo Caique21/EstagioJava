@@ -12,11 +12,14 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXTextField;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.TelaPrincipalController;
+import estagio.controladores.ctrDespesa;
 import estagio.controladores.ctrFuncionario;
 import estagio.controladores.ctrTransporte;
 import estagio.controladores.ctrVeiculo;
+import estagio.interfaces.basicas.CadastroDespesaController;
 import estagio.interfaces.basicas.CadastroFuncionarioController;
 import estagio.interfaces.basicas.CadastroVeiculoController;
 import estagio.interfaces.buscas.BuscarVeiculoController;
@@ -55,6 +58,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -72,10 +76,14 @@ public class TelaTransporteController implements Initializable
     private final ctrTransporte ctrTran = ctrTransporte.instancia();
     private final ctrFuncionario ctrFunc = ctrFuncionario.instancia();
     private final ctrVeiculo ctrVei = ctrVeiculo.instancia();
+    private final ctrDespesa ctrDesp = ctrDespesa.instancia();
     
     private int acao;
     private Objeto transporte;
     private String transporte_selecionado;
+    
+    private JFXButton btAddDespesa;
+    private FontAwesomeIconView faDespesa;
 
     @FXML
     private BorderPane panePrincipal;
@@ -177,6 +185,8 @@ public class TelaTransporteController implements Initializable
     private FontAwesomeIconView faPlus2;
     @FXML
     private JFXCheckBox cbFinalizados;
+    @FXML
+    private HBox hbComandos;
 
     /**
      * Initializes the controller class.
@@ -197,6 +207,7 @@ public class TelaTransporteController implements Initializable
         nodes.add(btRemover);
         nodes.add(btAdicionarVeiculo);
         nodes.add(btRemoverVeiculo);
+        nodes.add(btAddDespesa);
         
         nodes.add(tfMotorista);
         nodes.add(tfPlacaCegonha);
@@ -224,6 +235,7 @@ public class TelaTransporteController implements Initializable
         nodes.add(faSearch);
         nodes.add(faMinus);
         nodes.add(faTrash);
+        nodes.add(faDespesa);
         
         Utils.setDesign(1, nodes);
         
@@ -235,6 +247,7 @@ public class TelaTransporteController implements Initializable
         btPesquisar.setStyle(btPesquisar.getStyle() + ";-fx-cursor: default;");
         btRemoverVeiculo.setStyle(btRemoverVeiculo.getStyle() + ";-fx-cursor: default;");
         btAdicionarVeiculo.setStyle(btAdicionarVeiculo.getStyle() + ";-fx-cursor: default;");
+        btAddDespesa.setStyle(btAddDespesa.getStyle() + ";-fx-cursor: default;");
     }
     
     private void redimensiona()
@@ -329,11 +342,17 @@ public class TelaTransporteController implements Initializable
         atualizaListaFornecedores("");
         
         setEstado(true, false, true, true, true, false);
+        
+        hbComandos.getChildren().clear();
+        hbComandos.getChildren().addAll(btNovo,btConfirmar,btAlterar,btRemover,btCancelar);
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
+        faDespesa = new FontAwesomeIconView(FontAwesomeIcon.MONEY);
+        btAddDespesa = new JFXButton("DESPESAS",faDespesa);
+        btAddDespesa.setStyle(btNovo.getStyle());
         inicializaDesign();
         redimensiona();
         
@@ -353,6 +372,7 @@ public class TelaTransporteController implements Initializable
         tcMarca.setCellFactory(TooltippedTableCell.forTableColumn());
         tcModelo.setCellFactory(TooltippedTableCell.forTableColumn());
         
+        btAddDespesa.setGraphic(faDespesa);
         inicializa();
         setlisteners();
         
@@ -421,6 +441,7 @@ public class TelaTransporteController implements Initializable
     {
         acao = 1;
         setEstado(false, true, false, true, true, false);
+        btAddDespesa.setDisable(false);
     }
 
     @FXML
@@ -567,20 +588,21 @@ public class TelaTransporteController implements Initializable
             {
                 tfMotorista.setText(transporte.getParam9());
                 tfPlacaCegonha.setText(transporte.getParam3());
-                
-                dpSaida.setValue(LocalDate.parse(transporte.getParam4()));
                 cbStatus.getSelectionModel().select(transporte.getParam6());
                 cbTipo.getSelectionModel().select(transporte.getParam7());
                 
+                dpSaida.setValue(LocalDate.parse(transporte.getParam4()));
                 if(transporte.getParam5() != null && !transporte.getParam5().equals("") 
                         && !transporte.getParam5().equals("null"))
-                {
                     dpChegada.setValue(LocalDate.parse(transporte.getParam5()));
-                    //dpChegada.getEditor().setText(transporte.getParam5());
-                }
+                
                 lbUltimaAlteracao.setText("Data da Última Alteração: " + transporte.getParam8());
                 
                 tvVeiculos.setItems(FXCollections.observableArrayList(transporte.getList1()));
+                
+                hbComandos.getChildren().clear();
+                hbComandos.getChildren().addAll(btAddDespesa,btNovo,btConfirmar,btAlterar,btRemover,btCancelar);
+                btAddDespesa.setDisable(true);
             }
         }
     }
@@ -884,6 +906,44 @@ public class TelaTransporteController implements Initializable
             if(!newValue.equals("Á Iniciar"))
             {
                 dpSaida.setValue(LocalDate.now());
+            }
+        });
+        
+        btAddDespesa.setOnMouseEntered((event) ->
+        {
+            btAddDespesa.setStyle(btAddDespesa.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+            tooltip.setText("Adicionar Despesa(s)");
+            ToolTip.bindTooltip(btAddDespesa, tooltip);
+        });
+        
+        btAddDespesa.setOnMouseExited((event) ->
+        {
+            btAddDespesa.setStyle(btAddDespesa.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        });
+        
+        btAddDespesa.setOnAction((event) ->
+        {
+            try
+            {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/basicas/CadastroDespesa.fxml"));
+                Parent root = (Parent) fxmlLoader.load();
+                Stage stage = new Stage();
+                JFXDecorator decorator = new JFXDecorator(stage, root);
+
+                CadastroDespesaController controller = fxmlLoader.<CadastroDespesaController>getController();
+                gerarTransporte();
+                controller.setTransporte(transporte);
+                decorator.setStyle("-fx-decorator-color: #040921;");
+                Scene scene = new Scene(decorator);
+
+                stage.setTitle("Gerenciar Despesas do Transporte");
+                stage.setScene(scene);
+                stage.showAndWait();
+            }
+            catch (IOException er)
+            {
+                new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Pesquisa de Veículo! "
+                        + "\nErro: " + er.getMessage(), ButtonType.OK).showAndWait();
             }
         });
     }

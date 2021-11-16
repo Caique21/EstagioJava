@@ -12,6 +12,7 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import estagio.TelaPrincipalController;
 import estagio.controladores.ctrDespesa;
 import estagio.controladores.ctrPagamento;
 import estagio.controladores.ctrParcela;
@@ -30,7 +31,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -227,7 +227,7 @@ public class TelaPagamentoController implements Initializable
         tcValor.setCellValueFactory(new PropertyValueFactory<>("param3"));
         tcVencimento.setCellValueFactory(new PropertyValueFactory<>("param7"));
         tcPaga.setCellValueFactory(new PropertyValueFactory<>("param5"));
-        tcFormaPagamento.setCellValueFactory(new PropertyValueFactory<>("param6"));
+        tcFormaPagamento.setCellValueFactory(new PropertyValueFactory<>("param8"));
         
         tcNotaFiscal.setCellValueFactory(new PropertyValueFactory<>("param8"));
         tcNumeroParcela.setCellValueFactory(new PropertyValueFactory<>("param3"));
@@ -240,6 +240,7 @@ public class TelaPagamentoController implements Initializable
         tcObsDespesa.setCellValueFactory(new PropertyValueFactory<>("param6"));
         
         inicializa();
+        setListeners();
     }    
 
     @FXML
@@ -338,6 +339,14 @@ public class TelaPagamentoController implements Initializable
     @FXML
     private void clickEstornar(ActionEvent event)
     {
+        if(Utils.confirmarUsuario("Confirmar usuário", "Para estornar compra", 
+                "Usuário: " + TelaPrincipalController.usuario_logado.getParam3()))
+        {
+            if(ctrPag.estornar(pagamento))
+            {
+                
+            }
+        }
     }
 
     @FXML
@@ -531,6 +540,14 @@ public class TelaPagamentoController implements Initializable
         
         tfFornecedorDespesa.setVisible(false);
         dpVencimento.setVisible(false);
+    }
+
+    private void setListeners()
+    {
+        cbPagas.setOnAction((event) ->
+        {
+            clickPesquisar(new ActionEvent());
+        });
     }
     
 }

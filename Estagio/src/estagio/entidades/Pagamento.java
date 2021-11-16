@@ -195,6 +195,59 @@ public class Pagamento
 
     public boolean pagar()
     {
+        Connection con = Banco.getCon().getConnection();
+        PreparedStatement stmt,stmt2 = null;
+        boolean flag = true;
+        
+        try
+        {
+            con.setAutoCommit(false);
+            String sql;
+        
+            if(this.despesa != null || this.parcela != null)
+            {    
+                if(this.despesa != null)
+                {
+                    stmt = con.prepareStatement("INSERT INTO pagamento(pag_data,pag_valor,pag_form_pagamento,"
+                        + "pag_form_pagamento_desc,pag_ativo,desp_codigo) VALUES(?,?,?,?,?,?)");
+                    stmt.setInt(6, this.despesa.getCodigo());
+                }
+                else
+                {
+                    stmt = con.prepareStatement("INSERT INTO pagamento(pag_data,pag_valor,pag_form_pagamento,"
+                        + "pag_form_pagamento_desc,pag_ativo,parc_codigo) VALUES(?,?,?,?,?,?)");
+                    stmt.setInt(6, this.parcela.getCodigo());
+                    
+                    sql = "UPDATE parcela SET parc_datapagamento = '$1', parc_valorpago = $2 WHERE parc_codigo = $3";
+                    sql = sql.replace("$1", String.valueOf(Date.valueOf(LocalDate.now())));
+                    sql = sql.replace("$2", String.valueOf(this.valor));
+                    sql = sql.replace("$3", String.valueOf(this.parcela.getCodigo()));
+                    stmt2 = con.prepareStatement(sql);
+                    flag = stmt2.executeUpdate() == 1;
+                }
+                stmt.setDate(1, this.data);
+                stmt.setDouble(2, this.valor);
+                stmt.setString(3, this.forma_pagamento);
+                stmt.setString(4, this.forma_pagamento_desc);
+                stmt.setBoolean(5, true);
+                
+                
+                if(flag = flag && stmt.executeUpdate() == 1)
+                    con.commit();
+                else
+                    con.rollback();
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return flag;
+        /*
+        
+        
+        
         String sql = "INSERT INTO pagamento(pag_data,pag_valor,pag_form_pagamento,pag_form_pagamento_desc,pag_ativo,"
                 + "$aux) VALUES('$1',$2,'$3','$4','$5',$6)";
         
@@ -208,13 +261,13 @@ public class Pagamento
         sql = sql.replace("$4", this.forma_pagamento_desc);
         sql = sql.replace("$5", String.valueOf(true));
             
-       return Banco.getCon().manipular(sql);
+       return Banco.getCon().manipular(sql);*/
     }
 
     public boolean pagarParcial()
     {
         Connection con = Banco.getCon().getConnection();
-        PreparedStatement stmt,stmt2;
+        PreparedStatement stmt,stmt2,stmt3;
         boolean flag = false;
         
         try
@@ -240,7 +293,7 @@ public class Pagamento
                     stmt2 = con.prepareStatement(sql);
                     stmt2.setString(1, this.despesa.getNome());
                     stmt2.setBoolean(2, this.despesa.isFixo());
-                    stmt2.setDouble(3, this.despesa.getValor() - this.valor);
+                    stmt2.setDouble(3, Utils.truncate(this.despesa.getValor() - this.valor));
                     stmt2.setDate(4, this.getDespesa().getVencimento());
                     stmt2.setString(5, this.getDespesa().getDescricao());
                     
@@ -253,13 +306,19 @@ public class Pagamento
                         + "pag_form_pagamento_desc,pag_ativo,parc_codigo) VALUES(?,?,?,?,?,?)");
                     stmt.setInt(6, this.parcela.getCodigo());
                     
-                    sql = "INSERT INTO parcela(parc_datavencimento,parc_numero,parc_valor_parcela,comp_codigo)"
+                    sql = "INSERT INTO parcela(parc_datavencimento,parc_numero,parc_valorparcela,comp_codigo)"
                         + "VALUES (?,?,?,?)";
                     stmt2 = con.prepareStatement(sql);
                     stmt2.setDate(1, this.getParcela().getVencimento());
                     stmt2.setInt(2, new Parcela().getQtdParcelas(this.parcela.getCompra()) + 1);
                     stmt2.setDouble(3, Utils.truncate(this.parcela.getValor_parcela() - this.valor));
                     stmt2.setInt(4, this.parcela.getCompra().getCodigo());
+                    
+                    sql = "UPDATE parcela SET parc_datapagamento = '$1', parc_valorpago = $2 WHERE parc_codigo = $3";
+                    sql = sql.replace("$1", String.valueOf(Date.valueOf(LocalDate.now())));
+                    sql = sql.replace("$2", String.valueOf(this.valor));
+                    sql = sql.replace("$3", String.valueOf(this.parcela.getCodigo()));
+                    stmt3 = con.prepareStatement(sql);
                 }
                 stmt.setDate(1, this.data);
                 stmt.setDouble(2, this.valor);
@@ -318,13 +377,56 @@ public class Pagamento
 
     public boolean estornar()
     {
-        String sql = "UPDATE pagamento SET pag_ativo = 'false' WHERE ";
+        Connection con = Banco.getCon().getConnection();
+        PreparedStatement stmt,stmt2 = null;
+        boolean flag = false;
+        String sql;
         
-        if(this.despesa != null)
-            sql += "desp_codigo = " + this.despesa.getCodigo();
-        //else
-            //sql += "parc_codigo = " + this.parcela.getCodigo();
-       return Banco.getCon().manipular(sql);
+        try
+        {
+            con.setAutoCommit(false);
+            
+            stmt = con.prepareStatement("UPDATE pagamento SET pag_ativo = 'false' WHERE pag_codigo = " + 
+                    this.codigo);
+            
+            if(this.parcela != null)
+            {
+                sql = "UPDATE parcela SET parc_datapagamento = ?, parc_valorpago = ? WHERE parc_codigo = ?";
+                stmt2 = con.prepareStatement(sql);
+                stmt2.setNull(1, java.sql.Types.DATE);
+                stmt2.setNull(2, java.sql.Types.DOUBLE);
+                stmt2.setInt(3, this.parcela.getCodigo());
+                
+                flag = stmt2.executeUpdate() == 1;
+                
+                if(flag && this.valor != this.parcela.getValor_parcela())
+                {
+                    sql = "SELECT parc_codigo FROM parcela WHERE comp_codigo = $1 AND parc_datavencimento = '$2' "
+                        + "AND parc_valorparcela = $3";
+                    sql = sql.replace("$1", String.valueOf(this.parcela.getCompra().getCodigo()));
+                    sql = sql.replace("$2", String.valueOf(this.parcela.getVencimento()));
+                    sql = sql.replace("$2", String.valueOf(
+                            Utils.truncate(this.parcela.getValor_parcela() - this.valor)));
+                    
+                    ResultSet rs = con.prepareStatement(sql).executeQuery();
+                    
+                    if(rs != null && rs.next())
+                        flag = con.prepareStatement("DELETE FROM parcela WHERE parc_codigo = " + 
+                                rs.getInt("parc_codigo")).executeUpdate() == 1;
+                }
+            }
+            
+            if(flag = flag && stmt.executeUpdate() == 1)
+                con.commit();
+            else
+                con.rollback();
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+       return flag;
     }
 
     public ArrayList<Pagamento> getAll()

@@ -359,7 +359,7 @@ CREATE TABLE despesa
 	desp_nome VARCHAR(45) NOT NULL,
 	desp_fixo BOOLEAN NOT NULL,
 	desp_preco DECIMAL (10,2) NOT NULL,
-	desp_data_vencimento DATE NOT NULL,
+	desp_data_vencimento DATE NULL,
 	desp_descricao VARCHAR(45),
 	trans_codigo INTEGER NULL,
 	CONSTRAINT pk_despesa

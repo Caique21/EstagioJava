@@ -225,43 +225,53 @@ public class Despesa
         return despesas;
     }
 
+    public ArrayList<Despesa> getByTransporte(int codigo)
+    {
+        return ler(Banco.getCon().consultar("SELECT * FROM despesa WHERE trans_codigo = " + codigo));
+    }
+
     public boolean salvar()
     {
-        String sql = "INSERT INTO despesa (desp_nome,desp_fixo,desp_preco,desp_data_vencimento,desp_descricao) "
-            + "VALUES ('$1','$2',$3,'$4','$5')";
+        String sql = "INSERT INTO despesa (desp_nome,desp_fixo,desp_preco,desp_data_vencimento,desp_descricao$7) "
+            + "VALUES ('$1','$2',$3,'$4','$5'$6)";
         
         sql = sql.replace("$1", this.nome);
         sql = sql.replace("$2", String.valueOf(this.fixo));
         sql = sql.replace("$3", String.valueOf(this.valor));
-        sql = sql.replace("$4", String.valueOf(this.vencimento));
         sql = sql.replace("$5", this.descricao);
         
-        /*if(this.fixo)
-        {
-            for (int i = 1; i < 12 - LocalDate.now().getMonthValue(); i++)
-            {
-                sql += ",('$1','$2',$3,'$4','$5')";
-                
-                sql = sql.replace("$1", this.nome);
-                sql = sql.replace("$2", String.valueOf(this.fixo));
-                sql = sql.replace("$3", String.valueOf(this.valor));
-                sql = sql.replace("$4", String.valueOf(this.vencimento));
-                sql = sql.replace("$5", this.descricao);
-            }
-        }*/
+        if(this.vencimento != null)
+            sql = sql.replace("$4", String.valueOf(this.vencimento));
+        else
+            sql = sql.replace("'$4',", "").replace("desp_data_vencimento,", "");
+        
+        if(this.transporte != null)
+            sql = sql.replace("$7", ",trans_codigo").replace("$6", "," + this.transporte.getCodigo());
+        else
+            sql = sql.replace("$7", "").replace("$6", "");
+        
         return Banco.getCon().manipular(sql);
     }
 
     public boolean alterar()
     {
         String sql = "UPDATE despesa SET desp_nome = '$1', desp_fixo = '$2', desp_preco = $3, "
-                + "desp_data_vencimento = '$4', desp_descricao = '$5' WHERE desp_codigo = " + this.codigo;
+                + "desp_data_vencimento = '$4', desp_descricao = '$5'$6 WHERE desp_codigo = " + this.codigo;
         
         sql = sql.replace("$1", this.nome);
         sql = sql.replace("$2", String.valueOf(this.fixo));
         sql = sql.replace("$3", String.valueOf(this.valor));
-        sql = sql.replace("$4", String.valueOf(this.vencimento));
         sql = sql.replace("$5", this.descricao);
+        
+        if(this.vencimento != null)
+            sql = sql.replace("$4", String.valueOf(this.vencimento));
+        else
+            sql = sql.replace("desp_data_vencimento = '$4',", "");
+        
+        if(this.transporte != null)
+            sql = sql.replace("$6", ", trans_codigo = " + this.transporte.getCodigo());
+        else
+            sql = sql.replace("$6", "");
         
         return Banco.getCon().manipular(sql);
     }
@@ -271,13 +281,18 @@ public class Despesa
         String sql2 = "UPDATE despesa SET desp_data_vencimento = '$4' WHERE desp_codigo = " + this.codigo;
         
         String sql = "UPDATE despesa SET desp_nome = '$1', desp_fixo = '$2', desp_preco = $3, "
-            + "desp_descricao = '$5' WHERE desp_nome = '" + nome_antigo + "'";
+            + "desp_descricao = '$5'$6 WHERE desp_nome = '" + nome_antigo + "'";
         
         sql = sql.replace("$1", this.nome);
         sql = sql.replace("$2", String.valueOf(this.fixo));
         sql = sql.replace("$3", String.valueOf(this.valor));
         sql = sql.replace("$5", this.descricao);
         sql2 = sql2.replace("$4", String.valueOf(this.vencimento));
+        
+        if(this.transporte != null)
+            sql = sql.replace("$6", ", trans_codigo = " + this.transporte.getCodigo());
+        else
+            sql = sql.replace("$6", "");
         
         if(validaMes())
             return Banco.getCon().manipular(sql) && Banco.getCon().manipular(sql2);

@@ -62,7 +62,7 @@ public class ctrPagamento
         pagamento.setData(Date.valueOf(LocalDate.now()));
         pagamento.setValor(Double.parseDouble(valor.replace(".", "").replace(",", ".")));
         pagamento.setForma_pagamento(forma_pagamento);
-        pagamento.setForma_pagamento_desc(aux_forma_pagamento);
+        pagamento.setForma_pagamento_desc(aux_forma_pagamento.trim());
         
         if(pag.getList1() != null && !pag.getList1().isEmpty())//DESPESA
             pagamento.setDespesa(new Despesa(Integer.parseInt(pag.getList1(0).getParam1())));
@@ -90,6 +90,11 @@ public class ctrPagamento
         }
         
         return flag;*/
+    }
+
+    public boolean estornar(Objeto pagamento)
+    {
+        return convertToPagamento(pagamento).estornar();
     }
 
     public boolean wasPaid(int codigo)
@@ -201,7 +206,8 @@ public class ctrPagamento
     private Objeto convertToObjeto(Pagamento p)
     {
         ///1 - DESPESA/PARCELA, 2 - NÚMERO DA PARCELA, 3 - VALOR, 4 - VENCIMENTO, 5 - BOOLEAN PAGO
-        ///6 - FORMA DE PAGAMENTO, 7 - DESCRIÇÃO DA FORMA DE PAGAMENTO, LIST1 - DADOS DA DESPESA, LIST2 - DADOS DA PARCELAS
+        ///6 - FORMA DE PAGAMENTO, 7 - DESCRIÇÃO DA FORMA DE PAGAMENTO, 9 - CÓDIGO DO PAGAMENTO
+        ///LIST1 - DADOS DA DESPESA, LIST2 - DADOS DA PARCELAS
         
         ///DESPESA
         ///1 - CÓDIGO, 2 - NOME, 3 - FIXO, 4 - VALOR, 5 - VENCIMENTO, 6 - DESCRIÇÃO
@@ -217,8 +223,11 @@ public class ctrPagamento
             obj.setParam1("Despesa " + p.getDespesa().getNome());
             obj.setParam2("");
             obj.setParam3(Utils.exibeCentavos(p.getDespesa().getValor()));
-            obj.setParam4(String.valueOf(p.getDespesa().getVencimento()));
             obj.setParam7(Utils.convertDataUTC(p.getDespesa().getVencimento()));
+            if(p.getDespesa().getVencimento() == null)
+                obj.setParam4("");
+            else
+                obj.setParam4(String.valueOf(p.getDespesa().getVencimento()));
             
             aux.setParam1(String.valueOf(p.getDespesa().getCodigo()));
             aux.setParam2(p.getDespesa().getNome());
@@ -254,7 +263,39 @@ public class ctrPagamento
         }
         obj.setParam5(p.isAtivo() ? "Sim": "Não");
         obj.setParam6(p.getForma_pagamento());
+        if(p.getForma_pagamento() != null)
+            obj.setParam8(p.getForma_pagamento() + " " + p.getForma_pagamento_desc());
+        else
+            obj.setParam8("");
+        obj.setParam9(p.isAtivo()? String.valueOf(p.getCodigo()) : "");
         
         return obj;
+    }
+    
+    private Pagamento convertToPagamento(Objeto obj)
+    {
+        ///1 - DESPESA/PARCELA, 2 - NÚMERO DA PARCELA, 3 - VALOR, 4 - VENCIMENTO, 5 - BOOLEAN PAGO
+        ///6 - FORMA DE PAGAMENTO, 7 - DESCRIÇÃO DA FORMA DE PAGAMENTO, 9 - CÓDIGO DO PAGAMENTO
+        ///LIST1 - DADOS DA DESPESA, LIST2 - DADOS DA PARCELAS
+        
+        ///DESPESA
+        ///1 - CÓDIGO, 2 - NOME, 3 - FIXO, 4 - VALOR, 5 - VENCIMENTO, 6 - DESCRIÇÃO
+        
+        ///PARCELAS
+        ///1 - CÓDIGO, 2 - VENCIMENTO, 3 - NUMERO,4 - PAGAMENTO, 5 - VALOR, 6 - VALOR PAGO, 7 - CÓDIGO COMPRA, 
+        ///8 - NOTA FISCAL, 9 - DATA DA COMPRA
+        Pagamento p = new Pagamento();
+        p.setAtivo(obj.getParam5().equals("Sim"));
+        p.setCodigo(!obj.getParam9().equals("")? Integer.parseInt(obj.getParam9()) : 0);
+        p.setData(Date.valueOf(obj.getParam4()));
+        p.setForma_pagamento(obj.getParam6());
+        p.setForma_pagamento_desc(obj.getParam7());
+        p.setValor(Double.parseDouble(obj.getParam3()));
+        
+        if(obj.getList1() != null && !obj.getList1().isEmpty())
+            p.setDespesa(new Despesa(Integer.parseInt(obj.getList1().get(0).getParam1())));
+        else
+            p.setParcela(new Parcela(Integer.parseInt(obj.getList2().get(0).getParam1())));
+        return p;
     }
 }

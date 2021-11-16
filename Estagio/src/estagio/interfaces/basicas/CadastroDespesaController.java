@@ -18,6 +18,7 @@ import estagio.controladores.ctrPagamento;
 import estagio.utilidades.Banco;
 import estagio.utilidades.MaskFieldUtil;
 import estagio.utilidades.Objeto;
+import estagio.utilidades.ToolTip;
 import estagio.utilidades.Utils;
 import java.net.URL;
 import java.time.LocalDate;
@@ -49,6 +50,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
@@ -60,6 +62,7 @@ import org.controlsfx.control.Notifications;
 public class CadastroDespesaController implements Initializable
 {
     private int acao;
+    private Objeto transporte = null;
     private Objeto despesa;
     private final Tooltip tooltip = new Tooltip();
     
@@ -165,6 +168,23 @@ public class CadastroDespesaController implements Initializable
             btAlterar.setDisable(b5);
             btRemover.setDisable(b6);
         }
+        
+        if(transporte == null)
+        {
+            tfPesquisa.setDisable(b2);
+            btPesquisar.setDisable(b2);
+            rbFixo.setDisable(b1);
+        }
+        else
+        {
+            if(transporte.getParam5() != null && transporte.getParam5().equals(""))
+                dpData.setDisable(true);
+            else
+                dpData.setDisable(false);
+            tfPesquisa.setDisable(true);
+            btPesquisar.setDisable(true);
+            rbFixo.setDisable(true);
+        }
         panePesquisa.setDisable(b2);
         btConfirmar.setDisable(b4);
         btCancelar.setDisable(b7);
@@ -176,7 +196,12 @@ public class CadastroDespesaController implements Initializable
         tfValor.clear();
         taDescricao.clear();
         tfNome.clear();
-        dpData.getEditor().clear();
+        
+        if(transporte != null && transporte.getParam5() != null && !transporte.getParam5().equals("") 
+                && !transporte.getParam5().equals("null"))
+            dpData.setValue(LocalDate.parse(transporte.getParam5()));
+        else
+            dpData.getEditor().clear();
     }
     
     private void inicializaDesign()
@@ -311,19 +336,24 @@ public class CadastroDespesaController implements Initializable
                 
                 if(alerta.getResult() == ButtonType.YES)
                 {
-                    if(ctrDesp.salvar(tfNome, rbFixo, tfValor, dpData, taDescricao))
+                    boolean result;
+                    
+                    if(transporte != null)
+                        result = ctrDesp.salvar(tfNome, rbFixo, tfValor, dpData, taDescricao, 
+                                Integer.parseInt(transporte.getParam1()));
+                    else
+                        result = ctrDesp.salvar(tfNome, rbFixo, tfValor, dpData, taDescricao);
+                    
+                    if(result)
                     {
-                        /*if(dpData.getValue().compareTo(LocalDate.now()) < 0)
-                        {
-                            alerta.setContentText("Despesa vencida, deseja pagar?");
-                            alerta.showAndWait();
-                            
-                            if(alerta.getResult() == ButtonType.YES)
-                                pagarDespesa();
-                        }*/
-                        inicializa();
                         alerta = new Alert(Alert.AlertType.INFORMATION, "Despesa cadastrada com sucesso!!!", 
                                 ButtonType.OK);
+                        if(acao == 2)
+                        {
+                            Stage stage = (Stage) btConfirmar.getScene().getWindow();
+                            stage.close();
+                        }
+                        inicializa();
                     }
                     else
                         alerta = new Alert(Alert.AlertType.ERROR, "Erro no cadastro da despesa", ButtonType.OK);
@@ -350,24 +380,23 @@ public class CadastroDespesaController implements Initializable
                 if(alerta.getResult() == ButtonType.YES)
                 {
                     boolean result;
+                    
+                    if(this.transporte == null)
+                        if(despesa.getParam9() != null && !despesa.getParam9().equals("") && 
+                            !despesa.getParam9().equals("null"))
+                            transporte = new Objeto(despesa.getParam9());
+                    
+                    if(Integer.parseInt(transporte.getParam1()) > 0 || ctrDesp.count(despesa.getParam2()) == 0)
+                        result = ctrDesp.alterar(Integer.parseInt(despesa.getParam1()), tfNome, rbFixo, tfValor, 
+                            dpData,taDescricao,Integer.parseInt(transporte.getParam1()));
                     //ALTERAÇÃO DE UMA DESPESA FIXA COM MAIS DE 1 REGISTRO, NOME ENVIADO PARA ALTERAR TODOS
-                    if(ctrDesp.count(despesa.getParam2()) > 0)
+                    else
                         result = ctrDesp.alterar(Integer.parseInt(despesa.getParam1()), tfNome, rbFixo, tfValor, dpData,
-                            taDescricao,despesa.getParam2());
-                    else 
-                        result = ctrDesp.alterar(Integer.parseInt(despesa.getParam1()), tfNome, rbFixo, tfValor, dpData,
-                            taDescricao);
+                            taDescricao,Integer.parseInt(transporte.getParam1()),despesa.getParam2());
+                        
                     
                     if(result)
                     {   
-                        /*if(dpData.getValue().compareTo(LocalDate.now()) < 0)
-                        {
-                            alerta.setContentText("Despesa vencida, deseja pagar?");
-                            alerta.showAndWait();
-                            
-                            if(alerta.getResult() == ButtonType.YES)
-                                pagarDespesa();
-                        }*/
                         inicializa();
                         alerta = new Alert(Alert.AlertType.INFORMATION, "Despesa alterada com sucesso!!!", 
                                 ButtonType.OK);
@@ -402,11 +431,27 @@ public class CadastroDespesaController implements Initializable
             lbErroValor.setText("Valor inválido");
         }
         
-        if(dpData.getEditor().getText().trim().equals(""))
+        if(transporte == null)
         {
-            erros += "Selecione uma data\n";
-            lbErroData.setText("Selecione uma data");
+            if(dpData.getEditor().getText().trim().equals(""))
+            {
+                erros += "Selecione uma data\n";
+                lbErroData.setText("Selecione uma data");
+            }
         }
+        else
+        {
+            if(Integer.parseInt(transporte.getParam1()) == 0 || 
+                (Integer.parseInt(transporte.getParam1()) > 0 && transporte.getParam6().equals("Finalizado")))
+            {
+                if(dpData.getEditor().getText().trim().equals(""))
+                {
+                    erros += "Selecione uma data\n";
+                    lbErroData.setText("Selecione uma data");
+                }
+            }
+        }
+        
         
         if(!erros.trim().equals(""))
             new Alert(Alert.AlertType.ERROR, erros, ButtonType.OK).showAndWait();
@@ -485,7 +530,9 @@ public class CadastroDespesaController implements Initializable
     private void clickPesquisar(ActionEvent event)
     {
         tvDespesa.getItems().clear();
-        if(!cbRepetidas.isSelected())
+        if(transporte != null && transporte.getParam1() != null && Integer.parseInt(transporte.getParam1()) > 0)
+            tvDespesa.setItems(FXCollections.observableArrayList(ctrDesp.getByTransporte(Integer.parseInt(transporte.getParam1()))));
+        else if(!cbRepetidas.isSelected())
             tvDespesa.setItems(FXCollections.observableArrayList(ctrDesp.getByNomeDistinct(tfPesquisa.getText())));
         else
             tvDespesa.setItems(FXCollections.observableArrayList(ctrDesp.getByNome(tfPesquisa.getText())));
@@ -505,73 +552,99 @@ public class CadastroDespesaController implements Initializable
     {
         tfNome.setText(desp.getParam2());
         rbFixo.setSelected(desp.getParam7().equals("Sim"));
-        dpData.setValue(LocalDate.parse(desp.getParam5()));
         taDescricao.setText(desp.getParam6());
         
         if(desp.getParam4().substring(desp.getParam4().indexOf(".") + 1).length() == 1)
             tfValor.setText(desp.getParam4() + "0");
         else
             tfValor.setText(desp.getParam4());
+        
+        if(!desp.getParam5().equals(""))
+            dpData.setValue(LocalDate.parse(desp.getParam5()));
     }
 
     @FXML
     private void novoExit(MouseEvent event)
     {
+        btNovo.setStyle(btNovo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void novoEnter(MouseEvent event)
     {
+        btNovo.setStyle(btNovo.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Iniciar Novo Cadastro");
+        ToolTip.bindTooltip(btNovo, tooltip);
     }
 
     @FXML
     private void confirmarExit(MouseEvent event)
     {
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void confirmarEnter(MouseEvent event)
     {
+        btConfirmar.setStyle(btConfirmar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Confirmar Ação");
+        ToolTip.bindTooltip(btConfirmar, tooltip);
     }
 
     @FXML
     private void alterarExit(MouseEvent event)
     {
+        btAlterar.setStyle(btAlterar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void alterarEnter(MouseEvent event)
     {
+        btAlterar.setStyle(btAlterar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Remover Despesa");
+        ToolTip.bindTooltip(btAlterar, tooltip);
     }
-
+    
     @FXML
     private void removerExit(MouseEvent event)
     {
+        btRemover.setStyle(btRemover.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void removerEnter(MouseEvent event)
     {
+        btRemover.setStyle(btRemover.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Remover Despesa");
+        ToolTip.bindTooltip(btRemover, tooltip);
     }
 
     @FXML
     private void cancelarExit(MouseEvent event)
     {
+        btCancelar.setStyle(btCancelar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void cancelarEnter(MouseEvent event)
     {
+        btCancelar.setStyle(btCancelar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Cancelar Ação");
+        ToolTip.bindTooltip(btCancelar, tooltip);
     }
 
     @FXML
     private void pesquisarExit(MouseEvent event)
     {
+        btPesquisar.setStyle(btPesquisar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
     }
 
     @FXML
     private void pesquisarEnter(MouseEvent event)
     {
+        btPesquisar.setStyle(btPesquisar.getStyle().replace("-fx-cursor: default;", "-fx-cursor: hand;"));
+        tooltip.setText("Pesquisar Despesa");
+        ToolTip.bindTooltip(btPesquisar, tooltip);
     }
 
     @FXML
@@ -687,5 +760,36 @@ public class CadastroDespesaController implements Initializable
                     .text("Erro no pagamento da despesa")
                     .showError();
         }
+    }
+
+    public void setTransporte(Objeto transporte)
+    {
+        this.transporte = transporte;
+        inicializa();
+        
+        panePrincipal.setPrefHeight(550);
+        painelCentral.setPrefHeight(550);
+        painelCentral.setPrefWidth(600);
+        //PAINEL DE PESQUISA FICA COM O RESTANTE DA TELA
+        panePesquisa.setPrefHeight(painelCentral.getPrefHeight()- paneInfo.getPrefHeight() - 10);
+        
+        tvDespesa.setPrefHeight(panePesquisa.getPrefHeight() - (tvDespesa.getLayoutY() + 15)-40);
+        tvDespesa.setPrefWidth(panePesquisa.getPrefWidth() - (tvDespesa.getLayoutX() * 2));
+        
+        //REORGANIZA OS TAMANHOS DAS COLUNAS DA TABELA
+        int sobra = (int)((tvDespesa.getPrefWidth() - 1049)/2);
+        tcDespesa.setPrefWidth(tcDespesa.getPrefWidth() + sobra);
+        tcDescricao.setPrefWidth(tcDescricao.getPrefWidth() + sobra);
+        
+        tfNome.setLayoutY(tfNome.getLayoutY() - 20);
+        rbFixo.setLayoutY(rbFixo.getLayoutY() - 20);
+        tfValor.setLayoutY(tfValor.getLayoutY() - 20);
+        dpData.setLayoutY(dpData.getLayoutY() - 20);
+        lbData.setLayoutY(lbData.getLayoutY() - 20);
+        taDescricao.setLayoutY(taDescricao.getLayoutY() - 30);
+        taDescricao.setPrefHeight(taDescricao.getPrefHeight() - 10);
+        lbErroData.setLayoutY(lbErroData.getLayoutY() - 20);
+        lbErroDespesa.setLayoutY(lbErroDespesa.getLayoutY() - 20);
+        lbErroValor.setLayoutY(lbErroValor.getLayoutY() - 20);
     }
 }
