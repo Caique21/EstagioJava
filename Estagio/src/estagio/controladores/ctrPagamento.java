@@ -261,7 +261,7 @@ public class ctrPagamento
         }
         else
         {
-            obj.setParam1("Parcela compra Nota Fiscal: " + p.getParcela().getCompra().getNumero_nota_fiscal());
+            obj.setParam1("Parcela Compra Nota Fiscal: " + p.getParcela().getCompra().getNumero_nota_fiscal());
             obj.setParam2(String.valueOf(p.getParcela().getNumero()));
             obj.setParam3(Utils.exibeCentavos(p.getParcela().getValor_parcela()));
             obj.setParam4(String.valueOf(p.getParcela().getVencimento()));

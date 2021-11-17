@@ -295,7 +295,7 @@ CREATE TABLE recebimento
   	rec_data Date NOT NULL ,
   	rec_valor DECIMAL(10,2) NOT NULL,
 	parc_codigo INTEGER NULL,
-	rec_forma_pagamento VARCHAR(15) not null,
+	rec_form_pagamento VARCHAR(15) not null,
 	rec_form_pagamento_desc VARCHAR(45) NULL,
   	CONSTRAINT pk_recebimento
 		PRIMARY KEY (rec_codigo) ,

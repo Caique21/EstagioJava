@@ -339,7 +339,7 @@ public class TelaPagamentoController implements Initializable
     @FXML
     private void clickEstornar(ActionEvent event)
     {
-        if(Utils.confirmarUsuario("Confirmar usuário", "Para estornar compra", 
+        if(Utils.confirmarUsuario("Confirmar usuário", "Para estornar pagamento da compra", 
                 "Usuário: " + TelaPrincipalController.usuario_logado.getParam3()))
         {
             Alert a;
