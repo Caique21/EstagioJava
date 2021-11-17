@@ -92,9 +92,9 @@ public class ctrPagamento
         return flag;*/
     }
 
-    public boolean estornar(Objeto pagamento)
+    public boolean estornar(Objeto pagamento, int usuario)
     {
-        return convertToPagamento(pagamento).estornar();
+        return convertToPagamento(pagamento).estornar(usuario);
     }
 
     public boolean wasPaid(int codigo)
@@ -102,21 +102,25 @@ public class ctrPagamento
         return new Pagamento(new Despesa(codigo)).getCodigo() > 0;
     }
 
-    public boolean estornarDespesa(int codigo)
+    public boolean estornarDespesa(int codigo, int usuario)
     {
-        return new Pagamento(new Despesa(codigo)).estornar();
+        return new Pagamento(new Despesa(codigo)).estornar(usuario);
     }
 
     public ArrayList<Objeto> getAll(boolean... pago)
     {
         ArrayList<Pagamento>pagamentos = new Pagamento().getAll();
+        ArrayList<Pagamento>pagamentos_pagos = new ArrayList<>();
         ArrayList<Objeto>ret = new ArrayList<>();
         
         for(Pagamento p : pagamentos)
         {
-            if(pago.length > 0 && pago[0])
-                ret.add(convertToObjeto(p));
-            else if(!p.isAtivo())
+            if(pago.length > 0 && pago[0])//SE INDICAR QUE QUER EXIBIR OS PAGOS
+            {
+                if(p.getCodigo() > 0)//EXISTE UM PAGAMENTO RELACIONADO A DESPESA/PARCELA CADASTRADA
+                    ret.add(convertToObjeto(p));
+            }
+            else if(p.getCodigo() == 0)//NÃO POSSUI PAGAMENTO RELACIONADO
                 ret.add(convertToObjeto(p));
         } 
                
@@ -130,11 +134,14 @@ public class ctrPagamento
         
         for(Pagamento p : pagamentos)
         {
-            if(pago.length > 0 && pago[0])
+            if(pago.length > 0 && pago[0])//SE INDICAR QUE QUER EXIBIR OS PAGOS
+            {
+                if(p.getCodigo() > 0)//EXISTE UM PAGAMENTO RELACIONADO A DESPESA/PARCELA CADASTRADA
+                    ret.add(convertToObjeto(p));
+            }
+            else if(p.getCodigo() == 0)//NÃO POSSUI PAGAMENTO RELACIONADO
                 ret.add(convertToObjeto(p));
-            else if(!p.isAtivo())
-                ret.add(convertToObjeto(p));
-        }
+        } 
                
         return ret;
     }
@@ -146,9 +153,12 @@ public class ctrPagamento
         
         for(Pagamento p : pagamentos)
         {
-            if(pago.length > 0 && pago[0])
-                ret.add(convertToObjeto(p));
-            else if(!p.isAtivo())
+            if(pago.length > 0 && pago[0])//SE INDICAR QUE QUER EXIBIR OS PAGOS
+            {
+                if(p.getCodigo() > 0)//EXISTE UM PAGAMENTO RELACIONADO A DESPESA/PARCELA CADASTRADA
+                    ret.add(convertToObjeto(p));
+            }
+            else if(p.getCodigo() == 0)//NÃO POSSUI PAGAMENTO RELACIONADO
                 ret.add(convertToObjeto(p));
         } 
                
@@ -162,11 +172,14 @@ public class ctrPagamento
         
         for(Pagamento p : pagamentos)
         {
-            if(pago.length > 0 && pago[0])
+            if(pago.length > 0 && pago[0])//SE INDICAR QUE QUER EXIBIR OS PAGOS
+            {
+                if(p.getCodigo() > 0)//EXISTE UM PAGAMENTO RELACIONADO A DESPESA/PARCELA CADASTRADA
+                    ret.add(convertToObjeto(p));
+            }
+            else if(p.getCodigo() == 0)//NÃO POSSUI PAGAMENTO RELACIONADO
                 ret.add(convertToObjeto(p));
-            else if(!p.isAtivo())
-                ret.add(convertToObjeto(p));
-        } 
+        }  
                
         return ret;
     }
@@ -178,9 +191,12 @@ public class ctrPagamento
         
         for(Pagamento p : pagamentos)
         {
-            if(pago.length > 0 && pago[0])
-                ret.add(convertToObjeto(p));
-            else if(!p.isAtivo())
+            if(pago.length > 0 && pago[0])//SE INDICAR QUE QUER EXIBIR OS PAGOS
+            {
+                if(p.getCodigo() > 0)//EXISTE UM PAGAMENTO RELACIONADO A DESPESA/PARCELA CADASTRADA
+                    ret.add(convertToObjeto(p));
+            }
+            else if(p.getCodigo() == 0)//NÃO POSSUI PAGAMENTO RELACIONADO
                 ret.add(convertToObjeto(p));
         } 
                
@@ -194,9 +210,12 @@ public class ctrPagamento
         
         for(Pagamento p : pagamentos)
         {
-            if(pago.length > 0 && pago[0])
-                ret.add(convertToObjeto(p));
-            else if(!p.isAtivo())
+            if(pago.length > 0 && pago[0])//SE INDICAR QUE QUER EXIBIR OS PAGOS
+            {
+                if(p.getCodigo() > 0)//EXISTE UM PAGAMENTO RELACIONADO A DESPESA/PARCELA CADASTRADA
+                    ret.add(convertToObjeto(p));
+            }
+            else if(p.getCodigo() == 0)//NÃO POSSUI PAGAMENTO RELACIONADO
                 ret.add(convertToObjeto(p));
         } 
                
@@ -214,7 +233,7 @@ public class ctrPagamento
         
         ///PARCELAS
         ///1 - CÓDIGO, 2 - VENCIMENTO, 3 - NUMERO,4 - PAGAMENTO, 5 - VALOR, 6 - VALOR PAGO, 7 - CÓDIGO COMPRA, 
-        ///8 - NOTA FISCAL, 9 - DATA DA COMPRA
+        ///8 - NOTA FISCAL, 9 - DATA DA COMPRA,10 - DATA CONVERTIDA, 11 - NOME DO FORNECEDOR
         
         Objeto obj = new Objeto();
         Objeto aux = new Objeto();
@@ -258,16 +277,20 @@ public class ctrPagamento
             aux.setParam8(p.getParcela().getCompra().getNumero_nota_fiscal());
             aux.setParam9(String.valueOf(p.getParcela().getCompra().getData()));
             aux.setParam10(Utils.convertDataUTC(p.getParcela().getCompra().getData()));
+            if(p.getParcela().getCompra().getFornecedor() != null)
+                aux.setParam11(p.getParcela().getCompra().getFornecedor().getNome());
+            else
+                aux.setParam11(p.getParcela().getCompra().getCliente().getNome());
             
             obj.addList2(aux);
         }
-        obj.setParam5(p.isAtivo() ? "Sim": "Não");
+        obj.setParam5(p.getCodigo() > 0 ? "Sim": "Não");
         obj.setParam6(p.getForma_pagamento());
         if(p.getForma_pagamento() != null)
             obj.setParam8(p.getForma_pagamento() + " " + p.getForma_pagamento_desc());
         else
             obj.setParam8("");
-        obj.setParam9(p.isAtivo()? String.valueOf(p.getCodigo()) : "");
+        obj.setParam9(p.getCodigo() > 0 ? String.valueOf(p.getCodigo()) : "");
         
         return obj;
     }
@@ -283,14 +306,11 @@ public class ctrPagamento
         
         ///PARCELAS
         ///1 - CÓDIGO, 2 - VENCIMENTO, 3 - NUMERO,4 - PAGAMENTO, 5 - VALOR, 6 - VALOR PAGO, 7 - CÓDIGO COMPRA, 
-        ///8 - NOTA FISCAL, 9 - DATA DA COMPRA
-        Pagamento p = new Pagamento();
-        p.setAtivo(obj.getParam5().equals("Sim"));
-        p.setCodigo(!obj.getParam9().equals("")? Integer.parseInt(obj.getParam9()) : 0);
+        ///8 - NOTA FISCAL, 9 - DATA DA COMPRA,10 - DATA CONVERTIDA, 11 - NOME DO FORNECEDOR
+        Pagamento p = new Pagamento(!obj.getParam9().equals("")? Integer.parseInt(obj.getParam9()) : 0);
         p.setData(Date.valueOf(obj.getParam4()));
         p.setForma_pagamento(obj.getParam6());
         p.setForma_pagamento_desc(obj.getParam7());
-        p.setValor(Double.parseDouble(obj.getParam3()));
         
         if(obj.getList1() != null && !obj.getList1().isEmpty())
             p.setDespesa(new Despesa(Integer.parseInt(obj.getList1().get(0).getParam1())));

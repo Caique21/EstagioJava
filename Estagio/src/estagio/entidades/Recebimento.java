@@ -17,6 +17,6 @@ public class Recebimento
     private Date data;
     private double valor;
     private Parcela parcela;
-    private FormaPagamento forma_pagamento;
-    private boolean ativo;//TRUE == pagamento  | FALSE == estorno
+    private String forma_pagamento;
+    private String forma_pagamento_desc;
 }

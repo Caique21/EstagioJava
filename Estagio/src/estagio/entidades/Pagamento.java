@@ -30,13 +30,12 @@ public class Pagamento
     private Despesa despesa;
     private String forma_pagamento;
     private String forma_pagamento_desc;
-    private boolean ativo;
 
     public Pagamento()
     {
     }
 
-    public Pagamento(int codigo, Date data, double valor, Parcela parcela, String forma_pagamento, String forma_pagamento_desc, boolean ativo)
+    public Pagamento(int codigo, Date data, double valor, Parcela parcela, String forma_pagamento, String forma_pagamento_desc)
     {
         this.codigo = codigo;
         this.data = data;
@@ -44,12 +43,12 @@ public class Pagamento
         this.parcela = parcela;
         this.forma_pagamento = forma_pagamento;
         this.forma_pagamento_desc = forma_pagamento_desc;
-        this.ativo = ativo;
     }
 
     public Pagamento(int codigo)
     {
         this.codigo = codigo;
+        get();
     }
 
     public Pagamento(Despesa despesa)
@@ -58,7 +57,7 @@ public class Pagamento
         get();
     }
 
-    public Pagamento(int codigo, Date data, double valor, Despesa despesa, String forma_pagamento,String forma_pagamento_desc, boolean ativo)
+    public Pagamento(int codigo, Date data, double valor, Despesa despesa, String forma_pagamento,String forma_pagamento_desc)
     {
         this.codigo = codigo;
         this.data = data;
@@ -66,7 +65,6 @@ public class Pagamento
         this.despesa = despesa;
         this.forma_pagamento = forma_pagamento;
         this.forma_pagamento_desc = forma_pagamento_desc;
-        this.ativo = ativo;
     }
 
     public Pagamento(Date data, double valor, Despesa despesa, String forma_pagamento)
@@ -94,15 +92,6 @@ public class Pagamento
         this.parcela = parcela;
         this.forma_pagamento = forma_pagamento;
     }
-    
-    public Pagamento(int codigo, Date data, double valor, Parcela parcela, String forma_pagamento,String forma_pagamento_desc)
-    {
-        this.codigo = codigo;
-        this.data = data;
-        this.valor = valor;
-        this.parcela = parcela;
-        this.forma_pagamento = forma_pagamento;
-    }
 
     public Pagamento(Date data, double valor, Parcela parcela, String forma_pagamento)
     {
@@ -110,7 +99,6 @@ public class Pagamento
         this.valor = valor;
         this.parcela = parcela;
         this.forma_pagamento = forma_pagamento;
-        this.forma_pagamento_desc = forma_pagamento_desc;
     }
 
     public int getCodigo()
@@ -173,16 +161,6 @@ public class Pagamento
         this.forma_pagamento = forma_pagamento;
     }
 
-    public boolean isAtivo()
-    {
-        return ativo;
-    }
-
-    public void setAtivo(boolean ativo)
-    {
-        this.ativo = ativo;
-    }
-
     public String getForma_pagamento_desc()
     {
         return forma_pagamento_desc;
@@ -209,14 +187,14 @@ public class Pagamento
                 if(this.despesa != null)
                 {
                     stmt = con.prepareStatement("INSERT INTO pagamento(pag_data,pag_valor,pag_form_pagamento,"
-                        + "pag_form_pagamento_desc,pag_ativo,desp_codigo) VALUES(?,?,?,?,?,?)");
-                    stmt.setInt(6, this.despesa.getCodigo());
+                        + "pag_form_pagamento_desc,desp_codigo) VALUES(?,?,?,?,?)");
+                    stmt.setInt(5, this.despesa.getCodigo());
                 }
                 else
                 {
                     stmt = con.prepareStatement("INSERT INTO pagamento(pag_data,pag_valor,pag_form_pagamento,"
-                        + "pag_form_pagamento_desc,pag_ativo,parc_codigo) VALUES(?,?,?,?,?,?)");
-                    stmt.setInt(6, this.parcela.getCodigo());
+                        + "pag_form_pagamento_desc,parc_codigo) VALUES(?,?,?,?,?)");
+                    stmt.setInt(5, this.parcela.getCodigo());
                     
                     sql = "UPDATE parcela SET parc_datapagamento = '$1', parc_valorpago = $2 WHERE parc_codigo = $3";
                     sql = sql.replace("$1", String.valueOf(Date.valueOf(LocalDate.now())));
@@ -229,7 +207,6 @@ public class Pagamento
                 stmt.setDouble(2, this.valor);
                 stmt.setString(3, this.forma_pagamento);
                 stmt.setString(4, this.forma_pagamento_desc);
-                stmt.setBoolean(5, true);
                 
                 
                 if(flag = flag && stmt.executeUpdate() == 1)
@@ -267,7 +244,7 @@ public class Pagamento
     public boolean pagarParcial()
     {
         Connection con = Banco.getCon().getConnection();
-        PreparedStatement stmt,stmt2,stmt3;
+        PreparedStatement stmt,stmt2,stmt3 = null;
         boolean flag = false;
         
         try
@@ -280,8 +257,8 @@ public class Pagamento
                 if(this.despesa != null)
                 {
                     stmt = con.prepareStatement("INSERT INTO pagamento(pag_data,pag_valor,pag_form_pagamento,"
-                        + "pag_form_pagamento_desc,pag_ativo,desp_codigo) VALUES(?,?,?,?,?,?)");
-                    stmt.setInt(6, this.despesa.getCodigo());
+                        + "pag_form_pagamento_desc,desp_codigo) VALUES(?,?,?,?,?)");
+                    stmt.setInt(5, this.despesa.getCodigo());
                     
                     sql = "INSERT INTO despesa(desp_nome,desp_fixo,desp_preco,desp_data_vencimento,desp_descricao $7)"
                         + " VALUES(?,?,?,?,?,$6)";
@@ -303,8 +280,8 @@ public class Pagamento
                 else
                 {
                     stmt = con.prepareStatement("INSERT INTO pagamento(pag_data,pag_valor,pag_form_pagamento,"
-                        + "pag_form_pagamento_desc,pag_ativo,parc_codigo) VALUES(?,?,?,?,?,?)");
-                    stmt.setInt(6, this.parcela.getCodigo());
+                        + "pag_form_pagamento_desc,parc_codigo) VALUES(?,?,?,?,?)");
+                    stmt.setInt(5, this.parcela.getCodigo());
                     
                     sql = "INSERT INTO parcela(parc_datavencimento,parc_numero,parc_valorparcela,comp_codigo)"
                         + "VALUES (?,?,?,?)";
@@ -324,9 +301,9 @@ public class Pagamento
                 stmt.setDouble(2, this.valor);
                 stmt.setString(3, this.forma_pagamento);
                 stmt.setString(4, this.forma_pagamento_desc);
-                stmt.setBoolean(5, true);
                 
-                if(flag = stmt.executeUpdate() == 1 && stmt2.executeUpdate() == 1)
+                if(flag = stmt.executeUpdate() == 1 && stmt2.executeUpdate() == 1 && 
+                        (stmt3 != null? stmt3.executeUpdate() == 1 : true))
                     con.commit();
                 else
                     con.rollback();
@@ -346,8 +323,8 @@ public class Pagamento
         
         if(this.despesa != null)
             sql += "desp_codigo = " + this.despesa.getCodigo();
-        //else if(this.parcela != null)
-            //sql += "par_codigo = " + this.parcela.getCodigo();
+        else if(this.parcela != null)
+            sql += "parc_codigo = " + this.parcela.getCodigo();
         else
             sql += "pag_codigo = " + this.codigo;
         
@@ -360,12 +337,12 @@ public class Pagamento
                 this.codigo = rs.getInt("pag_codigo");
                 this.data = rs.getDate("pag_data");
                 this.valor = rs.getDouble("pag_valor");
-                //this.parcela = this.parcela != null ? this.parcela : new Parcela(rs.getInt("parc_codigo"));
+                this.parcela = rs.getInt("parc_codigo") > 0? new Parcela(rs.getInt("parc_codigo")) : null;
+                this.despesa = rs.getInt("desp_codigo") > 0? new Despesa(rs.getInt("desp_codigo")) : null;
                 this.forma_pagamento = rs.getString("pag_form_pagamento");
                 this.forma_pagamento_desc = rs.getString("pag_form_pagamento_desc");
-                this.ativo = rs.getBoolean("pag_ativo");
-                if(this.despesa == null)
-                    this.despesa = new Despesa(rs.getInt("desp_codigo"));
+                //if(this.despesa == null)
+                  //  this.despesa = new Despesa(rs.getInt("desp_codigo"));
             }
         }
         catch (SQLException ex)
@@ -375,22 +352,27 @@ public class Pagamento
         }
     }
 
-    public boolean estornar()
+    public boolean estornar(int usuario)
     {
         Connection con = Banco.getCon().getConnection();
-        PreparedStatement stmt,stmt2 = null;
-        boolean flag = false;
+        PreparedStatement stmt,stmt2 = null,stmt3 = null;
+        boolean flag = true;
         String sql;
         
         try
         {
             con.setAutoCommit(false);
             
-            stmt = con.prepareStatement("UPDATE pagamento SET pag_ativo = 'false' WHERE pag_codigo = " + 
-                    this.codigo);
+            stmt = con.prepareStatement("DELETE FROM pagamento WHERE pag_codigo = " + this.codigo);
             
             if(this.parcela != null)
             {
+                stmt3 = con.prepareStatement("INSERT INTO registro_estorno (reg_data, user_codigo, parc_codigo) "
+                    + "VALUES(?,?,?)");
+                stmt3.setDate(1, Date.valueOf(LocalDate.now()));
+                stmt3.setInt(2, usuario);
+                stmt3.setInt(3, this.parcela.getCodigo());
+                
                 sql = "UPDATE parcela SET parc_datapagamento = ?, parc_valorpago = ? WHERE parc_codigo = ?";
                 stmt2 = con.prepareStatement(sql);
                 stmt2.setNull(1, java.sql.Types.DATE);
@@ -405,7 +387,7 @@ public class Pagamento
                         + "AND parc_valorparcela = $3";
                     sql = sql.replace("$1", String.valueOf(this.parcela.getCompra().getCodigo()));
                     sql = sql.replace("$2", String.valueOf(this.parcela.getVencimento()));
-                    sql = sql.replace("$2", String.valueOf(
+                    sql = sql.replace("$3", String.valueOf(
                             Utils.truncate(this.parcela.getValor_parcela() - this.valor)));
                     
                     ResultSet rs = con.prepareStatement(sql).executeQuery();
@@ -415,8 +397,31 @@ public class Pagamento
                                 rs.getInt("parc_codigo")).executeUpdate() == 1;
                 }
             }
+            else if(this.despesa != null)
+            {
+                stmt3 = con.prepareStatement("INSERT INTO registro_estorno (reg_data, user_codigo, desp_codigo) "
+                    + "VALUES(?,?,?)");
+                stmt3.setDate(1, Date.valueOf(LocalDate.now()));
+                stmt3.setInt(2, usuario);
+                stmt3.setInt(3, this.despesa.getCodigo());
+                
+                if(this.valor < this.despesa.getValor())
+                {
+                    sql = "SELECT desp_codigo FROM despesa WHERE desp_nome = '$1' AND desp_data_vencimento = '$2' "
+                        + "AND desp_preco = $3";
+                    sql = sql.replace("$1", this.getDespesa().getNome());
+                    sql = sql.replace("$2", String.valueOf(this.getDespesa().getVencimento()));
+                    sql = sql.replace("$3", String.valueOf(
+                            Utils.truncate(this.despesa.getValor() - this.valor)));
+                    
+                    ResultSet rs = con.prepareStatement(sql).executeQuery();
+                    if(rs != null && rs.next())
+                        flag = con.prepareStatement("DELETE FROM despesa WHERE desp_codigo = " + 
+                                rs.getInt("desp_codigo")).executeUpdate() == 1;
+                }
+            }
             
-            if(flag = flag && stmt.executeUpdate() == 1)
+            if(flag = flag && (stmt3 != null ? stmt3.executeUpdate() == 1 : false) && stmt.executeUpdate() == 1)
                 con.commit();
             else
                 con.rollback();
@@ -424,6 +429,7 @@ public class Pagamento
         catch (SQLException ex)
         {
             Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
         }
         
        return flag;
@@ -434,14 +440,16 @@ public class Pagamento
         ArrayList<Pagamento>pagamentos = new ArrayList<>();
         ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
                 + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE comp_codigo > 0");
+        Pagamento pagamento;
         
         try            
         {
             while(rs != null && rs.next())
+            {
                 pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
                         rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
-                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
-                        rs.getBoolean("pag_ativo")));
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+            }
         }
         catch (SQLException ex)
         {
@@ -455,10 +463,11 @@ public class Pagamento
         try            
         {
             while(rs != null && rs.next())
+            {
                 pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
                         rs.getDouble("pag_valor"), new Despesa(rs.getInt("desp_codigo")),
-                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
-                        rs.getBoolean("pag_ativo")));
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+            }
         }
         catch (SQLException ex)
         {
@@ -471,6 +480,7 @@ public class Pagamento
     public ArrayList<Pagamento> getByFornecedor(String fornecedor)
     {
         ArrayList<Pagamento>pagamentos = new ArrayList<>();
+        Pagamento pagamento;
         ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
             + "ON pagamento.parc_codigo = parcela.parc_codigo WHERE parcela.parc_codigo "
                 + "IN(SELECT parc_codigo from parcela INNER JOIN compra ON parcela.comp_codigo = compra.comp_codigo "
@@ -484,10 +494,11 @@ public class Pagamento
         try            
         {
             while(rs != null && rs.next())
+            {
                 pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
                         rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
-                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
-                        rs.getBoolean("pag_ativo")));
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+            }
         }
         catch (SQLException ex)
         {
@@ -500,6 +511,7 @@ public class Pagamento
     public ArrayList<Pagamento> getByNotaFiscal(String nota_fiscal)
     {
         ArrayList<Pagamento>pagamentos = new ArrayList<>();
+        Pagamento pagamento;
         ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
             + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE parcela.parc_codigo IN "
                 + "(SELECT parc_codigo FROM parcela INNER JOIN compra ON parcela.comp_codigo = compra.comp_codigo "
@@ -508,10 +520,11 @@ public class Pagamento
         try            
         {
             while(rs != null && rs.next())
+            {
                 pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
                         rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
-                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
-                        rs.getBoolean("pag_ativo")));
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+            }
         }
         catch (SQLException ex)
         {
@@ -524,16 +537,18 @@ public class Pagamento
     public ArrayList<Pagamento> getByDespesa(String despesa)
     {
         ArrayList<Pagamento>pagamentos = new ArrayList<>();
+        Pagamento pagamento;
         ResultSet rs = Banco.getCon().consultar("SELECT * FROM despesa LEFT JOIN pagamento "
             + "ON despesa.desp_codigo = pagamento.desp_codigo WHERE desp_nome Ilike '%" + despesa + "%'");
         
         try            
         {
             while(rs != null && rs.next())
+            {
                 pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
                         rs.getDouble("pag_valor"), new Despesa(rs.getInt("desp_codigo")),
-                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
-                        rs.getBoolean("pag_ativo")));
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+            }
         }
         catch (SQLException ex)
         {
@@ -546,6 +561,7 @@ public class Pagamento
     public ArrayList<Pagamento> getByVencimento(LocalDate data)
     {
         ArrayList<Pagamento>pagamentos = new ArrayList<>();
+        Pagamento pagamento;
         ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
             + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE comp_codigo > 0 AND "
                 + "parc_datavencimento <= '" + data.toString() + "'");
@@ -553,10 +569,11 @@ public class Pagamento
         try            
         {
             while(rs != null && rs.next())
+            {
                 pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
                         rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
-                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
-                        rs.getBoolean("pag_ativo")));
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+            }
         }
         catch (SQLException ex)
         {
@@ -570,10 +587,11 @@ public class Pagamento
         try            
         {
             while(rs != null && rs.next())
+            {
                 pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
                         rs.getDouble("pag_valor"), new Despesa(rs.getInt("desp_codigo")),
-                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
-                        rs.getBoolean("pag_ativo")));
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+            }
         }
         catch (SQLException ex)
         {
@@ -586,6 +604,7 @@ public class Pagamento
     public ArrayList<Pagamento> getByPeriodo(LocalDate inicial, LocalDate fim)
     {
         ArrayList<Pagamento>pagamentos = new ArrayList<>();
+        Pagamento pagamento;
         ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
             + "ON parcela.parc_codigo = pagamento.parc_codigo "
                + "WHERE comp_codigo > 0 AND parc_datavencimento >= '" + inicial.toString() + "' "
@@ -594,10 +613,11 @@ public class Pagamento
         try            
         {
             while(rs != null && rs.next())
+            {
                 pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
                         rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
-                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
-                        rs.getBoolean("pag_ativo")));
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+            }
         }
         catch (SQLException ex)
         {
@@ -613,10 +633,11 @@ public class Pagamento
         try            
         {
             while(rs != null && rs.next())
+            {
                 pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
                         rs.getDouble("pag_valor"), new Despesa(rs.getInt("desp_codigo")),
-                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc"),
-                        rs.getBoolean("pag_ativo")));
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+            }
         }
         catch (SQLException ex)
         {

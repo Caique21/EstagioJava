@@ -129,7 +129,7 @@ public class TelaPagamentoController implements Initializable
     @FXML
     private TableView<Objeto> tvParcelas;
     @FXML
-    private TableColumn<Objeto, String> tcNotaFiscal;
+    private TableColumn<Objeto, String> tcFornecedor;
     @FXML
     private TableColumn<Objeto, String> tcNumeroParcela;
     @FXML
@@ -229,7 +229,7 @@ public class TelaPagamentoController implements Initializable
         tcPaga.setCellValueFactory(new PropertyValueFactory<>("param5"));
         tcFormaPagamento.setCellValueFactory(new PropertyValueFactory<>("param8"));
         
-        tcNotaFiscal.setCellValueFactory(new PropertyValueFactory<>("param8"));
+        tcFornecedor.setCellValueFactory(new PropertyValueFactory<>("param11"));
         tcNumeroParcela.setCellValueFactory(new PropertyValueFactory<>("param3"));
         tcValorPagoParcela.setCellValueFactory(new PropertyValueFactory<>("param6"));
         tcDataCompra.setCellValueFactory(new PropertyValueFactory<>("param10"));
@@ -342,10 +342,16 @@ public class TelaPagamentoController implements Initializable
         if(Utils.confirmarUsuario("Confirmar usuário", "Para estornar compra", 
                 "Usuário: " + TelaPrincipalController.usuario_logado.getParam3()))
         {
-            if(ctrPag.estornar(pagamento))
+            Alert a;
+            if(ctrPag.estornar(pagamento,Integer.parseInt(TelaPrincipalController.usuario_logado.getParam1())))
             {
-                
+                inicializa();
+                a = new Alert(Alert.AlertType.INFORMATION, "Pagamento estornado com sucesso!!", ButtonType.OK);
             }
+            else
+                a = new Alert(Alert.AlertType.ERROR, "Erro no estorno do pagamento\n" + 
+                        Banco.getCon().getMensagemErro(), ButtonType.OK);
+            a.showAndWait();
         }
     }
 

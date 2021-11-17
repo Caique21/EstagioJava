@@ -297,7 +297,6 @@ CREATE TABLE recebimento
 	parc_codigo INTEGER NULL,
 	rec_forma_pagamento VARCHAR(15) not null,
 	rec_form_pagamento_desc VARCHAR(45) NULL,
-	rec_ativo boolean NOT NULL,--TRUE == PAGAMENTO | FALSE == ESTORNO
   	CONSTRAINT pk_recebimento
 		PRIMARY KEY (rec_codigo) ,
 	CONSTRAINT fk_recebimento_parcela 
@@ -379,7 +378,6 @@ CREATE TABLE Pagamento
 	parc_codigo INTEGER NULL,
 	pag_forma_pagamento VARCHAR(12) not null,
 	pag_form_pagamento_desc VARCHAR(45) NULL,
-	pag_ativo boolean NOT NULL,--TRUE == PAGAMENTO | FALSE == ESTORNO
 	desp_codigo INTEGER NULL,
   	CONSTRAINT pk_pagamento
 		PRIMARY KEY (pag_codigo) ,
@@ -406,6 +404,26 @@ CREATE TABLE registro_pagamento
 	CONSTRAINT fk_reg_pagamento_funcionario
 		FOREIGN KEY (func_codigo)
 		REFERENCES funcionario
+);
+
+CREATE TABLE registro_estorno
+(
+	reg_estorno SERIAL NOT NULL,
+	reg_data DATE NOT NULL,
+	user_codigo INTEGER NOT NULL,
+	pag_codigo INTEGER NULL,
+	rec_codigo INTEGER NULL,
+	CONSTRAINT pk_registro_estorno
+		PRIMARY KEY (reg_estorno),
+	CONSTRAINT fk_estorno_usuario
+		FOREIGN KEY(user_codigo)
+		REFERENCES usuario,
+	CONSTRAINT fk_estorno_pagamento
+		FOREIGN KEY(pag_codigo)
+		REFERENCES pagamento,
+	CONSTRAINT fk_estorno_recebimento
+		FOREIGN KEY(rec_codigo)
+		REFERENCES recebimento
 );
 
 insert into usuario(user_nome, user_senha, user_nivel,user_ativo) values ('admin','admin','alto',true);
