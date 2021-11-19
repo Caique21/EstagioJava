@@ -384,6 +384,22 @@ public class TelaPrincipalController implements Initializable
     @FXML
     private void clickRelatorios(MouseEvent event)
     {
+        try
+        {
+            Stage stage = (Stage) painelCentral.getScene().getWindow();
+            stage.setResizable(false);
+
+            Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/TelaRelatorios.fxml"));
+            painelCentral.getChildren().clear();
+            painelCentral.getChildren().add(root);
+            central = painelCentral;
+        }
+        catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Dashboard!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
+            a.showAndWait();
+            System.out.println(er.getMessage());
+        }
     }
 
     @FXML
