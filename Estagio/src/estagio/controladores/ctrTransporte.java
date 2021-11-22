@@ -12,6 +12,7 @@ import estagio.utilidades.Objeto;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -76,6 +77,23 @@ public class ctrTransporte
                     ret.add(convertToObjeto(t));
         }    
         return ret;
+    }
+    
+    public ArrayList<Objeto>getTransporte(String nome, boolean funcionario)
+    {
+       if(funcionario)
+           return new Transporte().getByFuncionario(nome);
+       return new Transporte().getByVeiculo(nome);
+    }
+    
+    public ArrayList<Objeto>getByPeriodo(LocalDate inicio, LocalDate fim,boolean finalizada)
+    {
+       return new Transporte().getByPeriodo(inicio,fim,finalizada);
+    }
+    
+    public ArrayList<Objeto>getVeiculos(int codigo)
+    {
+       return new Transporte().getVeiculos(codigo);
     }
     
     private Transporte convertToTransporte(Objeto transporte)

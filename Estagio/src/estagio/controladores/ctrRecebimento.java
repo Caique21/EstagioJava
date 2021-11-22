@@ -146,6 +146,16 @@ public class ctrRecebimento
                
         return ret;
     }
+    
+    public ArrayList<Objeto> getInadimplentes()
+    {
+        return new Recebimento().getInadimplentes();
+    }
+    
+    public ArrayList<Objeto> getContasVencer(LocalDate inicio, LocalDate...fim)
+    {
+        return new Recebimento().getContasVencer(inicio, fim);
+    }
 
     private Objeto convertToObjeto(Recebimento p)
     {

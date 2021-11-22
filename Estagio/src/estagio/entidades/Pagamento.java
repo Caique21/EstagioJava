@@ -6,6 +6,7 @@
 package estagio.entidades;
 
 import estagio.utilidades.Banco;
+import estagio.utilidades.Objeto;
 import estagio.utilidades.Utils;
 import java.sql.Connection;
 import java.sql.Date;
@@ -637,6 +638,82 @@ public class Pagamento
                 pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
                         rs.getDouble("pag_valor"), new Despesa(rs.getInt("desp_codigo")),
                         rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return pagamentos;
+    }
+
+    public ArrayList<Objeto> getContasPagar(LocalDate inicial, LocalDate fim)
+    {
+        ArrayList<Objeto>pagamentos = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT forn_nome AS fornecedor, comp_nota_fiscal AS nome,"
+            + "parc_numero AS descricao, to_char(parc_valorparcela,'L999G999G990D99') AS valor,"
+            + "parc_datavencimento AS data FROM parcela LEFT JOIN pagamento "
+            + "ON parcela.parc_codigo = pagamento.parc_codigo INNER JOIN compra "
+            + "ON parcela.comp_codigo = compra.comp_codigo INNER JOIN fornecedor "
+            + "ON compra.forn_codigo = fornecedor.forn_codigo WHERE pag_codigo IS NULL AND parcela.comp_codigo > 0 "
+            + "AND parc_datavencimento >= '" + inicial.toString() + "' "
+                    + "AND parc_datavencimento <= '" + fim.toString() + "' "
+        + "UNION "
+        + "SELECT cli_nome AS fornecedor, comp_nota_fiscal AS nome,parc_numero AS descricao, "
+            + "to_char(parc_valorparcela,'L999G999G990D99') AS valor,parc_datavencimento AS data FROM parcela "
+            + "LEFT JOIN pagamento ON parcela.parc_codigo = pagamento.parc_codigo INNER JOIN compra "
+            + "ON parcela.comp_codigo = compra.comp_codigo INNER JOIN cliente "
+            + "ON compra.cli_codigo = cliente.cli_codigo WHERE pag_codigo IS NULL AND parcela.comp_codigo > 0 "
+            + "AND parc_datavencimento >= '" + inicial.toString() + "' "
+                + "AND parc_datavencimento <= '" + fim.toString() + "' "
+        + "UNION "
+        + "SELECT 'Despesa' AS fornecedor,desp_nome AS nome,1 AS descricao,to_char(desp_preco,'L999G999G990D99') AS valor,"
+            + "desp_data_vencimento AS data FROM despesa LEFT JOIN pagamento "
+            + "ON despesa.desp_codigo = pagamento.desp_codigo WHERE "
+            + "desp_data_vencimento >= '" + inicial.toString() + "' "
+                + "AND desp_data_vencimento  <= '" + fim.toString() + "'");
+        
+        try            
+        {
+            while(rs != null && rs.next())
+            {
+                pagamentos.add(new Objeto(rs.getString("fornecedor"), rs.getString("nome"), 
+                        rs.getString("descricao"), rs.getString("valor"), rs.getString("data"),Utils.convertDataUTC(rs.getDate("data"))));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return pagamentos;
+    }
+
+    public ArrayList<Objeto> getContasPagar(String nome)
+    {
+        ArrayList<Objeto>pagamentos = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT forn_nome AS fornecedor, comp_nota_fiscal AS nome,"
+            + "CAST(parc_numero AS varchar) AS descricao, to_char(parc_valorparcela,'L999G999G990D99') AS valor,"
+            + "parc_datavencimento AS data FROM parcela INNER JOIN compra "
+            + "ON parcela.comp_codigo = compra.comp_codigo INNER JOIN fornecedor "
+            + "ON compra.forn_codigo = fornecedor.forn_codigo LEFT JOIN pagamento "
+            + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE pag_codigo IS NULL AND "
+                + "forn_nome Ilike '%" + nome + "%' "
+        + "UNION "
+        + "SELECT cli_nome AS fornecedor, comp_nota_fiscal AS nome,CAST(parc_numero AS varchar) AS descricao, "
+            + "to_char(parc_valorparcela,'L999G999G990D99') AS valor,parc_datavencimento AS data FROM parcela "
+            + "INNER JOIN compra ON parcela.comp_codigo = compra.comp_codigo INNER JOIN cliente "
+            + "ON compra.cli_codigo = cliente.cli_codigo LEFT JOIN pagamento "
+            + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE pag_codigo IS NULL AND "
+                        + "cli_nome Ilike '%" + nome + "%'");
+        
+        try            
+        {
+            while(rs != null && rs.next())
+            {
+                pagamentos.add(new Objeto(rs.getString("fornecedor"), rs.getString("nome"), 
+                    rs.getString("descricao"), rs.getString("valor"), rs.getString("data"),Utils.convertDataUTC(rs.getDate("data"))));
             }
         }
         catch (SQLException ex)

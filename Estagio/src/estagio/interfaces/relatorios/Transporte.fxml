@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import java.net.URL?>
+
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.relatorios.TransporteController">
+   <stylesheets>
+        <URL value="@/estagio/utilidades/CSS/Style.css" />
+    </stylesheets>
+    <top>
+      <Pane fx:id="panePesquisa" prefHeight="97.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <JFXTextField fx:id="tfFuncionarioVeiculo" labelFloat="true" layoutX="33.0" layoutY="24.0" prefHeight="25.0" prefWidth="269.0" promptText="Funcionário" />
+            <JFXDatePicker fx:id="dpInicio" layoutX="36.0" layoutY="24.0" prefHeight="25.0" prefWidth="111.0" visible="false" />
+            <JFXDatePicker fx:id="dpFim" layoutX="186.0" layoutY="24.0" prefHeight="25.0" prefWidth="111.0" visible="false" />
+            <JFXButton fx:id="btPesquisar" buttonType="RAISED" layoutX="318.0" layoutY="25.0" text="PESQUISAR">
+               <graphic>
+                  <FontAwesomeIconView fx:id="faSearch" glyphName="SEARCH" size="15" />
+               </graphic>
+            </JFXButton>
+            <JFXRadioButton fx:id="rbFuncionario" layoutX="33.0" layoutY="59.0" text="Funcionário" />
+            <JFXRadioButton fx:id="rbVeiculo" layoutX="142.0" layoutY="59.0" text="Veículo" />
+            <JFXRadioButton fx:id="rbPeriodo" layoutX="229.0" layoutY="59.0" text="Período" />
+            <Label fx:id="lbAte" layoutX="153.0" layoutY="28.0" text="Até" visible="false" />
+            <JFXCheckBox fx:id="cbFinalizada" layoutX="427.0" layoutY="28.0" text="Exibir Finalizadas" />
+         </children>
+      </Pane>
+   </top>
+   <center>
+      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="lbTitulo" layoutX="55.0" layoutY="14.0" text="Relatório de Transportes">
+               <font>
+                  <Font name="System Bold" size="25.0" />
+               </font>
+            </Label>
+            <TableView fx:id="tvTransportes" layoutX="33.0" layoutY="58.0" prefHeight="335.0" prefWidth="1026.0">
+               <columns>
+                  <TableColumn fx:id="tcMotorista" prefWidth="279.0" text="Motorista" />
+                  <TableColumn fx:id="tcPlacaTransporte" prefWidth="137.0" text="Placa do Transporte" />
+                  <TableColumn fx:id="tcSaida" prefWidth="132.0" text="Data de Saída" />
+                  <TableColumn fx:id="tcChegada" prefWidth="132.0" text="Data de Chegada" />
+                  <TableColumn fx:id="tcStatus" prefWidth="172.0" text="Status" />
+                  <TableColumn fx:id="tcTipo" prefWidth="173.0" text="Tipo" />
+               </columns>
+            </TableView>
+            <TableView fx:id="tvVeiculos" layoutX="183.0" layoutY="419.0" prefHeight="170.0" prefWidth="726.0">
+              <columns>
+                <TableColumn fx:id="tcPlaca" prefWidth="115.0" text="Placa" />
+                <TableColumn fx:id="tcMarca" prefWidth="150.0" text="Marca" />
+                  <TableColumn fx:id="tcModelo" prefWidth="154.0" text="Modelo" />
+                  <TableColumn fx:id="tcChassi" prefWidth="134.0" text="Chassi" />
+                  <TableColumn fx:id="tcAno" prefWidth="51.0" text="Ano" />
+                  <TableColumn fx:id="tcCor" prefWidth="121.0" text="Cor" />
+              </columns>
+            </TableView>
+            <Label fx:id="lbVeiculos" alignment="CENTER" layoutX="183.0" layoutY="402.0" prefHeight="17.0" prefWidth="726.0" text="Veículos Transportados">
+               <font>
+                  <Font name="System Bold Italic" size="12.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+   </center>
+</BorderPane>

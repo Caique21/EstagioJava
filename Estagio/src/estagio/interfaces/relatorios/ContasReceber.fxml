@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane fx:id="painelPrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.relatorios.ContasReceberController">
+   <stylesheets>
+        <URL value="@/estagio/utilidades/CSS/Style.css" />
+    </stylesheets>
+    <top>
+      <Pane fx:id="painelBusca" prefHeight="97.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
+         <children>
+            <JFXDatePicker fx:id="dpData" layoutX="29.0" layoutY="24.0" prefHeight="25.0" prefWidth="233.0" />
+            <JFXDatePicker fx:id="dpInicio" layoutX="33.0" layoutY="24.0" prefHeight="25.0" prefWidth="99.0" visible="false" />
+            <JFXDatePicker fx:id="dpFim" layoutX="162.0" layoutY="24.0" prefHeight="25.0" prefWidth="99.0" visible="false" />
+            <JFXRadioButton fx:id="rbData" layoutX="33.0" layoutY="59.0" text="Data" />
+            <JFXRadioButton fx:id="rbPeriodo" layoutX="131.0" layoutY="59.0" text="Período" />
+            <Label fx:id="lbAte" layoutX="135.0" layoutY="28.0" text="Até" visible="false" />
+         </children>
+      </Pane>
+   </top>
+   <center>
+      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="lbTitulo" layoutX="55.0" layoutY="22.0" text="Relatório de Contas à Receber">
+               <font>
+                  <Font name="System Bold" size="25.0" />
+               </font>
+            </Label>
+            <TableView fx:id="tvContas" layoutX="33.0" layoutY="77.0" prefHeight="477.0" prefWidth="1026.0">
+               <columns>
+                  <TableColumn fx:id="tcFornecedor" prefWidth="279.0" text="Fornecedor/Cliente" />
+                  <TableColumn fx:id="tcNotaFiscal" prefWidth="221.0" text="Nota Fiscal" />
+                  <TableColumn fx:id="tcNumero" prefWidth="142.0" text="Número da Parcela" />
+                  <TableColumn fx:id="tcValor" prefWidth="182.0" text="Valor da Parcela" />
+                  <TableColumn fx:id="tcVencimento" prefWidth="201.0" text="Vencimento da Parcela" />
+               </columns>
+            </TableView>
+         </children>
+      </Pane>
+   </center>
+</BorderPane>

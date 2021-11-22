@@ -6,6 +6,7 @@
 package estagio.entidades;
 
 import estagio.utilidades.Banco;
+import estagio.utilidades.Objeto;
 import estagio.utilidades.Utils;
 import java.sql.Connection;
 import java.sql.Date;
@@ -402,6 +403,87 @@ public class Recebimento
                 recebimentos.add(new Recebimento(rs.getInt("rec_codigo"), rs.getDate("rec_data"), 
                         rs.getDouble("rec_valor"), new Parcela(rs.getInt("parc_codigo")),
                         rs.getString("rec_form_pagamento"),rs.getString("rec_form_pagamento_desc")));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Recebimento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return recebimentos;
+    }
+    
+    public ArrayList<Objeto> getContasVencer(LocalDate inicio, LocalDate... fim)
+    {
+        ArrayList<Objeto>recebimentos = new ArrayList<>();
+        String sql = "SELECT forn_nome as nome, parc_numero,parc_datavencimento,"
+            + "to_char(parc_valorparcela,'L999G999G990D99') AS valor, ven_nota_fiscal FROM parcela LEFT JOIN "
+            + "pagamento ON parcela.parc_codigo = pagamento.parc_codigo INNER JOIN venda "
+            + "ON parcela.ven_codigo = venda.ven_codigo INNER JOIN fornecedor "
+            + "ON venda.forn_codigo = fornecedor.forn_codigo WHERE pag_codigo IS NULL AND $1 "
+        + "UNION "
+        + "SELECT cli_nome as nome, parc_numero,parc_datavencimento,"
+            + "to_char(parc_valorparcela,'L999G999G990D99') AS valor, ven_nota_fiscal FROM parcela LEFT JOIN "
+            + "pagamento ON parcela.parc_codigo = pagamento.parc_codigo INNER JOIN venda "
+            + "ON parcela.ven_codigo = venda.ven_codigo INNER JOIN cliente "
+            + "ON venda.cli_codigo = cliente.cli_codigo WHERE pag_codigo IS NULL AND $1";
+        
+        if(fim.length == 0)
+            sql = sql.replace("$1", "parc_datavencimento <= '" + inicio.toString() + "'");
+        else
+            sql = sql.replace("$1", "parc_datavencimento >= '" + inicio.toString() + "' AND "
+                + "parc_datavencimento <= '" + fim[0].toString() + "'");
+        
+        ResultSet rs = Banco.getCon().consultar(sql);
+        try            
+        {
+            while(rs != null && rs.next())
+            {
+                Objeto o = new Objeto(rs.getString("nome"));
+                o.setParam2(String.valueOf(rs.getInt("parc_numero")));
+                o.setParam3(String.valueOf(rs.getDate("parc_datavencimento")));
+                o.setParam4(rs.getString("valor"));
+                o.setParam5(rs.getString("ven_nota_fiscal"));
+                o.setParam6(Utils.convertDataUTC(rs.getDate("parc_datavencimento")));
+                recebimentos.add(o);
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Recebimento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return recebimentos;
+    }
+    
+    public ArrayList<Objeto> getInadimplentes()
+    {
+        ArrayList<Objeto>recebimentos = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("SELECT forn_nome as nome, parc_numero,parc_datavencimento,"
+            + "to_char(parc_valorparcela,'L999G999G990D99') AS valor, ven_nota_fiscal FROM parcela LEFT JOIN "
+            + "pagamento ON parcela.parc_codigo = pagamento.parc_codigo INNER JOIN venda "
+            + "ON parcela.ven_codigo = venda.ven_codigo INNER JOIN fornecedor "
+            + "ON venda.forn_codigo = fornecedor.forn_codigo WHERE pag_codigo IS NULL AND "
+            + "CURRENT_DATE > parc_datavencimento "
+        + "UNION "
+        + "SELECT cli_nome as nome, parc_numero,parc_datavencimento,"
+            + "to_char(parc_valorparcela,'L999G999G990D99') AS valor, ven_nota_fiscal FROM parcela LEFT JOIN "
+            + "pagamento ON parcela.parc_codigo = pagamento.parc_codigo INNER JOIN venda "
+            + "ON parcela.ven_codigo = venda.ven_codigo INNER JOIN cliente "
+            + "ON venda.cli_codigo = cliente.cli_codigo WHERE pag_codigo IS NULL AND "
+            + "CURRENT_DATE > parc_datavencimento");
+        
+        try            
+        {
+            while(rs != null && rs.next())
+            {
+                Objeto o = new Objeto(rs.getString("nome"));
+                o.setParam2(String.valueOf(rs.getInt("parc_numero")));
+                o.setParam3(String.valueOf(rs.getDate("parc_datavencimento")));
+                o.setParam4(rs.getString("valor"));
+                o.setParam5(rs.getString("ven_nota_fiscal"));
+                o.setParam6(Utils.convertDataUTC(rs.getDate("parc_datavencimento")));
+                recebimentos.add(o);
             }
         }
         catch (SQLException ex)

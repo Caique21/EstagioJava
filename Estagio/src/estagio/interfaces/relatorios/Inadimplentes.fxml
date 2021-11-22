@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.relatorios.InadimplentesController">
+   <children>
+      <Label fx:id="lbTitulo" layoutX="33.0" layoutY="30.0" text="Relatório de Clientes/Fornecedores Inadimplentes">
+         <font>
+            <Font name="System Bold" size="25.0" />
+         </font>
+      </Label>
+      <TableView fx:id="tvContas" layoutX="33.0" layoutY="112.0" prefHeight="548.0" prefWidth="1026.0">
+         <columns>
+            <TableColumn fx:id="tcFornecedor" prefWidth="279.0" text="Cliente/Fornecedor" />
+            <TableColumn fx:id="tcNotaFiscal" prefWidth="221.0" text="Nota Fiscal da Venda" />
+            <TableColumn fx:id="tcNumero" prefWidth="142.0" text="Número da Parcela" />
+            <TableColumn fx:id="tcValor" prefWidth="182.0" text="Valor da Parcela" />
+            <TableColumn fx:id="tcVencimento" prefWidth="201.0" text="Vencimento da Parcela" />
+         </columns>
+      </TableView>
+   </children>
+</Pane>

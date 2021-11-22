@@ -221,6 +221,16 @@ public class ctrPagamento
                
         return ret;
     }
+    
+    public ArrayList<Objeto>getContasPagar(LocalDate inicial, LocalDate fim)
+    {
+        return new Pagamento().getContasPagar(inicial,fim);
+    }
+    
+    public ArrayList<Objeto>getContasPagar(String nome)
+    {
+        return new Pagamento().getContasPagar(nome);
+    }
 
     private Objeto convertToObjeto(Pagamento p)
     {

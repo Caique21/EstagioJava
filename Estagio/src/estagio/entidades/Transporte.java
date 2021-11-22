@@ -6,11 +6,14 @@
 package estagio.entidades;
 
 import estagio.utilidades.Banco;
+import estagio.utilidades.Objeto;
+import estagio.utilidades.Utils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
@@ -422,6 +425,149 @@ public class Transporte
         
         return Banco.getCon().manipular(sql);
     }
+
+    public ArrayList<Objeto> getByFuncionario(String nome)
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        try
+        {
+            ResultSet rs = Banco.getCon().consultar("SELECT transporte.trans_codigo, trans_data_saida, "
+                    + "trans_data_chegada, trans_status, trans_tipo, trans_vei_placa, func_nome FROM transporte "
+                    + "INNER JOIN funcionario ON transporte.func_codigo = funcionario.func_codigo "
+                    + "WHERE func_nome Ilike '%"+ nome + "%'");
+            
+            while(rs != null && rs.next())
+            {
+                ret.add(new Objeto(String.valueOf(rs.getInt("trans_codigo")),
+                Utils.convertDataUTC(rs.getDate("trans_data_saida")),
+                Utils.convertDataUTC(rs.getDate("trans_data_chegada")),
+                rs.getString("trans_status"),
+                rs.getString("trans_tipo"),
+                rs.getString("trans_vei_placa"),
+                rs.getString("func_nome")));
+                
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Transporte.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return ret;
+    }
+
+    public ArrayList<Objeto> getByVeiculo(String nome)
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        try
+        {
+            ResultSet rs = Banco.getCon().consultar("SELECT DISTINCT(transporte.trans_codigo),trans_data_saida, "
+                + "trans_data_chegada, trans_status, trans_tipo, trans_vei_placa, func_nome "
+                + "FROM veiculos_transportados as trans INNER JOIN veiculo "
+                + "ON trans.vei_codigo = veiculo.vei_codigo INNER JOIN transporte "
+                + "ON transporte.trans_codigo = trans.trans_codigo INNER JOIN funcionario "
+                + "ON transporte.func_codigo = funcionario.func_codigo "
+                    + "WHERE vei_placa Ilike '%" + nome + "%' "
+            + "UNION "
+            + "SELECT DISTINCT(transporte.trans_codigo), trans_data_saida, trans_data_chegada, trans_status, "
+                + "trans_tipo, trans_vei_placa, func_nome FROM veiculos_transportados as trans "
+                + "INNER JOIN veiculo ON trans.vei_codigo = veiculo.vei_codigo INNER JOIN modelo "
+                + "ON veiculo.modelo_codigo = modelo.modelo_codigo INNER JOIN transporte "
+                + "ON transporte.trans_codigo = trans.trans_codigo INNER JOIN funcionario "
+                + "ON transporte.func_codigo = funcionario.func_codigo "
+                        + "WHERE modelo_nome Ilike '%" + nome + "%' "
+            + "UNION "
+            + "SELECT DISTINCT(transporte.trans_codigo), trans_data_saida, trans_data_chegada, trans_status, "
+                + "trans_tipo, trans_vei_placa, func_nome FROM veiculos_transportados as trans "
+                + "INNER JOIN veiculo ON trans.vei_codigo = veiculo.vei_codigo INNER JOIN modelo "
+                + "ON veiculo.modelo_codigo = modelo.modelo_codigo INNER JOIN marca "
+                + "ON modelo.marca_codigo = marca.marca_codigo INNER JOIN transporte "
+                + "ON transporte.trans_codigo = trans.trans_codigo INNER JOIN funcionario "
+                + "ON transporte.func_codigo = funcionario.func_codigo "
+                        + "WHERE marca_nome Ilike '%" + nome + "%'");
+            
+            while(rs != null && rs.next())
+            {
+                ret.add(new Objeto(String.valueOf(rs.getInt("trans_codigo")),
+                Utils.convertDataUTC(rs.getDate("trans_data_saida")),
+                Utils.convertDataUTC(rs.getDate("trans_data_chegada")),
+                rs.getString("trans_status"),
+                rs.getString("trans_tipo"),
+                rs.getString("trans_vei_placa"),
+                rs.getString("func_nome")));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Transporte.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return ret;
+    }
     
+    public ArrayList<Objeto> getByPeriodo(LocalDate inicio,LocalDate fim,boolean finalizada)
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        try
+        {
+            String sql = "SELECT trans_codigo, trans_data_saida,trans_data_chegada,trans_status,trans_tipo,"
+                + "trans_vei_placa, func_nome FROM transporte INNER JOIN funcionario "
+                + "ON transporte.func_codigo = funcionario.func_codigo WHERE $";
+            
+            if(!finalizada)
+                sql = sql.replace("$", "trans_data_saida >= '" + inicio.toString() + "' "
+                    + "AND trans_data_saida <= '" + fim.toString() + "' AND trans_status <> 'Finalizado'");
+            else
+                sql = sql.replace("$", "trans_data_saida >= '" + inicio.toString() + "' "
+                    + "AND trans_data_chegada <= '" + fim.toString() + "' AND trans_status = 'Finalizado'");
+            
+            ResultSet rs = Banco.getCon().consultar(sql);
+            
+            while(rs != null && rs.next())
+            {
+                ret.add(new Objeto(String.valueOf(rs.getInt("trans_codigo")),
+                Utils.convertDataUTC(rs.getDate("trans_data_saida")),
+                Utils.convertDataUTC(rs.getDate("trans_data_chegada")),
+                rs.getString("trans_status"),
+                rs.getString("trans_tipo"),
+                rs.getString("trans_vei_placa"),
+                rs.getString("func_nome")));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Transporte.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return ret;
+    }
     
+    public ArrayList<Objeto> getVeiculos(int codigo)
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        try
+        {
+            ResultSet rs = Banco.getCon().consultar("SELECT vei_placa, marca_nome, modelo_nome,vei_chassi,vei_ano,"
+                + " vei_cor FROM veiculos_transportados as trans INNER JOIN veiculo "
+                + "ON trans.vei_codigo = veiculo.vei_codigo INNER JOIN modelo "
+                + "ON veiculo.modelo_codigo = modelo.modelo_codigo INNER JOIN marca "
+                + "ON modelo.marca_codigo = marca.marca_codigo WHERE trans_codigo = " + codigo);
+            
+            while(rs != null && rs.next())
+            {
+                ret.add(new Objeto(rs.getString("vei_placa"),
+                rs.getString("marca_nome"),
+                rs.getString("modelo_nome"),
+                rs.getString("vei_chassi"),
+                rs.getString("vei_ano"),
+                rs.getString("vei_cor")));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Transporte.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return ret;
+    }
 }
