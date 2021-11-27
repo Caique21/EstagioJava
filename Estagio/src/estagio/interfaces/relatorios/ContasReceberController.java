@@ -92,8 +92,8 @@ public class ContasReceberController implements Initializable
         rbData.setSelected(true);
         
         tcFornecedor.setCellValueFactory(new PropertyValueFactory<>("param1"));
-        tcNotaFiscal.setCellValueFactory(new PropertyValueFactory<>("param2"));
-        tcNumero.setCellValueFactory(new PropertyValueFactory<>("param3"));
+        tcNotaFiscal.setCellValueFactory(new PropertyValueFactory<>("param5"));
+        tcNumero.setCellValueFactory(new PropertyValueFactory<>("param2"));
         tcValor.setCellValueFactory(new PropertyValueFactory<>("param4"));
         tcVencimento.setCellValueFactory(new PropertyValueFactory<>("param6"));
         setlisteners();

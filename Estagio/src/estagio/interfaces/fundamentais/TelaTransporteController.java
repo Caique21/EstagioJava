@@ -32,7 +32,10 @@ import estagio.utilidades.Utils;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -287,8 +290,8 @@ public class TelaTransporteController implements Initializable
     {
         tfMotorista.clear();
         tfPlacaCegonha.clear();
-        dpSaida.getEditor().clear();
-        dpChegada.getEditor().clear();
+        dpSaida.getEditor().setText("");
+        dpChegada.getEditor().setText("");
         tvVeiculos.getItems().clear();
         cbStatus.getSelectionModel().select(-1);
         cbTipo.getSelectionModel().select(-1);
@@ -404,6 +407,8 @@ public class TelaTransporteController implements Initializable
                 {
                     if(ctrTran.salvar(transporte))
                     {
+                        if(cbStatus.getSelectionModel().getSelectedItem().equals("Finalizado"))
+                            abrirDespesa();
                         inicializa();
                         a = new Alert(Alert.AlertType.INFORMATION, "Transporte salvo com sucesso!!!", ButtonType.OK);
                     }
@@ -423,6 +428,14 @@ public class TelaTransporteController implements Initializable
                 {
                     if(ctrTran.alterar(transporte))
                     {
+                        if(cbStatus.getSelectionModel().getSelectedItem().equals("Finalizado"))
+                        {
+                            a.setContentText("Cadastrar nova(s) despesa(s) antes de finalizar transporte?");
+                            a.showAndWait();
+                            
+                            if(a.getResult() == ButtonType.YES)
+                                abrirDespesa();
+                        }
                         inicializa();
                         a = new Alert(Alert.AlertType.INFORMATION, "Transporte alterado com sucesso!!!", 
                                 ButtonType.OK);
@@ -594,7 +607,12 @@ public class TelaTransporteController implements Initializable
                 dpSaida.setValue(LocalDate.parse(transporte.getParam4()));
                 if(transporte.getParam5() != null && !transporte.getParam5().equals("") 
                         && !transporte.getParam5().equals("null"))
+                {
+                    SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+                    dpChegada.getEditor().setText
+                        (df.format(Utils.convertToDate(LocalDate.parse(transporte.getParam5()))));
                     dpChegada.setValue(LocalDate.parse(transporte.getParam5()));
+                }
                 
                 lbUltimaAlteracao.setText("Data da Última Alteração: " + transporte.getParam8());
                 
@@ -730,7 +748,7 @@ public class TelaTransporteController implements Initializable
     }
 
     private void setlisteners()
-    {
+    {        
         cbFinalizados.setOnAction((event) ->
         {
             lvTransportes.getItems().clear();
@@ -759,7 +777,8 @@ public class TelaTransporteController implements Initializable
         {
             if(!newValue)
             {
-                if(!autoCompletePopupFuncionarios.getSuggestions().contains(tfMotorista.getText()))
+                if(!autoCompletePopupFuncionarios.getSuggestions().contains(tfMotorista.getText()) 
+                        && !tfMotorista.getText().trim().equals(""))
                 {
                     Alert a = new Alert(Alert.AlertType.CONFIRMATION, "Cadastrar novo funionário " + 
                             tfMotorista.getText() + "?", ButtonType.YES,ButtonType.NO);
@@ -903,7 +922,8 @@ public class TelaTransporteController implements Initializable
         
         cbStatus.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
         {
-            if(!newValue.equals("Á Iniciar"))
+            if(cbStatus.getSelectionModel().getSelectedItem() != null && 
+                !cbStatus.getSelectionModel().getSelectedItem().equals("Á Iniciar") && oldValue != null)
             {
                 dpSaida.setValue(LocalDate.now());
             }
@@ -1082,6 +1102,32 @@ public class TelaTransporteController implements Initializable
             }; // ListCell
             return cell;
         }); 
+    }
+
+    private void abrirDespesa()
+    {
+        try
+            {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/estagio/interfaces/basicas/CadastroDespesa.fxml"));
+                Parent root = (Parent) fxmlLoader.load();
+                Stage stage = new Stage();
+                JFXDecorator decorator = new JFXDecorator(stage, root);
+
+                CadastroDespesaController controller = fxmlLoader.<CadastroDespesaController>getController();
+                gerarTransporte();
+                controller.setTransporte(transporte);
+                decorator.setStyle("-fx-decorator-color: #040921;");
+                Scene scene = new Scene(decorator);
+
+                stage.setTitle("Gerenciar Despesas do Transporte");
+                stage.setScene(scene);
+                stage.showAndWait();
+            }
+            catch (IOException er)
+            {
+                new Alert(Alert.AlertType.ERROR, "Erro ao abrir tela de Pesquisa de Veículo! "
+                        + "\nErro: " + er.getMessage(), ButtonType.OK).showAndWait();
+            }
     }
     
 }

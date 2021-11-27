@@ -55,6 +55,7 @@ import estagio.controladores.ctrFuncionario;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -294,6 +295,13 @@ public class Utils
         }
     }
 
+    public static int getMonthFromSqlDate(java.sql.Date date)
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal.get(Calendar.MONTH);
+    }
+
     
     public String consultaCep(String cep, String formato)
     {
@@ -446,6 +454,12 @@ public class Utils
     {
         java.sql.Date data = java.sql.Date.valueOf(date);
         return data;
+    }
+    
+    public static LocalDate convertCalendarToLocalDate(Calendar cal)
+    {
+        return LocalDateTime.ofInstant(cal.toInstant(), cal.getTimeZone().toZoneId())
+                 .toLocalDate();
     }
     
     public static LocalDate convertToLocalDate(Date date)

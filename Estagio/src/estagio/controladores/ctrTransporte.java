@@ -138,8 +138,8 @@ public class ctrTransporte
         obj.setParam1(String.valueOf(t.getCodigo()));
         obj.setParam2(String.valueOf(t.getMotorista().getCodigo()));
         obj.setParam3(String.valueOf(t.getCegonha()));
-        obj.setParam4(String.valueOf(t.getSaida()));
-        obj.setParam5(String.valueOf(t.getChegada()));
+        obj.setParam4(t.getSaida() != null? String.valueOf(t.getSaida()) : "");
+        obj.setParam5(t.getChegada()!= null? String.valueOf(t.getChegada()) : "");
         obj.setParam6(t.getStatus());
         obj.setParam7(t.getTipo());
         obj.setParam8(String.valueOf(t.getAlteracao()));

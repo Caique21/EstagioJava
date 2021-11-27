@@ -124,7 +124,7 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="tfCEP" labelFloat="true" layoutX="30.0" layoutY="27.0" onKeyPressed="#cepClicked" prefHeight="25.0" prefWidth="65.0" promptText="CEP" />
+                  <JFXTextField fx:id="tfCEP" labelFloat="true" layoutX="30.0" layoutY="27.0" onKeyPressed="#cepClicked" prefHeight="25.0" prefWidth="65.0" promptText="CEP(*)" />
                   <JFXButton fx:id="btPesquisarCEP" buttonType="RAISED" layoutX="124.0" layoutY="26.0" onAction="#clickPesquisarCEP" onMouseEntered="#cepEnter" onMouseExited="#cepExit" text="PESQUISAR CEP">
                      <graphic>
                         <FontAwesomeIconView fx:id="faSearchCEP" glyphName="SEARCH" size="18" />
@@ -132,12 +132,12 @@
                   </JFXButton>
                   <HBox layoutX="30.0" layoutY="79.0" prefHeight="25.0" prefWidth="1120.0" spacing="40.0">
                      <children>
-                        <JFXTextField fx:id="tfRua" labelFloat="true" prefHeight="25.0" prefWidth="208.0" promptText="Rua" />
-                        <JFXTextField fx:id="tfNumero" labelFloat="true" prefHeight="25.0" prefWidth="51.0" promptText="Número" />
-                        <JFXTextField fx:id="tfBairro" labelFloat="true" prefHeight="25.0" prefWidth="173.0" promptText="Bairro" />
+                        <JFXTextField fx:id="tfRua" labelFloat="true" prefHeight="25.0" prefWidth="208.0" promptText="Rua(*)" />
+                        <JFXTextField fx:id="tfNumero" labelFloat="true" prefHeight="25.0" prefWidth="51.0" promptText="Número(*)" />
+                        <JFXTextField fx:id="tfBairro" labelFloat="true" prefHeight="25.0" prefWidth="173.0" promptText="Bairro(*)" />
                         <JFXTextField fx:id="tfComplemento" labelFloat="true" prefHeight="25.0" prefWidth="179.0" promptText="Complemento" />
-                        <JFXTextField fx:id="tfCidade" labelFloat="true" prefHeight="25.0" prefWidth="184.0" promptText="Cidade" />
-                        <JFXComboBox fx:id="cbEstado" labelFloat="true" prefHeight="25.0" prefWidth="63.0" promptText="Estado" />
+                        <JFXTextField fx:id="tfCidade" labelFloat="true" prefHeight="25.0" prefWidth="184.0" promptText="Cidade(*)" />
+                        <JFXComboBox fx:id="cbEstado" labelFloat="true" prefHeight="25.0" prefWidth="82.0" promptText="Estado(*)" />
                      </children>
                   </HBox>
                   <Label fx:id="lbErroCEP" layoutX="30.0" layoutY="53.0" text="ErroCep" textFill="RED" />
@@ -159,7 +159,7 @@
                   <JFXTextField fx:id="tfTelefone" labelFloat="true" layoutX="359.0" layoutY="68.0" onKeyPressed="#foneEnter" prefHeight="25.0" prefWidth="113.0" promptText="Telefone/Celular" />
                   <JFXButton fx:id="btAdicionar" buttonType="RAISED" layoutX="337.0" layoutY="19.0" onAction="#clickAddTelefone" onMouseEntered="#addEnter" onMouseExited="#addExit" text="ADICIONAR" />
                   <JFXButton fx:id="btRemover" buttonType="RAISED" layoutX="421.0" layoutY="19.0" onAction="#clickDelTelefone" onMouseEntered="#delEnter" onMouseExited="#delExit" text="REMOVER" />
-                  <JFXComboBox fx:id="cbFuncao" labelFloat="true" layoutX="806.0" layoutY="68.0" onAction="#selecionaFuncao" prefHeight="25.0" prefWidth="250.0" promptText="Função na Empresa" />
+                  <JFXComboBox fx:id="cbFuncao" labelFloat="true" layoutX="806.0" layoutY="68.0" onAction="#selecionaFuncao" prefHeight="25.0" prefWidth="250.0" promptText="Função na Empresa(*)" />
                   <JFXListView fx:id="lvTelefones" layoutX="500.0" layoutY="19.0" onMouseClicked="#selecionaTelefone" prefHeight="115.0" prefWidth="211.0" />
                   <Label fx:id="lbTelefone" layoutX="500.0" layoutY="6.0" text="Telefones/Celulares">
                      <font>

@@ -391,7 +391,7 @@ public class CadastroVeiculoController implements Initializable
             }
             else if(acao == 1)
             {
-                alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja alterar véiculo " + tfMarca.getText() + 
+                alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja alterar veículo " + tfMarca.getText() + 
                     " " + tfModelo.getText() + " com placa " + (rbMercosul.isSelected()? tfPlacaMercosul.getText() : 
                         tfPlaca.getText()) + "?", ButtonType.YES,ButtonType.NO);
                 alerta.showAndWait();
@@ -902,13 +902,18 @@ public class CadastroVeiculoController implements Initializable
             if(newValue.toLowerCase().equals("novo modelo"))
             {
                 tfModelo.setText("");
-                CadastrarModelo();
+                if(autoCompletePopupMarcas.getSuggestions().contains(tfMarca.getText()))
+                    CadastrarModelo();
+                else
+                    new Alert(Alert.AlertType.ERROR, "Selecione a marca para cadastar novo modelo", 
+                        ButtonType.OK).showAndWait();
             }
         });
         
         tfModelo.focusedProperty().addListener((observable, oldValue, newValue) ->
         {
-            if(!newValue && !tfModelo.getText().trim().equals(""))
+            if(!newValue && !tfModelo.getText().trim().equals("") && 
+                autoCompletePopupMarcas.getSuggestions().contains(tfMarca.getText()))
             {
                 if(!autoCompletePopupModelos.getSuggestions().contains(tfModelo.getText()) 
                     && !lbErroModelo.getText().equals("Modelo não cadastrado"))
@@ -1023,7 +1028,7 @@ public class CadastroVeiculoController implements Initializable
         vbox.setPrefWidth(500);
         vbox.setPadding(new Insets(10, 10, 10, 10));
         dialog.setTitle("Novo Modelo");
-                dialog.setHeaderText("Novo Cadastro de Modelo");
+        dialog.setHeaderText("Novo Cadastro de Modelo");
 
         TextField modelo = new JFXTextField();
         modelo.setPromptText("Digite o nome do modelo(*)");
@@ -1032,6 +1037,16 @@ public class CadastroVeiculoController implements Initializable
         ComboBox<String> m = new ComboBox<>();
         m.getItems().addAll(autoCompletePopupMarcas.getSuggestions());
         m.getSelectionModel().select(tfMarca.getText());
+        
+        modelo.textProperty().addListener((observable) ->
+        {
+            if(autoCompletePopupModelos.getSuggestions().contains(modelo.getText().toUpperCase()))
+            {
+                new Alert(Alert.AlertType.ERROR, "Modelo " + modelo.getText() + " da marca " + tfMarca.getText() 
+                    + " já cadastrado", ButtonType.OK).showAndWait();
+                modelo.setText("");
+            }
+        });
 
         vbox.setSpacing(10);
         vbox.getChildren().addAll(m, modelo);

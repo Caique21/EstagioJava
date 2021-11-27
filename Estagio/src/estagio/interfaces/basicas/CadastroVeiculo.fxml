@@ -68,7 +68,7 @@
                         <Font name="System Bold" size="15.0" />
                      </font>
                   </Label>
-                  <JFXTextField fx:id="tfPlaca" labelFloat="true" layoutX="40.0" layoutY="37.0" onKeyPressed="#confirmarPressed" promptText="Placa(*)" />
+                  <JFXTextField fx:id="tfPlaca" labelFloat="true" layoutX="40.0" layoutY="37.0" onKeyPressed="#confirmarPressed" promptText="Placa" />
                   <JFXTextField fx:id="tfPlacaMercosul" labelFloat="true" layoutX="40.0" layoutY="37.0" promptText="Placa(*)" visible="false" />
                   <HBox alignment="CENTER_LEFT" layoutX="226.0" layoutY="37.0" prefHeight="25.0" prefWidth="889.0" spacing="50.0">
                      <children>
@@ -80,8 +80,8 @@
                   </HBox>
                   <HBox layoutX="40.0" layoutY="100.0" prefHeight="36.0" prefWidth="270.0" spacing="50.0">
                      <children>
-                        <JFXTextField fx:id="tfAno" labelFloat="true" onKeyPressed="#confirmarPressed" prefHeight="25.0" prefWidth="57.0" promptText="Ano" />
-                        <JFXTextField fx:id="tfCor" labelFloat="true" onKeyPressed="#confirmarPressed" promptText="Cor" />
+                        <JFXTextField fx:id="tfAno" labelFloat="true" onKeyPressed="#confirmarPressed" prefHeight="25.0" prefWidth="57.0" promptText="Ano(*)" />
+                        <JFXTextField fx:id="tfCor" labelFloat="true" onKeyPressed="#confirmarPressed" promptText="Cor(*)" />
                      </children>
                   </HBox>
                   <Label fx:id="lbErroPlaca" layoutX="40.0" layoutY="62.0" text="Label" textFill="RED" />

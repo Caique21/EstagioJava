@@ -7,7 +7,6 @@ package estagio.interfaces;
 
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.embed.swing.SwingNode;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -16,9 +15,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -59,9 +55,9 @@ public class TelaRelatoriosController implements Initializable
     @FXML
     private Pane paneContasReceber;
     @FXML
-    private Pane folderTransportes;
+    private Pane folderMovimentacao;
     @FXML
-    private Pane paneTransportes;
+    private Pane paneMovimentacao;
 
     /**
      * Initializes the controller class.
@@ -163,15 +159,6 @@ public class TelaRelatoriosController implements Initializable
         }
     }
 
-    @FXML
-    private void transporteExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void transporteEnter(MouseEvent event)
-    {
-    }
 
     @FXML
     private void clickTransporte(MouseEvent event)
@@ -191,6 +178,46 @@ public class TelaRelatoriosController implements Initializable
             a.showAndWait();
             System.out.println(er.getMessage());
         }
+    }
+
+    @FXML
+    private void movimentacaoExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void movimentacaoEnter(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void clickMovimentacao(MouseEvent event)
+    {
+        try
+        {
+            Stage stage = (Stage) panePrincipal.getScene().getWindow();
+            stage.setResizable(false);
+
+            Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/relatorios/Movimentacao.fxml"));
+            panePrincipal.getChildren().clear();
+            panePrincipal.getChildren().add(root);
+        }
+        catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Dashboard!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
+            a.showAndWait();
+            System.out.println(er.getMessage());
+        }
+    }
+
+    @FXML
+    private void transporteExit(MouseEvent event)
+    {
+    }
+
+    @FXML
+    private void transporteEnter(MouseEvent event)
+    {
     }
     
 }

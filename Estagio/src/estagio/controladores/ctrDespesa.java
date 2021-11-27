@@ -84,8 +84,8 @@ public class ctrDespesa
         if(transporte > 0)
             despesa.setTransporte(new Transporte(transporte));
         
-        boolean flag;
-        int qtd = 0;
+        boolean flag = despesa.alterar2(outros);
+        /*int qtd = 0;
         if(outros.length == 0)
         {
             flag = despesa.alterar();
@@ -114,8 +114,8 @@ public class ctrDespesa
                     /*flag = flag && new Despesa(nome.getText(), fixo.isSelected(), 
                         Double.parseDouble(valor.getText().replace(".", "").replace(",", ".")), 
                             Utils.setMonth(Date.valueOf(data.getValue()),i - 1), descricao.getText()).salvar();*/
-                }
-        }
+                //}
+        //}
         return flag;
     }
 
@@ -216,5 +216,10 @@ public class ctrDespesa
     public int count(String nome)
     {
         return new Despesa().count(nome);
+    }
+
+    public boolean foiPaga(int codigo)
+    {
+        return new Despesa().paga(codigo);
     }
 }

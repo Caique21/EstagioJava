@@ -164,7 +164,7 @@ public class Recebimento
             stmt.setString(4, this.forma_recebimento_desc);
             stmt.setInt(5, this.parcela.getCodigo());
 
-            sql = "UPDATE parcela SET parc_datarecebimento = '$1', parc_valorpago = $2 WHERE parc_codigo = $3";
+            sql = "UPDATE parcela SET parc_datapagamento = '$1', parc_valorpago = $2 WHERE parc_codigo = $3";
             sql = sql.replace("$1", String.valueOf(Date.valueOf(LocalDate.now())));
             sql = sql.replace("$2", String.valueOf(this.valor));
             sql = sql.replace("$3", String.valueOf(this.parcela.getCodigo()));
@@ -209,7 +209,7 @@ public class Recebimento
             stmt2.setDouble(3, Utils.truncate(this.parcela.getValor_parcela() - this.valor));
             stmt2.setInt(4, this.parcela.getVenda().getCodigo());
 
-            sql = "UPDATE parcela SET parc_datarecebimento = '$1', parc_valorpago = $2 WHERE parc_codigo = $3";
+            sql = "UPDATE parcela SET parc_datapagamento = '$1', parc_valorpago = $2 WHERE parc_codigo = $3";
             sql = sql.replace("$1", String.valueOf(Date.valueOf(LocalDate.now())));
             sql = sql.replace("$2", String.valueOf(this.valor));
             sql = sql.replace("$3", String.valueOf(this.parcela.getCodigo()));
@@ -247,7 +247,7 @@ public class Recebimento
             stmt3.setInt(2, usuario);
             stmt3.setInt(3, this.parcela.getCodigo());
 
-            sql = "UPDATE parcela SET parc_datarecebimento = ?, parc_valorpago = ? WHERE parc_codigo = ?";
+            sql = "UPDATE parcela SET parc_datapagamento = ?, parc_valorpago = ? WHERE parc_codigo = ?";
             stmt2 = con.prepareStatement(sql);
             stmt2.setNull(1, java.sql.Types.DATE);
             stmt2.setNull(2, java.sql.Types.DOUBLE);
@@ -483,6 +483,46 @@ public class Recebimento
                 o.setParam4(rs.getString("valor"));
                 o.setParam5(rs.getString("ven_nota_fiscal"));
                 o.setParam6(Utils.convertDataUTC(rs.getDate("parc_datavencimento")));
+                recebimentos.add(o);
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Recebimento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return recebimentos;
+    }
+    
+    public ArrayList<Objeto> getMovimentacao(LocalDate... periodo)
+    {
+        ArrayList<Objeto>recebimentos = new ArrayList<>();
+        String sql = "SELECT CONCAT('Venda: ',ven_nota_fiscal) AS nome, parc_numero, "
+                + "to_char(rec_valor,'L999G999G990D99') AS valor, rec_data, "
+                + "CONCAT(rec_form_pagamento,' ',rec_form_pagamento_desc) AS forma_pagamento FROM parcela "
+                + "INNER JOIN recebimento on parcela.parc_codigo = recebimento.parc_codigo INNER JOIN venda "
+                + "ON parcela.ven_codigo = venda.ven_codigo WHERE rec_codigo IS NOT NULL AND "
+                + "parcela.ven_codigo > 0 AND $1";
+        
+        if(periodo.length == 0 || periodo.length != 2)
+            sql = sql.replace("$1", "parc_datapagamento >= (SELECT CAST(date_trunc('month', CURRENT_DATE) AS date)) AND "
+                + "parc_datapagamento <= CURRENT_DATE");
+        else
+            sql = sql.replace("$1", "parc_datapagamento >= '"+ periodo[0].toString() + "' AND "
+                + "parc_datapagamento <= '" + periodo[1].toString() + "'");
+        
+        ResultSet rs = Banco.getCon().consultar(sql);
+        
+        try            
+        {
+            while(rs != null && rs.next())
+            {
+                Objeto o = new Objeto(rs.getString("nome"));
+                o.setParam2(String.valueOf(rs.getInt("parc_numero")));
+                o.setParam3(rs.getString("valor"));
+                o.setParam4(String.valueOf(rs.getDate("rec_data")));
+                o.setParam5(rs.getString("forma_pagamento"));
+                o.setParam6(Utils.convertDataUTC(rs.getDate("rec_data")));
                 recebimentos.add(o);
             }
         }

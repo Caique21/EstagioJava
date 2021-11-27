@@ -29,7 +29,7 @@
    <center>
       <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="lbTitulo" layoutX="55.0" layoutY="22.0" text="Relatório de Contas à Receber">
+            <Label fx:id="lbTitulo" layoutX="55.0" layoutY="22.0" text="Relatório de Contas a Receber">
                <font>
                   <Font name="System Bold" size="25.0" />
                </font>

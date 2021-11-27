@@ -231,6 +231,11 @@ public class ctrPagamento
     {
         return new Pagamento().getContasPagar(nome);
     }
+    
+    public ArrayList<Objeto>getMovimentacao(LocalDate...periodo)
+    {
+        return new Pagamento().getMovimentacao(periodo);
+    }
 
     private Objeto convertToObjeto(Pagamento p)
     {

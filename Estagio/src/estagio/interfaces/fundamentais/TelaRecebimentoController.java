@@ -67,8 +67,6 @@ public class TelaRecebimentoController implements Initializable
     @FXML
     private Label lbRecebimentos;
     @FXML
-    private Label lbParcelas;
-    @FXML
     private Label lbAte;
     @FXML
     private JFXTextField tfPesquisa;
@@ -117,11 +115,11 @@ public class TelaRecebimentoController implements Initializable
     @FXML
     private TableColumn<Objeto, String> tcCliente;
     @FXML
+    private TableColumn<Objeto,String> tcIndentificao;
+    @FXML
     private TableColumn<Objeto, String> tcValorPago;
     @FXML
     private TableColumn<Objeto, String> tcDataPagamento;
-    @FXML
-    private TableColumn<Objeto, String> tcVeiculos;
     @FXML
     private JFXDatePicker dpVencimento;
     @FXML
@@ -140,7 +138,6 @@ public class TelaRecebimentoController implements Initializable
         
         nodes.add(lbTitulo);
         nodes.add(lbAte);
-        nodes.add(lbParcelas);
         nodes.add(lbRecebimentos);
         
         nodes.add(tfPesquisa);
@@ -158,11 +155,10 @@ public class TelaRecebimentoController implements Initializable
         nodes.add(rbData);
         nodes.add(rbNotaFiscal);
         nodes.add(rbPeriodo);
-        nodes.add(rbNotaFiscal);
+        nodes.add(rbCliente);
         nodes.add(rbTodos);
         
         Utils.setDesign(1, nodes);
-        lbParcelas.setStyle(lbParcelas.getStyle() + ";" + Utils.getFundo2withOpacity());
         lbRecebimentos.setStyle(lbRecebimentos.getStyle() + ";" + Utils.getFundo2withOpacity());
         btConfirmar.setStyle(btConfirmar.getStyle() + ";-fx-cursor: default;");
         btEstornar.setStyle(btEstornar.getStyle() + ";-fx-cursor: default;");
@@ -204,7 +200,7 @@ public class TelaRecebimentoController implements Initializable
         tcCliente.setCellValueFactory(new PropertyValueFactory<>("param11"));
         tcValorPago.setCellValueFactory(new PropertyValueFactory<>("param6"));
         tcDataPagamento.setCellValueFactory(new PropertyValueFactory<>("param4"));
-        tcVeiculos.setCellValueFactory(new PropertyValueFactory<>("param10"));
+        tcIndentificao.setCellValueFactory(new PropertyValueFactory<>("param12"));
         
         inicializa();
         cbConcluidos.setOnAction((event) ->
@@ -441,7 +437,6 @@ public class TelaRecebimentoController implements Initializable
         lbAte.setVisible(false);
     }
 
-    @FXML
     private void clickDespesa(ActionEvent event)
     {
         tfPesquisa.setVisible(true);

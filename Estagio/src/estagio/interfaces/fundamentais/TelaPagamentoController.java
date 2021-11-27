@@ -362,6 +362,8 @@ public class TelaPagamentoController implements Initializable
         lbDespesas.setVisible(false);
         tvParcelas.setVisible(false);
         lbParcelas.setVisible(false);
+        btConfirmar.setDisable(true);
+        btEstornar.setDisable(true);
         
         if(rbTodos.isSelected())
             tvPagamentos.setItems(FXCollections.observableArrayList(ctrPag.getAll(cbPagas.isSelected())));

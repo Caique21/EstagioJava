@@ -36,7 +36,7 @@
    <center>
       <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="lbTitulo" layoutX="55.0" layoutY="22.0" text="Relatório de Contas à Pagar">
+            <Label fx:id="lbTitulo" layoutX="55.0" layoutY="22.0" text="Relatório de Contas a Pagar">
                <font>
                   <Font name="System Bold" size="25.0" />
                </font>
@@ -45,7 +45,7 @@
               <columns>
                 <TableColumn fx:id="tcFornecedor" prefWidth="279.0" text="Fornecedor/Despesa" />
                 <TableColumn fx:id="tcNome" prefWidth="221.0" text="Nota Fiscal/Nome da Despesa" />
-                  <TableColumn fx:id="tcNumero" prefWidth="142.0" text="Número da Parcelas" />
+                  <TableColumn fx:id="tcNumero" prefWidth="142.0" text="Número da Parcela" />
                   <TableColumn fx:id="tcValor" prefWidth="182.0" text="Valor da Parcela" />
                   <TableColumn fx:id="tcVencimento" prefWidth="201.0" text="Vencimento da Parcela" />
               </columns>

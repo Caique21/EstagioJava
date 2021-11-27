@@ -41,7 +41,7 @@ public class ctrRecebimento
         recebimento.setValor(Double.parseDouble(valor.replace(".", "").replace(",", ".")));
         recebimento.setForma_recebimento(forma_recebimento);
         recebimento.setForma_recebimento_desc(aux_forma_recebimento.trim());
-        recebimento.setParcela(new Parcela(Integer.parseInt(rec.getList2(0).getParam1())));
+        recebimento.setParcela(new Parcela(Integer.parseInt(rec.getList1(0).getParam1())));
         
         return recebimento.getValor() == Double.parseDouble(rec.getParam3()) ? 
                 recebimento.pagar() : recebimento.pagarParcial();
@@ -156,6 +156,11 @@ public class ctrRecebimento
     {
         return new Recebimento().getContasVencer(inicio, fim);
     }
+    
+    public ArrayList<Objeto>getMovimentacao(LocalDate...periodo)
+    {
+        return new Recebimento().getMovimentacao(periodo);
+    }
 
     private Objeto convertToObjeto(Recebimento p)
     {
@@ -179,7 +184,7 @@ public class ctrRecebimento
         aux.setParam1(String.valueOf(p.getParcela().getCodigo()));
         aux.setParam2(String.valueOf(p.getParcela().getVencimento()));
         aux.setParam3(String.valueOf(p.getParcela().getNumero()));
-        aux.setParam4(String.valueOf(p.getParcela().getPagamento()));
+        aux.setParam4(p.getParcela().getPagamento() != null ? String.valueOf(p.getParcela().getPagamento()) : "");
         aux.setParam5(String.valueOf(p.getParcela().getValor_parcela()));
         aux.setParam6(String.valueOf(p.getParcela().getValor_pago()));
         aux.setParam7(String.valueOf(p.getParcela().getVenda().getCodigo()));
@@ -187,11 +192,17 @@ public class ctrRecebimento
         aux.setParam9(String.valueOf(p.getParcela().getVenda().getData()));
         aux.setParam10(Utils.convertDataUTC(p.getParcela().getVenda().getData()));
         if (p.getParcela().getVenda().getFornecedor() != null)
+        {
             aux.setParam11(p.getParcela().getVenda().getFornecedor().getNome());
+            aux.setParam12(p.getParcela().getVenda().getFornecedor().getCnpj());
+        }
         else
+        {
             aux.setParam11(p.getParcela().getVenda().getCliente().getNome());
+            aux.setParam12(p.getParcela().getVenda().getCliente().getCpf());
+        }
 
-        obj.addList2(aux);
+        obj.addList1(aux);
 
         obj.setParam5(p.getCodigo() > 0 ? "Sim" : "Não");
         obj.setParam6(p.getForma_recebimento());

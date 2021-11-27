@@ -440,7 +440,7 @@ public class Transporte
             {
                 ret.add(new Objeto(String.valueOf(rs.getInt("trans_codigo")),
                 Utils.convertDataUTC(rs.getDate("trans_data_saida")),
-                Utils.convertDataUTC(rs.getDate("trans_data_chegada")),
+                rs.getDate("trans_data_chegada") != null? Utils.convertDataUTC(rs.getDate("trans_data_chegada")) : "",
                 rs.getString("trans_status"),
                 rs.getString("trans_tipo"),
                 rs.getString("trans_vei_placa"),

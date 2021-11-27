@@ -201,7 +201,7 @@ public class CadastroDespesaController implements Initializable
                 && !transporte.getParam5().equals("null"))
             dpData.setValue(LocalDate.parse(transporte.getParam5()));
         else
-            dpData.getEditor().clear();
+            dpData.getEditor().setText("");
     }
     
     private void inicializaDesign()
@@ -364,17 +364,6 @@ public class CadastroDespesaController implements Initializable
             {
                 alerta = new Alert(Alert.AlertType.CONFIRMATION, "Deseja alterar despesa " + tfNome.getText() + 
                     "?", ButtonType.YES,ButtonType.NO);
-                
-                boolean paga = ctrPag.wasPaid(Integer.parseInt(despesa.getParam1()));
-                
-                if(paga)
-                    Notifications.create()
-                        .darkStyle()
-                        //.graphic(new Rectangle(300, 200, Color.BLACK)) // sets node to display
-                        .hideAfter(Duration.seconds(3)).position(Pos.BOTTOM_CENTER)
-                        .text("Despesa já foi paga, altera-la poderá gerar estorno")
-                        .showInformation();
-                
                 alerta.showAndWait();
                 
                 if(alerta.getResult() == ButtonType.YES)
@@ -397,6 +386,7 @@ public class CadastroDespesaController implements Initializable
                     
                     if(result)
                     {   
+                        transporte = null;
                         inicializa();
                         alerta = new Alert(Alert.AlertType.INFORMATION, "Despesa alterada com sucesso!!!", 
                                 ButtonType.OK);
@@ -477,45 +467,62 @@ public class CadastroDespesaController implements Initializable
         {
             Alert al = new Alert(Alert.AlertType.CONFIRMATION, "Deseja remover despesa " + 
                  tvDespesa.getSelectionModel().getSelectedItem().getParam2() + "?", ButtonType.YES,ButtonType.NO);
-            al.showAndWait();
             
-            if(al.getResult() == ButtonType.YES)
+            if(ctrDesp.foiPaga(Integer.parseInt(tvDespesa.getSelectionModel().getSelectedItem().getParam1())))
             {
-                if(ctrDesp.count(tvDespesa.getSelectionModel().getSelectedItem().getParam2()) > 1)
+                if(!TelaPrincipalController.usuario_logado.getParam5().equals("alto"))
                 {
-                    ButtonType uma = new ButtonType("Uma"),todas = new ButtonType("Todas");
-                    boolean result;
-                    al = new Alert(Alert.AlertType.CONFIRMATION, "Remover esta despesa ou todas as despesas " + 
-                        tvDespesa.getSelectionModel().getSelectedItem().getParam2() + "?", uma,todas);
-                    al.showAndWait();
-                    
-                    if(al.getResult() == uma)
-                        result = ctrDesp.apagar
-                            (Integer.parseInt(tvDespesa.getSelectionModel().getSelectedItem().getParam1()));
-                    else
-                        result = ctrDesp.apagar(tvDespesa.getSelectionModel().getSelectedItem().getParam2());
-                    
-                    if(result)
-                    {
-                        inicializa();
-                        al = new Alert(Alert.AlertType.INFORMATION, "Despesa removida com sucesso!!", ButtonType.OK);
-                    }
-                    else
-                        al = new Alert(Alert.AlertType.ERROR, "Erro na remoção da despesa\n" + 
-                                Banco.getCon().getMensagemErro(), ButtonType.OK);
+                    al = new Alert(Alert.AlertType.ERROR, "Usuário não possui permissão para excluir despesa paga", ButtonType.OK);
                 }
-                else 
+                else if(!Utils.validaUsuario("Confirmar Usuário", "Despesa paga", "Despesa selecionada foi paga, "
+                        + "confirme usuário para continuar"));
                 {
-                    if(ctrDesp.apagar(Integer.parseInt(tvDespesa.getSelectionModel().getSelectedItem().getParam1())))
-                    {
-                        inicializa();
-                        al = new Alert(Alert.AlertType.INFORMATION, "Despesa removida com sucesso!!", ButtonType.OK);
-                    }
-                    else
-                        al = new Alert(Alert.AlertType.ERROR, "Erro na remoção da despesa\n" + 
-                                Banco.getCon().getMensagemErro(), ButtonType.OK);
+                    al = null;
                 }
+            }
+            
+            if(al != null)
+            {
                 al.showAndWait();
+            
+                if(al.getResult() == ButtonType.YES)
+                {
+                    if(ctrDesp.count(tvDespesa.getSelectionModel().getSelectedItem().getParam2()) > 1)
+                    {
+                        ButtonType uma = new ButtonType("Uma"),todas = new ButtonType("Todas");
+                        boolean result;
+                        al = new Alert(Alert.AlertType.CONFIRMATION, "Remover esta despesa ou todas as despesas " + 
+                            tvDespesa.getSelectionModel().getSelectedItem().getParam2() + "?", uma,todas);
+                        al.showAndWait();
+
+                        if(al.getResult() == uma)
+                            result = ctrDesp.apagar
+                                (Integer.parseInt(tvDespesa.getSelectionModel().getSelectedItem().getParam1()));
+                        else
+                            result = ctrDesp.apagar(tvDespesa.getSelectionModel().getSelectedItem().getParam2());
+
+                        if(result)
+                        {
+                            inicializa();
+                            al = new Alert(Alert.AlertType.INFORMATION, "Despesa removida com sucesso!!", ButtonType.OK);
+                        }
+                        else
+                            al = new Alert(Alert.AlertType.ERROR, "Erro na remoção da despesa\n" + 
+                                    Banco.getCon().getMensagemErro(), ButtonType.OK);
+                    }
+                    else 
+                    {
+                        if(ctrDesp.apagar(Integer.parseInt(tvDespesa.getSelectionModel().getSelectedItem().getParam1())))
+                        {
+                            inicializa();
+                            al = new Alert(Alert.AlertType.INFORMATION, "Despesa removida com sucesso!!", ButtonType.OK);
+                        }
+                        else
+                            al = new Alert(Alert.AlertType.ERROR, "Erro na remoção da despesa\n" + 
+                                    Banco.getCon().getMensagemErro(), ButtonType.OK);
+                    }
+                    al.showAndWait();
+                }
             }
         }
     }
@@ -530,12 +537,18 @@ public class CadastroDespesaController implements Initializable
     private void clickPesquisar(ActionEvent event)
     {
         tvDespesa.getItems().clear();
-        if(transporte != null && transporte.getParam1() != null && Integer.parseInt(transporte.getParam1()) > 0)
-            tvDespesa.setItems(FXCollections.observableArrayList(ctrDesp.getByTransporte(Integer.parseInt(transporte.getParam1()))));
-        else if(!cbRepetidas.isSelected())
-            tvDespesa.setItems(FXCollections.observableArrayList(ctrDesp.getByNomeDistinct(tfPesquisa.getText())));
-        else
-            tvDespesa.setItems(FXCollections.observableArrayList(ctrDesp.getByNome(tfPesquisa.getText())));
+        if(transporte != null && transporte.getParam1() != null)
+        {
+            if(Integer.parseInt(transporte.getParam1()) > 0)
+                tvDespesa.setItems(FXCollections.observableArrayList(ctrDesp.getByTransporte(Integer.parseInt(transporte.getParam1()))));
+        }
+        else 
+        {
+            if (!cbRepetidas.isSelected())
+                tvDespesa.setItems(FXCollections.observableArrayList(ctrDesp.getByNomeDistinct(tfPesquisa.getText())));
+            else
+                tvDespesa.setItems(FXCollections.observableArrayList(ctrDesp.getByNome(tfPesquisa.getText())));
+        }
     }
 
     @FXML

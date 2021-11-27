@@ -244,6 +244,24 @@ public class CadastroFabricanteController implements Initializable
                 m.getItems().addAll(marcas);
                 m.getSelectionModel().select(0);
                 
+                ArrayList<String>modelos = ctrFab.getAllModelosByMarca(m.getSelectionModel().getSelectedItem());
+                
+                m.selectionModelProperty().addListener((observable) ->
+                {
+                    modelos.clear();
+                    modelos.addAll(ctrFab.getAllModelosByMarca(m.getSelectionModel().getSelectedItem()));
+                });
+                
+                modelo.textProperty().addListener((observable) ->
+                {
+                    if(modelos.stream().anyMatch(x -> x.equalsIgnoreCase(modelo.getText())))
+                    {
+                        new Alert(Alert.AlertType.ERROR, "Modelo " + modelo.getText() + " já cadastrado", 
+                            ButtonType.OK).showAndWait();
+                        modelo.setText("");
+                    }
+                });
+                
                 vbox.setSpacing(10);
                 vbox.getChildren().addAll(m,modelo);
                 dialog.getDialogPane().setContent(vbox);

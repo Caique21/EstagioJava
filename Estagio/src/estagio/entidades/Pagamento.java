@@ -651,7 +651,7 @@ public class Pagamento
     public ArrayList<Objeto> getContasPagar(LocalDate inicial, LocalDate fim)
     {
         ArrayList<Objeto>pagamentos = new ArrayList<>();
-        ResultSet rs = Banco.getCon().consultar("SELECT forn_nome AS fornecedor, comp_nota_fiscal AS nome,"
+        ResultSet rs = Banco.getCon().consultar("SELECT forn_nome AS fornecedor, CONCAT('Compra ', comp_nota_fiscal) AS nome,"
             + "parc_numero AS descricao, to_char(parc_valorparcela,'L999G999G990D99') AS valor,"
             + "parc_datavencimento AS data FROM parcela LEFT JOIN pagamento "
             + "ON parcela.parc_codigo = pagamento.parc_codigo INNER JOIN compra "
@@ -660,7 +660,7 @@ public class Pagamento
             + "AND parc_datavencimento >= '" + inicial.toString() + "' "
                     + "AND parc_datavencimento <= '" + fim.toString() + "' "
         + "UNION "
-        + "SELECT cli_nome AS fornecedor, comp_nota_fiscal AS nome,parc_numero AS descricao, "
+        + "SELECT cli_nome AS fornecedor, CONCAT('Compra ', comp_nota_fiscal) AS nome,parc_numero AS descricao, "
             + "to_char(parc_valorparcela,'L999G999G990D99') AS valor,parc_datavencimento AS data FROM parcela "
             + "LEFT JOIN pagamento ON parcela.parc_codigo = pagamento.parc_codigo INNER JOIN compra "
             + "ON parcela.comp_codigo = compra.comp_codigo INNER JOIN cliente "
@@ -668,7 +668,7 @@ public class Pagamento
             + "AND parc_datavencimento >= '" + inicial.toString() + "' "
                 + "AND parc_datavencimento <= '" + fim.toString() + "' "
         + "UNION "
-        + "SELECT 'Despesa' AS fornecedor,desp_nome AS nome,1 AS descricao,to_char(desp_preco,'L999G999G990D99') AS valor,"
+        + "SELECT 'Despesa' AS fornecedor,CONCAT('Despesa ', desp_nome) AS nome,1 AS descricao,to_char(desp_preco,'L999G999G990D99') AS valor,"
             + "desp_data_vencimento AS data FROM despesa LEFT JOIN pagamento "
             + "ON despesa.desp_codigo = pagamento.desp_codigo WHERE "
             + "desp_data_vencimento >= '" + inicial.toString() + "' "
@@ -693,7 +693,7 @@ public class Pagamento
     public ArrayList<Objeto> getContasPagar(String nome)
     {
         ArrayList<Objeto>pagamentos = new ArrayList<>();
-        ResultSet rs = Banco.getCon().consultar("SELECT forn_nome AS fornecedor, comp_nota_fiscal AS nome,"
+        ResultSet rs = Banco.getCon().consultar("SELECT forn_nome AS fornecedor, CONCAT('Compra ', comp_nota_fiscal) AS nome,"
             + "CAST(parc_numero AS varchar) AS descricao, to_char(parc_valorparcela,'L999G999G990D99') AS valor,"
             + "parc_datavencimento AS data FROM parcela INNER JOIN compra "
             + "ON parcela.comp_codigo = compra.comp_codigo INNER JOIN fornecedor "
@@ -701,7 +701,7 @@ public class Pagamento
             + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE pag_codigo IS NULL AND "
                 + "forn_nome Ilike '%" + nome + "%' "
         + "UNION "
-        + "SELECT cli_nome AS fornecedor, comp_nota_fiscal AS nome,CAST(parc_numero AS varchar) AS descricao, "
+        + "SELECT cli_nome AS fornecedor, CONCAT('Compra ', comp_nota_fiscal) AS nome,CAST(parc_numero AS varchar) AS descricao, "
             + "to_char(parc_valorparcela,'L999G999G990D99') AS valor,parc_datavencimento AS data FROM parcela "
             + "INNER JOIN compra ON parcela.comp_codigo = compra.comp_codigo INNER JOIN cliente "
             + "ON compra.cli_codigo = cliente.cli_codigo LEFT JOIN pagamento "
@@ -724,5 +724,52 @@ public class Pagamento
         return pagamentos;
     }
     
-    
+    public ArrayList<Objeto> getMovimentacao(LocalDate... periodo)
+    {
+        ArrayList<Objeto>recebimentos = new ArrayList<>();
+        String sql = "SELECT CONCAT('Compra: ',comp_nota_fiscal) AS nome, parc_numero, "
+                + "to_char(pag_valor,'L999G999G990D99') AS valor, pag_data, "
+                + "CONCAT(pag_form_pagamento,pag_form_pagamento_desc) AS forma_pagamento FROM parcela "
+                + "INNER JOIN pagamento on parcela.parc_codigo = pagamento.parc_codigo INNER JOIN compra "
+                + "ON parcela.comp_codigo = compra.comp_codigo WHERE pag_codigo IS NOT NULL AND "
+                + "parcela.comp_codigo > 0 AND $1 "
+            + "UNION "
+            + "SELECT CONCAT('Despesa ',desp_nome) AS nome, 1,to_char(pag_valor,'L999G999G990D99') AS valor, "
+                + "pag_data, CONCAT(pag_form_pagamento,' ',pag_form_pagamento_desc) AS forma_pagamento FROM despesa "
+                + "INNER JOIN pagamento on despesa.desp_codigo = pagamento.desp_codigo WHERE "
+                + "pag_codigo IS NOT NULL AND $2";
+        
+        if(periodo.length == 0 || periodo.length != 2)
+            sql = sql.replace("$1", "parc_datapagamento >= "
+                + "(SELECT CAST(date_trunc('month', CURRENT_DATE) AS date)) AND "
+                + "parc_datapagamento <= CURRENT_DATE").replace("$2", "pag_data >= "
+                + "(SELECT CAST(date_trunc('month', CURRENT_DATE) AS date)) AND pag_data <= CURRENT_DATE");
+        else
+            sql = sql.replace("$1", "parc_datapagamento >= '" + periodo[0].toString() 
+                + "' AND parc_datapagamento <= '" + periodo[1].toString() + "'")
+                .replace("$2", "pag_data >= '" + periodo[0].toString() + "' "
+                + "AND pag_data <= '" + periodo[1].toString() + "'");
+        
+        ResultSet rs = Banco.getCon().consultar(sql);
+        
+        try            
+        {
+            while(rs != null && rs.next())
+            {
+                Objeto o = new Objeto(rs.getString("nome"));
+                o.setParam2(String.valueOf(rs.getInt("parc_numero")));
+                o.setParam3(rs.getString("valor"));
+                o.setParam4(String.valueOf(rs.getDate("pag_data")));
+                o.setParam5(rs.getString("forma_pagamento"));
+                o.setParam6(Utils.convertDataUTC(rs.getDate("pag_data")));
+                recebimentos.add(o);
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Recebimento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return recebimentos;
+    }
 }

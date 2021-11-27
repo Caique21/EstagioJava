@@ -75,19 +75,14 @@
             </Pane>
             <Pane prefHeight="213.0" prefWidth="1130.0">
                <children>
-                  <TableView fx:id="tvParcelas" layoutX="100.0" layoutY="19.0" prefHeight="190.0" prefWidth="923.0">
+                  <TableView fx:id="tvParcelas" layoutX="100.0" layoutY="-1.0" prefHeight="210.0" prefWidth="923.0">
                     <columns>
-                      <TableColumn fx:id="tcCliente" prefWidth="180.0" text="Cliente" />
-                      <TableColumn fx:id="tcValorPago" prefWidth="212.0" text="Valor Pago" />
-                        <TableColumn fx:id="tcDataPagamento" prefWidth="274.0" text="Data de Pagamento" />
-                        <TableColumn fx:id="tcVeiculos" prefWidth="256.0" text="Veículo" />
+                      <TableColumn fx:id="tcCliente" prefWidth="353.0" text="Cliente" />
+                      <TableColumn fx:id="tcIndentificao" prefWidth="162.0" text="CPF/CNPJ" />
+                        <TableColumn fx:id="tcValorPago" prefWidth="186.0" text="Valor Pago" />
+                        <TableColumn fx:id="tcDataPagamento" prefWidth="221.0" text="Data de Pagamento" />
                     </columns>
                   </TableView>
-                  <Label fx:id="lbParcelas" alignment="CENTER" layoutX="100.0" prefHeight="19.0" prefWidth="924.0" text="Parcelas">
-                     <font>
-                        <Font name="System Bold Italic" size="12.0" />
-                     </font>
-                  </Label>
                </children>
             </Pane>
          </children>

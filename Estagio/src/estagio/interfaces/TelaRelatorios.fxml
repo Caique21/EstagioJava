@@ -45,7 +45,7 @@
                                     <FontAwesomeIconView fill="WHITE" glyphName="SHOPPING_CART" layoutX="30.0" layoutY="53.0" size="40" wrappingWidth="40.571428298950195" />
                                  </children>
                               </Pane>
-                              <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="158.0" text="Contas à Pagar">
+                              <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="158.0" text="Contas a Pagar">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
@@ -91,7 +91,7 @@
                                        </rotationAxis></FontAwesomeIconView>
                                  </children>
                               </Pane>
-                              <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="158.0" text="Contas à Receber">
+                              <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="158.0" text="Contas a Receber">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
@@ -103,15 +103,15 @@
                   </Pane>
                   <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3">
                      <children>
-                        <Pane fx:id="folderTransportes" layoutX="42.0" layoutY="82.0" onMouseClicked="#clickTransporte" onMouseEntered="#transporteEnter" onMouseExited="#transporteExit" prefHeight="160.0" prefWidth="196.0" style="-fx-background-color: white; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px; -fx-border-width: 2px;">
+                        <Pane fx:id="folderMovimentacao" layoutX="42.0" layoutY="82.0" onMouseClicked="#clickMovimentacao" onMouseEntered="#movimentacaoEnter" onMouseExited="#movimentacaoExit" prefHeight="160.0" prefWidth="196.0" style="-fx-background-color: white; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px; -fx-border-width: 2px;">
                            <children>
-                              <Pane fx:id="paneTransportes" layoutX="17.0" layoutY="-35.0" prefHeight="80.0" prefWidth="100.0" style="-fx-background-color: #4059a9; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px;">
+                              <Pane fx:id="paneMovimentacao" layoutX="17.0" layoutY="-35.0" prefHeight="80.0" prefWidth="100.0" style="-fx-background-color: #4059a9; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px;">
                                  <children>
                                     <FontAwesomeIconView fill="WHITE" glyphName="DOLLAR" layoutX="38.0" layoutY="53.0" size="40" wrappingWidth="24.571428298950195" />
                                     <FontAwesomeIconView fill="#eeeeee" glyphName="PLUS_CIRCLE" layoutX="57.0" layoutY="62.0" size="15" wrappingWidth="11.571428298950195" />
                                  </children>
                               </Pane>
-                              <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="158.0" text="Transportes">
+                              <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="158.0" text="Movimentações">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
@@ -123,14 +123,14 @@
                   </Pane>
                   <Pane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
                      <children>
-                        <Pane fx:id="folderBalanco" layoutX="42.0" layoutY="82.0" prefHeight="160.0" prefWidth="196.0" style="-fx-background-color: white; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px; -fx-border-width: 2px;">
+                        <Pane fx:id="folderBalanco" layoutX="42.0" layoutY="82.0" onMouseClicked="#clickTransporte" onMouseEntered="#transporteEnter" onMouseExited="#transporteExit" prefHeight="160.0" prefWidth="196.0" style="-fx-background-color: white; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px; -fx-border-width: 2px;">
                            <children>
                               <Pane fx:id="paneBalanco" layoutX="17.0" layoutY="-35.0" prefHeight="80.0" prefWidth="100.0" style="-fx-background-color: #4059a9; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px;">
                                  <children>
                                     <FontAwesomeIconView fill="WHITE" glyphName="BALANCE_SCALE" layoutX="24.0" layoutY="53.0" size="40" wrappingWidth="51.571428298950195" />
                                  </children>
                               </Pane>
-                              <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="158.0" text="Balanço Financeiro">
+                              <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="158.0" text="Transportes">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
