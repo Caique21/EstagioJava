@@ -5,6 +5,8 @@
  */
 package estagio.interfaces;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -45,8 +47,6 @@ public class TelaRelatoriosController implements Initializable
     @FXML
     private Pane paneInadimplementes;
     @FXML
-    private ImageView imgClientes1;
-    @FXML
     private Pane folderBalanco;
     @FXML
     private Pane paneBalanco;
@@ -58,6 +58,8 @@ public class TelaRelatoriosController implements Initializable
     private Pane folderMovimentacao;
     @FXML
     private Pane paneMovimentacao;
+    @FXML
+    private ImageView imgDespesas;
 
     /**
      * Initializes the controller class.
@@ -67,16 +69,6 @@ public class TelaRelatoriosController implements Initializable
     {
         // TODO
     }    
-
-    @FXML
-    private void aPagarExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void aPagarEnter(MouseEvent event)
-    {
-    }
 
     @FXML
     private void clickApagar(MouseEvent event)
@@ -99,16 +91,6 @@ public class TelaRelatoriosController implements Initializable
     }
 
     @FXML
-    private void inadimpleteExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void inadimpleteEnter(MouseEvent event)
-    {
-    }
-
-    @FXML
     private void clickIndadimplentes(MouseEvent event)
     {
         try
@@ -126,17 +108,6 @@ public class TelaRelatoriosController implements Initializable
             a.showAndWait();
             System.out.println(er.getMessage());
         }
-    }
-
-
-    @FXML
-    private void contasReceberExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void contasReceberEnter(MouseEvent event)
-    {
     }
 
     @FXML
@@ -159,7 +130,6 @@ public class TelaRelatoriosController implements Initializable
         }
     }
 
-
     @FXML
     private void clickTransporte(MouseEvent event)
     {
@@ -178,16 +148,6 @@ public class TelaRelatoriosController implements Initializable
             a.showAndWait();
             System.out.println(er.getMessage());
         }
-    }
-
-    @FXML
-    private void movimentacaoExit(MouseEvent event)
-    {
-    }
-
-    @FXML
-    private void movimentacaoEnter(MouseEvent event)
-    {
     }
 
     @FXML
@@ -211,13 +171,113 @@ public class TelaRelatoriosController implements Initializable
     }
 
     @FXML
+    private void aPagarExit(MouseEvent event)
+    {
+        folderContasPagar.setStyle("-fx-cursor: default; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
+    }
+
+    @FXML
+    private void aPagarEnter(MouseEvent event)
+    {
+        folderContasPagar.setStyle("-fx-cursor: hand; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
+    }
+
+    @FXML
+    private void inadimpleteExit(MouseEvent event)
+    {
+        folderInadimplentes.setStyle("-fx-cursor: default; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
+    }
+
+    @FXML
+    private void inadimpleteEnter(MouseEvent event)
+    {
+        folderInadimplentes.setStyle("-fx-cursor: hand; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
+    }
+
+    @FXML
+    private void contasReceberExit(MouseEvent event)
+    {
+        folderContasReceber.setStyle("-fx-cursor: default; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
+    }
+
+    @FXML
+    private void contasReceberEnter(MouseEvent event)
+    {
+        folderContasReceber.setStyle("-fx-cursor: hand; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
+    }
+
+    @FXML
+    private void movimentacaoExit(MouseEvent event)
+    {
+        folderMovimentacao.setStyle("-fx-cursor: default; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
+    }
+
+    @FXML
+    private void movimentacaoEnter(MouseEvent event)
+    {
+        folderMovimentacao.setStyle("-fx-cursor: hand; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
+    }
+
+    @FXML
     private void transporteExit(MouseEvent event)
     {
+        folderBalanco.setStyle("-fx-cursor: default; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
     }
 
     @FXML
     private void transporteEnter(MouseEvent event)
     {
+        folderBalanco.setStyle("-fx-cursor: hand; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
     }
     
 }

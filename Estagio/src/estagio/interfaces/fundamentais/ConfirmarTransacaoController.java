@@ -7,7 +7,6 @@ package estagio.interfaces.fundamentais;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXDecorator;
 import com.jfoenix.controls.JFXRadioButton;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
@@ -17,18 +16,14 @@ import estagio.utilidades.MaskFieldUtil;
 import estagio.utilidades.Objeto;
 import estagio.utilidades.ToolTip;
 import estagio.utilidades.Utils;
-import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -111,12 +106,6 @@ public class ConfirmarTransacaoController implements Initializable
     private HBox hbValor;
     @FXML
     private HBox hbParcelas;
-    @FXML
-    private Label lbErroReajuste;
-    @FXML
-    private Label lbErroEntrada;
-    @FXML
-    private Label lbErroParcelas;
 
     /**
      * Initializes the controller class.
@@ -187,19 +176,40 @@ public class ConfirmarTransacaoController implements Initializable
             }
             else
             {
-                double val = 0.0;
-                for (int i = 0; i < Integer.parseInt(tfNumeroParcelas.getText()); i++)
+                int i = 0,max = Integer.parseInt(tfNumeroParcelas.getText());
+                double val = 0.0,valor_parcela = Utils.truncate(total/max);
+                
+                if(!tfEntrada.getText().trim().equals("") && Utils.convertStringToDouble(tfEntrada.getText()) > 0)
                 {
-                    if (i < Integer.parseInt(tfNumeroParcelas.getText()) - 1)
+                    tvParcelas.getItems().add(new Objeto(
+                        NumberFormat.getCurrencyInstance().format(Utils.convertStringToDouble(tfEntrada.getText())),
+                        "1",
+                        Utils.convertDataUTC(Utils.convertToDate(LocalDate.now()))));
+                    
+                    val += Utils.convertStringToDouble(tfEntrada.getText());
+                    valor_parcela = Utils.truncate((total - val)/max);
+                    i += 1;
+                    max += 1;
+                }
+                    
+                for (int j = 0; i < max; i++,j++)
+                {
+                    if (i < max - 1)
                     {
-                        val += Utils.truncate(total / Integer.parseInt(tfNumeroParcelas.getText()));
-                        tvParcelas.getItems().add(new Objeto(String.valueOf(Utils.truncate(total / Integer.parseInt(tfNumeroParcelas.getText()))), String.valueOf(i + 1),
-                                String.valueOf(dpVencimento.getValue().toString())));
+                        val += valor_parcela;
+                        tvParcelas.getItems().add(new Objeto(NumberFormat.getCurrencyInstance().format
+                            (valor_parcela), 
+                            String.valueOf(i + 1),
+                            Utils.convertDataUTC(Utils.convertToDate(dpVencimento.getValue().plusMonths(j)))));
+                            //String.valueOf(Date.valueOf(dpVencimento.getValue().plusMonths(j).toString()))));
                     }
                     else
                     {
-                        tvParcelas.getItems().add(new Objeto(String.valueOf(total - val), String.valueOf(i + 1),
-                                String.valueOf(dpVencimento.getValue().toString())));
+                        tvParcelas.getItems().add(new Objeto(NumberFormat.getCurrencyInstance().format
+                            (total - val), 
+                            String.valueOf(i + 1), 
+                            Utils.convertDataUTC(Utils.convertToDate(dpVencimento.getValue().plusMonths(j)))));
+                            //String.valueOf(Date.valueOf(dpVencimento.getValue().plusMonths(j).toString()))));
                     }
                 }
             }

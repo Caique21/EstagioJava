@@ -5,8 +5,10 @@
  */
 package estagio.interfaces.relatorios;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXRadioButton;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import estagio.controladores.ctrRecebimento;
 import estagio.utilidades.Objeto;
 import estagio.utilidades.Utils;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -68,6 +71,10 @@ public class ContasReceberController implements Initializable
     private Pane painelBusca;
     @FXML
     private Label lbAte;
+    @FXML
+    private JFXButton btPesquisar;
+    @FXML
+    private FontAwesomeIconView faSearch;
 
     /**
      * Initializes the controller class.
@@ -81,6 +88,10 @@ public class ContasReceberController implements Initializable
         
         nodes.add(lbAte);
         nodes.add(lbTitulo);
+        
+        nodes.add(btPesquisar);
+        
+        nodes.add(faSearch);
         
         nodes.add(rbPeriodo);
         nodes.add(rbData);
@@ -122,44 +133,43 @@ public class ContasReceberController implements Initializable
             dpInicio.getEditor().clear();
         });
         
-        dpData.valueProperty().addListener((observable) ->
-        {
-            if(rbData.isSelected())
-            {
-                tvContas.getItems().clear();
-                tvContas.setItems(FXCollections.observableArrayList(ctr.getContasVencer(dpData.getValue())));
-            }
-        });
-        
         dpFim.valueProperty().addListener((observable) ->
         {
-            if(rbPeriodo.isSelected())
-            {
-                if(!dpInicio.getEditor().getText().trim().equals(""))
-                {
-                    if(dpFim.getValue().compareTo(dpInicio.getValue()) >= 0)
-                    {
-                        tvContas.setItems(FXCollections.observableArrayList
-                            (ctr.getContasVencer(dpInicio.getValue(),dpFim.getValue())));
-                    }
-                    else
-                    {
-                        dpFim.getEditor().clear();
-                        new Alert(Alert.AlertType.ERROR, "Período de data inválida", ButtonType.OK).showAndWait();
-                    }
-                }
-                else
-                    new Alert(Alert.AlertType.ERROR, "Selecione data inicial do período", ButtonType.OK).showAndWait();
-            }
+            if(!dpInicio.getEditor().getText().trim().equals(""))
+                if(dpFim.getValue().compareTo(dpInicio.getValue()) < 0)
+                    new Alert(Alert.AlertType.ERROR, "Período de data inválida", ButtonType.OK).showAndWait();
         });
         
         dpInicio.valueProperty().addListener((observable) ->
         {
-           if(rbPeriodo.isSelected())
-               if(!dpFim.getEditor().getText().trim().equals(""))
-                   tvContas.setItems(FXCollections.observableArrayList
-                            (ctr.getContasVencer(dpInicio.getValue(),dpFim.getValue())));
+           if(!dpFim.getEditor().getText().trim().equals(""))
+                if(dpFim.getValue().compareTo(dpInicio.getValue()) < 0)
+                    new Alert(Alert.AlertType.ERROR, "Período de data inválida", ButtonType.OK).showAndWait();
         });
+    }
+
+    @FXML
+    private void clickPesquisar(ActionEvent event)
+    {
+        tvContas.getItems().clear();
+        if(rbData.isSelected())
+        {
+            if(!dpData.getEditor().getText().trim().equals(""))
+                tvContas.setItems(FXCollections.observableArrayList(ctr.getContasVencer(dpData.getValue())));
+            else
+                    new Alert(Alert.AlertType.ERROR, "Selecione uma data", ButtonType.OK).showAndWait();
+        }
+        else
+        {
+            if(!dpFim.getEditor().getText().trim().equals("") && !dpInicio.getEditor().getText().trim().equals(""))
+            {
+                if(dpFim.getValue().compareTo(dpInicio.getValue()) >= 0)
+                    tvContas.setItems(FXCollections.observableArrayList
+                            (ctr.getContasVencer(dpInicio.getValue(),dpFim.getValue())));
+                else
+                    new Alert(Alert.AlertType.ERROR, "Período incorreto", ButtonType.OK).showAndWait();
+            }
+        }
     }
     
 }

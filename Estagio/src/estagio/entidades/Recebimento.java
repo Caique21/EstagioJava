@@ -290,7 +290,8 @@ public class Recebimento
     {
         ArrayList<Recebimento>recebimentos = new ArrayList<>();
         ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN recebimento "
-                + "ON parcela.parc_codigo = recebimento.parc_codigo WHERE ven_codigo > 0");
+                + "ON parcela.parc_codigo = recebimento.parc_codigo WHERE ven_codigo > 0 "
+                + "ORDER BY parc_datavencimento");
         
         try            
         {
@@ -320,7 +321,7 @@ public class Recebimento
                         + "AND cli_nome Ilike '%" + fornecedor + "%' \n" 
                     +"UNION \n" 
                     + "SELECT ven_codigo FROM venda INNER JOIN fornecedor "
-                        + "ON venda.forn_codigo = fornecedor.forn_codigo AND forn_nome Ilike '%"+fornecedor+"%'))");
+                        + "ON venda.forn_codigo = fornecedor.forn_codigo AND forn_nome Ilike '%"+fornecedor+"%')) ORDER BY parc_datavencimento");
         
         try            
         {
@@ -345,7 +346,7 @@ public class Recebimento
         ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN recebimento "
             + "ON parcela.parc_codigo = recebimento.parc_codigo WHERE parcela.parc_codigo IN "
                 + "(SELECT parc_codigo FROM parcela INNER JOIN venda ON parcela.ven_codigo = venda.ven_codigo "
-                + "AND ven_nota_fiscal Ilike '%" + nota_fiscal + "%')");
+                + "AND ven_nota_fiscal Ilike '%" + nota_fiscal + "%') ORDER BY parc_datavencimento");
         
         try            
         {
@@ -369,7 +370,7 @@ public class Recebimento
         ArrayList<Recebimento>recebimentos = new ArrayList<>();
         ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN recebimento "
             + "ON parcela.parc_codigo = recebimento.parc_codigo WHERE ven_codigo > 0 AND "
-                + "parc_datavencimento <= '" + data.toString() + "'");
+                + "parc_datavencimento <= '" + data.toString() + "' ORDER BY parc_datavencimento");
         
         try            
         {
@@ -394,7 +395,7 @@ public class Recebimento
         ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN recebimento "
             + "ON parcela.parc_codigo = recebimento.parc_codigo "
                + "WHERE ven_codigo > 0 AND parc_datavencimento >= '" + inicial.toString() + "' "
-               + "AND parc_datavencimento <= '" + fim.toString() + "'");
+               + "AND parc_datavencimento <= '" + fim.toString() + "' ORDER BY parc_datavencimento");
         
         try            
         {

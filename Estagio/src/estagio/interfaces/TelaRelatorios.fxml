@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import javafx.geometry.Point3D?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.image.Image?>
@@ -42,7 +41,8 @@
                            <children>
                               <Pane fx:id="paneContasPagar" layoutX="17.0" layoutY="-35.0" prefHeight="80.0" prefWidth="100.0" style="-fx-background-color: #4059a9; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px;">
                                  <children>
-                                    <FontAwesomeIconView fill="WHITE" glyphName="SHOPPING_CART" layoutX="30.0" layoutY="53.0" size="40" wrappingWidth="40.571428298950195" />
+                                    <FontAwesomeIconView fill="WHITE" glyphName="DOLLAR" layoutX="30.0" layoutY="53.0" size="40" wrappingWidth="40.571428298950195" />
+                                    <FontAwesomeIconView fill="WHITE" glyphName="PLUS" layoutX="50.0" layoutY="62.0" size="20" wrappingWidth="40.571428298950195" />
                                  </children>
                               </Pane>
                               <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="158.0" text="Contas a Pagar">
@@ -61,14 +61,15 @@
                            <children>
                               <Pane fx:id="paneInadimplementes" layoutX="17.0" layoutY="-35.0" prefHeight="80.0" prefWidth="100.0" style="-fx-background-color: #4059a9; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px;">
                                  <children>
-                                    <ImageView fx:id="imgClientes1" fitHeight="42.0" fitWidth="39.0" layoutX="31.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="imgDespesas" fitHeight="42.0" fitWidth="39.0" layoutX="32.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../utilidades/Recursos/handshake-regular.png" />
+                                          <Image url="@../utilidades/Recursos/despesas.png" />
                                        </image>
                                     </ImageView>
+                                    <FontAwesomeIconView fill="RED" glyphName="EXCLAMATION_CIRCLE" layoutX="54.0" layoutY="40.0" size="30" wrappingWidth="26.14285659790039" />
                                  </children>
                               </Pane>
-                              <Label alignment="CENTER" layoutX="12.0" layoutY="85.0" prefHeight="46.0" prefWidth="158.0" text="Clientes/Fornecedores Inadimplentes" wrapText="true">
+                              <Label alignment="CENTER" layoutX="12.0" layoutY="85.0" prefHeight="46.0" prefWidth="158.0" text="Recebimentos Inadimplentes" wrapText="true">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
@@ -84,11 +85,8 @@
                            <children>
                               <Pane fx:id="paneContasReceber" layoutX="17.0" layoutY="-35.0" prefHeight="80.0" prefWidth="100.0" style="-fx-background-color: #4059a9; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px;">
                                  <children>
-                                    <FontAwesomeIconView fill="WHITE" glyphName="BARCODE" layoutX="19.0" layoutY="50.0" size="30" wrappingWidth="32.571428298950195" />
-                                    <FontAwesomeIconView fill="WHITE" glyphName="BARCODE" layoutX="50.0" layoutY="50.0" rotate="180.0" size="30" wrappingWidth="32.571428298950195">
-                                       <rotationAxis>
-                                          <Point3D />
-                                       </rotationAxis></FontAwesomeIconView>
+                                    <FontAwesomeIconView fill="WHITE" glyphName="DOLLAR" layoutX="30.0" layoutY="53.0" size="40" wrappingWidth="40.571428298950195" />
+                                    <FontAwesomeIconView fill="WHITE" glyphName="MINUS" layoutX="51.0" layoutY="61.0" size="20" wrappingWidth="40.571428298950195" />
                                  </children>
                               </Pane>
                               <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="158.0" text="Contas a Receber">
@@ -107,8 +105,8 @@
                            <children>
                               <Pane fx:id="paneMovimentacao" layoutX="17.0" layoutY="-35.0" prefHeight="80.0" prefWidth="100.0" style="-fx-background-color: #4059a9; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px;">
                                  <children>
-                                    <FontAwesomeIconView fill="WHITE" glyphName="DOLLAR" layoutX="38.0" layoutY="53.0" size="40" wrappingWidth="24.571428298950195" />
-                                    <FontAwesomeIconView fill="#eeeeee" glyphName="PLUS_CIRCLE" layoutX="57.0" layoutY="62.0" size="15" wrappingWidth="11.571428298950195" />
+                                    <FontAwesomeIconView fill="WHITE" glyphName="ARROW_UP" layoutX="30.0" layoutY="43.0" size="35" wrappingWidth="43.571428298950195" />
+                                    <FontAwesomeIconView fill="#eeeeee" glyphName="ARROW_DOWN" layoutX="48.0" layoutY="65.0" size="30" wrappingWidth="37.571428298950195" />
                                  </children>
                               </Pane>
                               <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="158.0" text="Movimentações">
@@ -127,7 +125,7 @@
                            <children>
                               <Pane fx:id="paneBalanco" layoutX="17.0" layoutY="-35.0" prefHeight="80.0" prefWidth="100.0" style="-fx-background-color: #4059a9; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px;">
                                  <children>
-                                    <FontAwesomeIconView fill="WHITE" glyphName="BALANCE_SCALE" layoutX="24.0" layoutY="53.0" size="40" wrappingWidth="51.571428298950195" />
+                                    <FontAwesomeIconView fill="WHITE" glyphName="TRUCK" layoutX="24.0" layoutY="53.0" size="40" wrappingWidth="51.571428298950195" />
                                  </children>
                               </Pane>
                               <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="158.0" text="Transportes">

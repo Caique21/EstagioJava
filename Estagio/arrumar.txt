@@ -1,0 +1,9 @@
+mensagem de erro transporte(alterar)
+labels informação pagamento (valor de entrada subtrair) - ARRUMADO
+ocultar veiculos (ERS e sistema) - ARRUMADO
+tirar valor do gerenciar despesas(colocar em lançar despesa)
+arrumar mensagem de erro do pagamento(clica na tabela) - ARRUMADO
+order vencimento das tabelas - ARRUMADO
+Recebimento inadimplentes (cliente/fornecedores) - ARRUMADO
+botao pesquisar(contas a receber) - ARRUMADO
+arrumar EER

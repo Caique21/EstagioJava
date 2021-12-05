@@ -70,9 +70,6 @@
                   </JFXButton>
                </children>
             </HBox>
-            <Label fx:id="lbErroReajuste" layoutX="433.0" layoutY="43.0" text="Label" textFill="RED" />
-            <Label fx:id="lbErroEntrada" layoutX="604.0" layoutY="43.0" text="Label" textFill="RED" />
-            <Label fx:id="lbErroParcelas" layoutX="242.0" layoutY="104.0" text="Label" textFill="RED" />
          </children>
       </Pane>
    </center>

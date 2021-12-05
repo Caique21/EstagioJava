@@ -253,8 +253,8 @@ public class TelaPrincipalController implements Initializable
             central = painelCentral;
             central.getScene();
             
-            if(ctr_acessos.firstOfMonth(LocalDate.now()))
-                ctrDesp.gerarDespesasAutomatica();
+            //if(ctr_acessos.firstOfMonth(LocalDate.now()))
+                //ctrDesp.gerarDespesasAutomatica();
         });
         
     }    

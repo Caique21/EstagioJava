@@ -333,4 +333,44 @@ public class ctrPagamento
             p.setParcela(new Parcela(Integer.parseInt(obj.getList2().get(0).getParam1())));
         return p;
     }
+
+    public ArrayList<Objeto> getPagamentosAnual()
+    {
+        ArrayList<Objeto> ret = new Pagamento().getPagamentosAnual();
+        if(ret.size() == LocalDate.now().getMonthValue())
+            return ret;
+        
+        int mes_atual = LocalDate.now().getMonthValue();
+        
+        for (int i = 1; i < mes_atual; i++)
+            if(mesFaltante(i,ret))
+                ret.add(i - 1, new Objeto("0.0", String.valueOf(i)));
+        ret = concatenaValoresMensais(mes_atual,ret);
+        return ret;
+    }
+
+    private boolean mesFaltante(int mes, ArrayList<Objeto> ret)
+    {
+        return ret.stream().noneMatch((o) -> (mes == Integer.parseInt(o.getParam2())));
+    }
+
+    private ArrayList<Objeto> concatenaValoresMensais(int max, ArrayList<Objeto> ret)
+    {
+        ArrayList<Objeto> aux = new ArrayList<>();
+        Objeto atual;
+        
+        for (int i = 1; i <= max; i++)
+        {
+            atual = new Objeto(i + "");
+            double val = 0.0;
+            
+            for(Objeto o : ret)
+                if(Integer.parseInt(o.getParam2()) == i)
+                    val += Double.parseDouble(o.getParam1());
+            atual.setParam2(String.valueOf(val));
+            aux.add(atual);
+        }
+        return aux;
+    }
+    
 }

@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
@@ -16,39 +17,39 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import java.net.URL?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.fundamentais.TelaBalancoController">
+<BorderPane fx:id="panePrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="estagio.interfaces.fundamentais.TelaBalancoController">
    <stylesheets>
         <URL value="@/estagio/utilidades/CSS/Style.css" />
+        <URL value="@/estagio/utilidades/CSS/LineChart.css" />
     </stylesheets>
     
     <center>
       <JFXTabPane BorderPane.alignment="CENTER">
          <tabs>
-            <Tab text="Sumário">
+            <Tab fx:id="tabSumario" text="Sumário">
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0">
                      <children>
                         <Pane prefHeight="220.0" prefWidth="1150.0">
                            <children>
-                              <FontAwesomeIconView glyphName="BALANCE_SCALE" layoutX="20.0" layoutY="31.0" size="20" />
-                              <Label layoutX="56.0" layoutY="11.0" text="Saldo Global">
+                              <FontAwesomeIconView fx:id="faBalance" glyphName="BALANCE_SCALE" layoutX="20.0" layoutY="31.0" size="20" />
+                              <Label fx:id="lbSaldoGlobal" layoutX="56.0" layoutY="11.0" text="Saldo Global">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="56.0" layoutY="32.0" text="R$ 1.000.000,00(Valor Exemplo)">
+                              <Label fx:id="lbSaldoGlobalValor" layoutX="56.0" layoutY="32.0" text="R$ 1.000.000,00(Valor Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <LineChart layoutX="48.0" layoutY="61.0" prefHeight="160.0" prefWidth="1081.0">
+                              <LineChart fx:id="chartGlobal" layoutX="48.0" layoutY="61.0" prefHeight="160.0" prefWidth="1081.0">
                                  <xAxis>
-                                    <CategoryAxis side="BOTTOM" />
+                                    <CategoryAxis side="BOTTOM" tickLabelFill="WHITE" />
                                  </xAxis>
                                  <yAxis>
-                                    <NumberAxis side="LEFT" />
+                                    <NumberAxis side="LEFT" tickLabelFill="WHITE" upperBound="200.0" />
                                  </yAxis>
                               </LineChart>
                            </children>
@@ -56,18 +57,18 @@
                         <Separator prefWidth="200.0" />
                         <Pane prefHeight="220.0" prefWidth="1150.0">
                            <children>
-                              <FontAwesomeIconView glyphName="ARROW_UP" layoutX="14.0" layoutY="24.0" size="15" />
-                              <Label layoutX="56.0" layoutY="11.0" text="Lucro/(Prejuízo) este mês">
+                              <FontAwesomeIconView fx:id="faIn" glyphName="ARROW_UP" layoutX="14.0" layoutY="24.0" size="15" />
+                              <Label fx:id="lbLucroPrejuizo" layoutX="56.0" layoutY="11.0" text="Lucro/(Prejuízo) este mês">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="56.0" layoutY="32.0" text="R$ 1.000.000,00(Valor Exemplo)">
+                              <Label fx:id="lbLucroPrejuizoValor" layoutX="56.0" layoutY="32.0" text="R$ 1.000.000,00(Valor Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <LineChart layoutX="48.0" layoutY="61.0" prefHeight="160.0" prefWidth="1081.0">
+                              <LineChart fx:id="chartLucroPrejuizo" layoutX="48.0" layoutY="61.0" prefHeight="160.0" prefWidth="1081.0">
                                  <xAxis>
                                     <CategoryAxis side="BOTTOM" />
                                  </xAxis>
@@ -75,7 +76,7 @@
                                     <NumberAxis side="LEFT" />
                                  </yAxis>
                               </LineChart>
-                              <FontAwesomeIconView glyphName="ARROW_DOWN" layoutX="24.0" layoutY="34.0" size="15" />
+                              <FontAwesomeIconView fx:id="faOut" glyphName="ARROW_DOWN" layoutX="24.0" layoutY="34.0" size="15" />
                            </children>
                         </Pane>
                         <Separator prefWidth="200.0" />
@@ -83,18 +84,18 @@
                            <children>
                               <Pane prefHeight="210.0" prefWidth="580.0">
                                  <children>
-                                    <FontAwesomeIconView glyphName="ARROW_UP" layoutX="14.0" layoutY="41.0" size="20" />
-                                    <Label layoutX="42.0" layoutY="20.0" text="Receita este mês">
+                                    <FontAwesomeIconView fx:id="faIn2" glyphName="ARROW_UP" layoutX="14.0" layoutY="41.0" size="20" />
+                                    <Label fx:id="lbReceitaSumario" layoutX="42.0" layoutY="20.0" text="Receita este mês">
                                        <font>
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="42.0" layoutY="35.0" text="R$ 1.000.000,00(Valor Exemplo)">
+                                    <Label fx:id="lbValorReceitaSumario" layoutX="42.0" layoutY="35.0" text="R$ 1.000.000,00(Valor Exemplo)">
                                        <font>
                                           <Font name="System Bold" size="13.0" />
                                        </font>
                                     </Label>
-                                    <LineChart layoutX="40.0" layoutY="56.0" prefHeight="150.0" prefWidth="481.0">
+                                    <LineChart fx:id="chartReceitaSumario" layoutX="40.0" layoutY="56.0" prefHeight="150.0" prefWidth="481.0">
                                        <xAxis>
                                           <CategoryAxis side="BOTTOM" />
                                        </xAxis>
@@ -106,18 +107,18 @@
                               </Pane>
                               <Pane prefHeight="210.0" prefWidth="580.0">
                                  <children>
-                                    <FontAwesomeIconView glyphName="ARROW_DOWN" layoutX="14.0" layoutY="41.0" size="20" />
-                                    <Label layoutX="42.0" layoutY="20.0" text="Despesa este mês">
+                                    <FontAwesomeIconView fx:id="faOut2" glyphName="ARROW_DOWN" layoutX="14.0" layoutY="41.0" size="20" />
+                                    <Label fx:id="lbDespesaSumario" layoutX="42.0" layoutY="20.0" text="Despesa este mês">
                                        <font>
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="42.0" layoutY="35.0" text="R$ 1.000.000,00(Valor Exemplo)">
+                                    <Label fx:id="lbValorDespesaSumario" layoutX="42.0" layoutY="35.0" text="R$ 1.000.000,00(Valor Exemplo)">
                                        <font>
                                           <Font name="System Bold" size="13.0" />
                                        </font>
                                     </Label>
-                                    <LineChart layoutX="40.0" layoutY="56.0" prefHeight="150.0" prefWidth="481.0">
+                                    <LineChart fx:id="chartDespesaSumario" layoutX="40.0" layoutY="56.0" prefHeight="150.0" prefWidth="481.0">
                                        <xAxis>
                                           <CategoryAxis side="BOTTOM" />
                                        </xAxis>
@@ -133,60 +134,60 @@
                   </VBox>
                </content>
             </Tab>
-            <Tab text="Receitas">
+            <Tab fx:id="tabReceita" text="Receitas">
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                      <children>
-                        <Pane prefHeight="59.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
+                        <Pane fx:id="paneReceitas" prefHeight="59.0" prefWidth="1180.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                            <children>
-                              <Label layoutX="20.0" layoutY="20.0" text="Receita Total">
+                              <Label fx:id="lbTituloReceita" layoutX="20.0" layoutY="20.0" text="Receita Total">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="337.0" layoutY="11.0" text="Este Mês">
+                              <Label fx:id="lbReceitaEsteMes" layoutX="337.0" layoutY="11.0" text="Este Mês">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="337.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label fx:id="lbValorReceitaEsteMes" layoutX="337.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="540.0" layoutY="11.0" text="Último Mês">
+                              <Label fx:id="lbReceitaUltimoMes" layoutX="540.0" layoutY="11.0" text="Último Mês">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="540.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label fx:id="lbValorReceitaUltimoMes" layoutX="540.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="752.0" layoutY="11.0" text="Este Ano">
+                              <Label fx:id="lbReceitaEsteAno" layoutX="752.0" layoutY="11.0" text="Este Ano">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="752.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label fx:id="lbValorReceitaEsteAno" layoutX="752.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="959.0" layoutY="11.0" text="Último Ano">
+                              <Label fx:id="lbReceitaUltimoAno" layoutX="959.0" layoutY="11.0" text="Último Ano">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="959.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label fx:id="lbValorReceitaUltimoAno" layoutX="959.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
                            </children>
                         </Pane>
-                        <LineChart>
+                        <LineChart fx:id="chartReceita">
                           <xAxis>
                             <CategoryAxis side="BOTTOM" />
                           </xAxis>
@@ -194,13 +195,13 @@
                             <NumberAxis side="LEFT" />
                           </yAxis>
                         </LineChart>
-                        <TableView prefHeight="168.0" prefWidth="1180.0">
+                        <TableView fx:id="tvReceita" prefHeight="168.0" prefWidth="1180.0">
                           <columns>
-                            <TableColumn prefWidth="563.0" text="Detalhe" />
-                            <TableColumn minWidth="0.0" prefWidth="157.0" text="Este Mês" />
-                              <TableColumn prefWidth="145.0" text="Último Mês" />
-                              <TableColumn prefWidth="147.0" text="Este Ano" />
-                              <TableColumn prefWidth="167.0" text="Último Ano" />
+                            <TableColumn fx:id="tcDetalheReceita" prefWidth="563.0" text="Detalhe" />
+                            <TableColumn fx:id="tcEsteMesReceita" minWidth="0.0" prefWidth="157.0" text="Este Mês" />
+                              <TableColumn fx:id="tcUltimoMesReceita" prefWidth="145.0" text="Último Mês" />
+                              <TableColumn fx:id="tcEsteAnoReceita" prefWidth="147.0" text="Este Ano" />
+                              <TableColumn fx:id="tcUltimoAnoReceita" prefWidth="117.0" text="Último Ano" />
                           </columns>
                         </TableView>
                      </children>
@@ -210,60 +211,60 @@
                   </VBox>
                </content>
             </Tab>
-            <Tab text="Despesas">
+            <Tab fx:id="tabDespesa" text="Despesas">
                <content>
                   <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                      <children>
-                        <Pane prefHeight="59.0" prefWidth="1150.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
+                        <Pane fx:id="paneDespesa" prefHeight="59.0" prefWidth="1150.0" style="-fx-background-color: lightgray; -fx-background-radius: 10px;">
                            <children>
-                              <Label layoutX="20.0" layoutY="20.0" text="Gasto Total">
+                              <Label fx:id="lbGastoTotal" layoutX="20.0" layoutY="20.0" text="Gasto Total">
                                  <font>
                                     <Font name="System Bold" size="15.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="337.0" layoutY="11.0" text="Este Mês">
+                              <Label fx:id="lbDespesaEsteMes" layoutX="337.0" layoutY="11.0" text="Este Mês">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="337.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label fx:id="lbValorDespesaEsteMes" layoutX="337.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="540.0" layoutY="11.0" text="Último Mês">
+                              <Label fx:id="lbDespesaUltimoMes" layoutX="540.0" layoutY="11.0" text="Último Mês">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="540.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label fx:id="lbValorDespesaUltimoMes" layoutX="540.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="752.0" layoutY="11.0" text="Este Ano">
+                              <Label fx:id="lbDespesaEsteAno" layoutX="752.0" layoutY="11.0" text="Este Ano">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="752.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label fx:id="lbValorDespesaEsteAno" layoutX="752.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="959.0" layoutY="11.0" text="Último Ano">
+                              <Label fx:id="lbDespesaUltimoAno" layoutX="959.0" layoutY="11.0" text="Último Ano">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Label layoutX="959.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
+                              <Label fx:id="lbValorDespesaUltimoAno" layoutX="959.0" layoutY="25.0" text="R$1.000.000,00(Exemplo)">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
                            </children>
                         </Pane>
-                        <LineChart>
+                        <LineChart fx:id="chartDespesa">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
                            </xAxis>
@@ -271,13 +272,13 @@
                               <NumberAxis side="LEFT" />
                            </yAxis>
                         </LineChart>
-                        <TableView prefHeight="168.0" prefWidth="1180.0">
+                        <TableView fx:id="tvDespesa" prefHeight="168.0" prefWidth="1180.0">
                            <columns>
-                              <TableColumn prefWidth="563.0" text="Detalhe" />
-                              <TableColumn minWidth="0.0" prefWidth="157.0" text="Este Mês" />
-                              <TableColumn prefWidth="145.0" text="Último Mês" />
-                              <TableColumn prefWidth="147.0" text="Este Ano" />
-                              <TableColumn prefWidth="167.0" text="Último Ano" />
+                              <TableColumn fx:id="tcDetalheDespesa" prefWidth="563.0" text="Detalhe" />
+                              <TableColumn fx:id="tcEsteMesDespesa" minWidth="0.0" prefWidth="157.0" text="Este Mês" />
+                              <TableColumn fx:id="tcUltimoMesDespesa" prefWidth="145.0" text="Último Mês" />
+                              <TableColumn fx:id="tcEsteAnoDespesa" prefWidth="147.0" text="Este Ano" />
+                              <TableColumn fx:id="tcUltimoAnoDespesa" prefWidth="167.0" text="Último Ano" />
                            </columns>
                         </TableView>
                      </children>

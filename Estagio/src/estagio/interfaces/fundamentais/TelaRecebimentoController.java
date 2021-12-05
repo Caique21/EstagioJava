@@ -187,7 +187,7 @@ public class TelaRecebimentoController implements Initializable
         rbNotaFiscal.setToggleGroup(group);
         rbPeriodo.setToggleGroup(group);
         rbTodos.setToggleGroup(group);
-        rbNotaFiscal.setToggleGroup(group);
+        rbCliente.setToggleGroup(group);
         rbTodos.setSelected(true);
         
         tcNotaFiscal.setCellValueFactory(new PropertyValueFactory<>("param1"));

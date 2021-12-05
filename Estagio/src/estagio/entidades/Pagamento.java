@@ -439,16 +439,25 @@ public class Pagamento
     public ArrayList<Pagamento> getAll()
     {
         ArrayList<Pagamento>pagamentos = new ArrayList<>();
-        ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
-                + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE comp_codigo > 0");
+        /*ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
+                + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE comp_codigo > 0 ORDER BY parc_datavencimento");*/
+        
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM (SELECT pag_codigo, pag_data, pag_valor,pag_form_pagamento, pag_form_pagamento_desc, despesa.desp_codigo as cod, 'Despesa' as cat, desp_data_vencimento as data FROM despesa LEFT JOIN pagamento ON despesa.desp_codigo = pagamento.desp_codigo\n"
+                + "UNION \n"
+                + "SELECT pag_codigo, pag_data, pag_valor,pag_form_pagamento, pag_form_pagamento_desc, parcela.parc_codigo as cod, 'Parcela' as cat, parc_datavencimento as data FROM parcela LEFT JOIN pagamento ON parcela.parc_codigo = pagamento.parc_codigo WHERE comp_codigo > 0) as tab order by data");
         Pagamento pagamento;
         
         try            
         {
             while(rs != null && rs.next())
             {
-                pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
-                        rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
+                if(rs.getString("cat").equals("Parcela"))
+                    pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Parcela(rs.getInt("cod")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+                else
+                    pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Despesa(rs.getInt("cod")),
                         rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
             }
         }
@@ -457,9 +466,9 @@ public class Pagamento
             Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
             Banco.getCon().setErro(ex.getMessage());
         }
-        
+        /*
         rs = Banco.getCon().consultar("SELECT * FROM despesa LEFT JOIN pagamento "
-                + "ON despesa.desp_codigo = pagamento.desp_codigo");
+                + "ON despesa.desp_codigo = pagamento.desp_codigo order by desp_data_vencimento");
         
         try            
         {
@@ -474,7 +483,7 @@ public class Pagamento
         {
             Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
             Banco.getCon().setErro(ex.getMessage());
-        }
+        }*/
         return pagamentos;
     }
 
@@ -490,7 +499,7 @@ public class Pagamento
                         + "AND cli_nome Ilike '%" + fornecedor + "%' \n" 
                     +"UNION \n" 
                     + "SELECT comp_codigo FROM compra INNER JOIN fornecedor "
-                        + "ON compra.forn_codigo = fornecedor.forn_codigo AND forn_nome Ilike '%"+fornecedor+"%'))");
+                        + "ON compra.forn_codigo = fornecedor.forn_codigo AND forn_nome Ilike '%"+fornecedor+"%')) ORDER BY parc_datavencimento");
         
         try            
         {
@@ -516,7 +525,7 @@ public class Pagamento
         ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
             + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE parcela.parc_codigo IN "
                 + "(SELECT parc_codigo FROM parcela INNER JOIN compra ON parcela.comp_codigo = compra.comp_codigo "
-                + "AND comp_nota_fiscal Ilike '%" + nota_fiscal + "%')");
+                + "AND comp_nota_fiscal Ilike '%" + nota_fiscal + "%') ORDER BY parc_datavencimento");
         
         try            
         {
@@ -540,7 +549,8 @@ public class Pagamento
         ArrayList<Pagamento>pagamentos = new ArrayList<>();
         Pagamento pagamento;
         ResultSet rs = Banco.getCon().consultar("SELECT * FROM despesa LEFT JOIN pagamento "
-            + "ON despesa.desp_codigo = pagamento.desp_codigo WHERE desp_nome Ilike '%" + despesa + "%'");
+            + "ON despesa.desp_codigo = pagamento.desp_codigo WHERE desp_nome Ilike '%" + despesa + "%' "
+                    + "ORDER BY desp_data_vencimento");
         
         try            
         {
@@ -563,16 +573,34 @@ public class Pagamento
     {
         ArrayList<Pagamento>pagamentos = new ArrayList<>();
         Pagamento pagamento;
-        ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
+        /*ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
             + "ON parcela.parc_codigo = pagamento.parc_codigo WHERE comp_codigo > 0 AND "
-                + "parc_datavencimento <= '" + data.toString() + "'");
+                + "parc_datavencimento <= '" + data.toString() + "'");*/
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM (SELECT pag_codigo, pag_data, pag_valor,"
+                + "pag_form_pagamento, pag_form_pagamento_desc, despesa.desp_codigo as cod, 'Despesa' as cat, "
+                + "desp_data_vencimento as data FROM despesa LEFT JOIN pagamento "
+                + "ON despesa.desp_codigo = pagamento.desp_codigo "
+                +   "WHERE desp_data_vencimento <= '" + data.toString() + "' " +
+            "UNION " +
+            "SELECT pag_codigo, pag_data, pag_valor,pag_form_pagamento, pag_form_pagamento_desc, "
+                + "parcela.parc_codigo as cod, 'Parcela' as cat, parc_datavencimento as data FROM parcela "
+                + "LEFT JOIN pagamento ON parcela.parc_codigo = pagamento.parc_codigo WHERE comp_codigo > 0 "
+                + "AND parc_datavencimento <= '" + data.toString() + "') as tab order by data");
         
         try            
         {
             while(rs != null && rs.next())
             {
-                pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                /*pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
                         rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));*/
+                if(rs.getString("cat").equals("Parcela"))
+                    pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Parcela(rs.getInt("cod")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+                else
+                    pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Despesa(rs.getInt("cod")),
                         rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
             }
         }
@@ -582,7 +610,7 @@ public class Pagamento
             Banco.getCon().setErro(ex.getMessage());
         }
         
-        rs = Banco.getCon().consultar("SELECT * FROM despesa LEFT JOIN pagamento "
+        /*rs = Banco.getCon().consultar("SELECT * FROM despesa LEFT JOIN pagamento "
             + "ON despesa.desp_codigo = pagamento.desp_codigo WHERE desp_data_vencimento <= '"+data.toString()+"'");
         
         try            
@@ -598,7 +626,7 @@ public class Pagamento
         {
             Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
             Banco.getCon().setErro(ex.getMessage());
-        }
+        }*/
         return pagamentos;
     }
 
@@ -606,17 +634,37 @@ public class Pagamento
     {
         ArrayList<Pagamento>pagamentos = new ArrayList<>();
         Pagamento pagamento;
-        ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
+        /*ResultSet rs = Banco.getCon().consultar("SELECT * FROM parcela LEFT JOIN pagamento "
             + "ON parcela.parc_codigo = pagamento.parc_codigo "
                + "WHERE comp_codigo > 0 AND parc_datavencimento >= '" + inicial.toString() + "' "
-               + "AND parc_datavencimento <= '" + fim.toString() + "'");
+               + "AND parc_datavencimento <= '" + fim.toString() + "'");*/
+        ResultSet rs = Banco.getCon().consultar("SELECT * FROM (SELECT pag_codigo, pag_data, pag_valor,"
+            + "pag_form_pagamento, pag_form_pagamento_desc, despesa.desp_codigo as cod, 'Despesa' as cat, "
+            + "desp_data_vencimento as data FROM despesa LEFT JOIN pagamento "
+            + "ON despesa.desp_codigo = pagamento.desp_codigo WHERE "
+            + "desp_data_vencimento >= '" + inicial.toString() + "' AND "
+                    + "desp_data_vencimento <= '" + fim.toString() + "' " +
+        "UNION " +
+        "SELECT pag_codigo, pag_data, pag_valor,pag_form_pagamento, pag_form_pagamento_desc, "
+            + "parcela.parc_codigo as cod, 'Parcela' as cat, parc_datavencimento as data FROM parcela "
+            + "LEFT JOIN pagamento ON parcela.parc_codigo = pagamento.parc_codigo WHERE comp_codigo > 0 "
+            + "AND parc_datavencimento >= '" + inicial.toString() + "' AND "
+                + "parc_datavencimento <= '" + fim.toString() + "') as tab order by data");
         
         try            
         {
             while(rs != null && rs.next())
             {
-                pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                /*pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
                         rs.getDouble("pag_valor"), new Parcela(rs.getInt("parc_codigo")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));*/
+                if(rs.getString("cat").equals("Parcela"))
+                    pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Parcela(rs.getInt("cod")),
+                        rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
+                else
+                    pagamentos.add(new Pagamento(rs.getInt("pag_codigo"), rs.getDate("pag_data"), 
+                        rs.getDouble("pag_valor"), new Despesa(rs.getInt("cod")),
                         rs.getString("pag_form_pagamento"),rs.getString("pag_form_pagamento_desc")));
             }
         }
@@ -626,7 +674,7 @@ public class Pagamento
             Banco.getCon().setErro(ex.getMessage());
         }
         
-        rs = Banco.getCon().consultar("SELECT * FROM despesa LEFT JOIN pagamento "
+        /*rs = Banco.getCon().consultar("SELECT * FROM despesa LEFT JOIN pagamento "
             + "ON despesa.desp_codigo = pagamento.desp_codigo "
             + "WHERE desp_data_vencimento >= '" + inicial.toString() +"' "
             + "AND desp_data_vencimento <= '" + fim.toString() + "'");
@@ -644,7 +692,7 @@ public class Pagamento
         {
             Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
             Banco.getCon().setErro(ex.getMessage());
-        }
+        }*/
         return pagamentos;
     }
 
@@ -771,5 +819,27 @@ public class Pagamento
             Banco.getCon().setErro(ex.getMessage());
         }
         return recebimentos;
+    }
+
+    public ArrayList<Objeto> getPagamentosAnual()
+    {
+        ArrayList<Objeto>ret = new ArrayList<>();
+        ResultSet rs = Banco.getCon().consultar("select pag_valor, to_char from (select pag_valor, to_char(pag_data,'MM') from despesa inner join pagamento on pagamento.desp_codigo = despesa.desp_codigo and desp_data_vencimento >= to_date(concat('01','01',to_char(now(),'YYYY')),'DDMMYYY')\n" +
+"union\n" +
+"select pag_valor, to_char(pag_data,'MM') from parcela inner join pagamento on pagamento.parc_codigo = parcela.parc_codigo where comp_codigo > 0 and parc_datapagamento >= to_date(concat('01','01',to_char(now(),'YYYY')),'DDMMYYY'))as tab order by to_char");
+        
+        try
+        {
+            while(rs != null && rs.next())            
+            {
+                ret.add(new Objeto(String.valueOf(rs.getDouble("pag_valor")), rs.getString("to_char")));
+            }
+        }
+        catch (SQLException ex)
+        {
+            Logger.getLogger(Pagamento.class.getName()).log(Level.SEVERE, null, ex);
+            Banco.getCon().setErro(ex.getMessage());
+        }
+        return ret;
     }
 }

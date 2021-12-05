@@ -434,11 +434,6 @@ public class TelaPagamentoController implements Initializable
             lbDespesas.setVisible(false);
             tvParcelas.setVisible(false);
             lbParcelas.setVisible(false);
-            
-            if(tvPagamentos.getItems().isEmpty())
-                new Alert(Alert.AlertType.ERROR, "Tabela de pagamento vazia", ButtonType.OK).showAndWait();
-            else if(tvPagamentos.getSelectionModel().getSelectedIndex() < 0)
-                new Alert(Alert.AlertType.ERROR, "Selecione uma despesa/parcela", ButtonType.OK).showAndWait();
         }
     }
 

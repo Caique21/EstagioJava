@@ -409,6 +409,7 @@ public class Transporte
             catch (SQLException ex1)
             {
                 Logger.getLogger(Transporte.class.getName()).log(Level.SEVERE, null, ex1);
+                Banco.getCon().setErro(ex.getMessage());
             }
         }
         return flag;

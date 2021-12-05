@@ -56,12 +56,7 @@ public class TelaGerenciamentoController implements Initializable
     private ImageView imgFornecedores;
     @FXML
     private ImageView imgUsuarios;
-    @FXML
     private Pane folderDespesas;
-    @FXML
-    private Pane paneDespesas;
-    @FXML
-    private ImageView imgDespesas;
     @FXML
     private Pane folderDados;
     @FXML
@@ -70,10 +65,7 @@ public class TelaGerenciamentoController implements Initializable
     private Pane folderFuncionarios;
     @FXML
     private Pane paneFuncionarios;
-    @FXML
     private Pane folderVeiculos;
-    @FXML
-    private Pane paneVeiculos;
     @FXML
     private BorderPane panePrincipal;
     @FXML
@@ -218,7 +210,6 @@ public class TelaGerenciamentoController implements Initializable
         }
     }
 
-    @FXML
     private void clickVeiculos(MouseEvent event)
     {
         try
@@ -227,26 +218,6 @@ public class TelaGerenciamentoController implements Initializable
             stage.setResizable(false);
 
             Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/basicas/CadastroVeiculo.fxml"));
-            panePrincipal.getChildren().clear();
-            panePrincipal.getChildren().add(root);
-        }
-        catch (IOException er)
-        {
-            Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Dashboard!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
-            a.showAndWait();
-            System.out.println(er.getMessage());
-        }
-    }
-
-    @FXML
-    private void clickDespesas(MouseEvent event)
-    {
-        try
-        {
-            Stage stage = (Stage) panePrincipal.getScene().getWindow();
-            stage.setResizable(false);
-
-            Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/basicas/CadastroDespesa.fxml"));
             panePrincipal.getChildren().clear();
             panePrincipal.getChildren().add(root);
         }
@@ -345,28 +316,6 @@ public class TelaGerenciamentoController implements Initializable
     }
 
     @FXML
-    private void despesasExit(MouseEvent event)
-    {
-        folderDespesas.setStyle("-fx-cursor: default; "
-                + "-fx-background-color: white;"
-                + "-fx-background-radius: 7px;"
-                + "-fx-border-color:  D1D1D1;"
-                + "-fx-border-radius: 5px;"
-                + "-fx-border-width: 2px;");
-    }
-
-    @FXML
-    private void despesasEnter(MouseEvent event)
-    {
-        folderDespesas.setStyle("-fx-cursor: hand; "
-                + "-fx-background-color: white;"
-                + "-fx-background-radius: 7px;"
-                + "-fx-border-color:  D1D1D1;"
-                + "-fx-border-radius: 5px;"
-                + "-fx-border-width: 2px;");
-    }
-
-    @FXML
     private void dadosExit(MouseEvent event)
     {
         folderDados.setStyle("-fx-cursor: default; "
@@ -410,7 +359,6 @@ public class TelaGerenciamentoController implements Initializable
                 + "-fx-border-width: 2px;");
     }
 
-    @FXML
     private void veiculosExit(MouseEvent event)
     {
         folderVeiculos.setStyle("-fx-cursor: default; "
@@ -421,7 +369,6 @@ public class TelaGerenciamentoController implements Initializable
                 + "-fx-border-width: 2px;");
     }
 
-    @FXML
     private void veiculosEnter(MouseEvent event)
     {
         folderVeiculos.setStyle("-fx-cursor: hand; "

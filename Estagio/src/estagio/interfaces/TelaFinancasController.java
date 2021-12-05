@@ -62,6 +62,12 @@ public class TelaFinancasController implements Initializable
     private Label lbTitulo;
     @FXML
     private GridPane gridPane;
+    @FXML
+    private Pane folderDespesas;
+    @FXML
+    private Pane paneDespesas;
+    @FXML
+    private ImageView imgDespesas;
 
     /**
      * Initializes the controller class.
@@ -158,6 +164,26 @@ public class TelaFinancasController implements Initializable
             System.out.println(er.getMessage());
         }
     }
+    
+    @FXML
+    private void clickDespesas(MouseEvent event)
+    {
+        try
+        {
+            Stage stage = (Stage) panePrincipal.getScene().getWindow();
+            stage.setResizable(false);
+
+            Parent root = FXMLLoader.load(getClass().getResource("/estagio/interfaces/basicas/CadastroDespesa.fxml"));
+            panePrincipal.getChildren().clear();
+            panePrincipal.getChildren().add(root);
+        }
+        catch (IOException er)
+        {
+            Alert a = new Alert(Alert.AlertType.ERROR, "Impossível abrir tela de Dashboard!\nUm erro inesperado aconteceu!\nErro: " + er.getMessage(), ButtonType.OK);
+            a.showAndWait();
+            System.out.println(er.getMessage());
+        }
+    }
 
     @FXML
     private void clickBalanco(MouseEvent event)
@@ -226,21 +252,45 @@ public class TelaFinancasController implements Initializable
     @FXML
     private void pagamentoExit(MouseEvent event)
     {
+        folderPagamento.setStyle("-fx-cursor: default; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
     }
 
     @FXML
     private void pagamentoEnter(MouseEvent event)
     {
+        folderPagamento.setStyle("-fx-cursor: hand; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
     }
 
     @FXML
     private void recebimenoExit(MouseEvent event)
     {
+        folderRecebimento.setStyle("-fx-cursor: default; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
     }
 
     @FXML
     private void recebimentoEnter(MouseEvent event)
     {
+        folderRecebimento.setStyle("-fx-cursor: hand; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
     }
 
     @FXML
@@ -252,5 +302,29 @@ public class TelaFinancasController implements Initializable
     private void balancoEnter(MouseEvent event)
     {
     }
+
+    @FXML
+    private void despesasExit(MouseEvent event)
+    {
+        folderDespesas.setStyle("-fx-cursor: default; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
+    }
+
+    @FXML
+    private void despesasEnter(MouseEvent event)
+    {
+        folderDespesas.setStyle("-fx-cursor: hand; "
+                + "-fx-background-color: white;"
+                + "-fx-background-radius: 7px;"
+                + "-fx-border-color:  D1D1D1;"
+                + "-fx-border-radius: 5px;"
+                + "-fx-border-width: 2px;");
+    }
+
+    
     
 }

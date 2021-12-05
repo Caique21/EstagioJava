@@ -126,49 +126,7 @@
                   </Pane>
                   <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
-                        <Pane fx:id="folderVeiculos" layoutX="42.0" layoutY="81.0" onMouseClicked="#clickVeiculos" onMouseEntered="#veiculosEnter" onMouseExited="#veiculosExit" prefHeight="160.0" prefWidth="196.0" style="-fx-background-color: white; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px; -fx-border-width: 2px;">
-                           <children>
-                              <Pane fx:id="paneVeiculos" layoutX="17.0" layoutY="-35.0" prefHeight="80.0" prefWidth="100.0" style="-fx-background-color: #4059a9; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px;">
-                                 <children>
-                                    <FontAwesomeIconView fill="WHITE" glyphName="AUTOMOBILE" layoutX="27.0" layoutY="53.0" size="40" />
-                                 </children>
-                              </Pane>
-                              <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="168.0" text="Gerenciar Veículos">
-                                 <font>
-                                    <Font name="System Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                              <Separator layoutX="20.0" layoutY="140.0" prefHeight="3.0" prefWidth="150.0" />
-                           </children>
-                        </Pane>
-                     </children>
-                  </Pane>
-                  <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                     <children>
-                        <Pane fx:id="folderDespesas" layoutX="48.0" layoutY="81.0" onMouseClicked="#clickDespesas" onMouseEntered="#despesasEnter" onMouseExited="#despesasExit" prefHeight="160.0" prefWidth="196.0" style="-fx-background-color: white; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px; -fx-border-width: 2px;">
-                           <children>
-                              <Pane fx:id="paneDespesas" layoutX="17.0" layoutY="-35.0" prefHeight="80.0" prefWidth="100.0" style="-fx-background-color: #4059a9; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px;">
-                                 <children>
-                                    <ImageView fx:id="imgDespesas" fitHeight="42.0" fitWidth="39.0" layoutX="31.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../utilidades/Recursos/despesas.png" />
-                                       </image>
-                                    </ImageView>
-                                 </children>
-                              </Pane>
-                              <Label alignment="CENTER" layoutX="12.0" layoutY="110.0" prefHeight="21.0" prefWidth="168.0" text="Gerenciar Despesas">
-                                 <font>
-                                    <Font name="System Bold" size="15.0" />
-                                 </font>
-                              </Label>
-                              <Separator layoutX="20.0" layoutY="140.0" prefHeight="3.0" prefWidth="150.0" />
-                           </children>
-                        </Pane>
-                     </children>
-                  </Pane>
-                  <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
-                     <children>
-                        <Pane fx:id="folderDados" layoutX="42.0" layoutY="81.0" onMouseClicked="#clickDados" onMouseEntered="#dadosEnter" onMouseExited="#dadosExit" prefHeight="160.0" prefWidth="196.0" style="-fx-background-color: white; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px; -fx-border-width: 2px;">
+                        <Pane fx:id="folderDados" layoutX="42.0" layoutY="82.0" onMouseClicked="#clickDados" onMouseEntered="#dadosEnter" onMouseExited="#dadosExit" prefHeight="160.0" prefWidth="196.0" style="-fx-background-color: white; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px; -fx-border-width: 2px;">
                            <children>
                               <Pane fx:id="paneDados" layoutX="17.0" layoutY="-35.0" prefHeight="80.0" prefWidth="100.0" style="-fx-background-color: #4059a9; -fx-background-radius: 7px; -fx-border-color: D1D1D1; -fx-border-radius: 5px;">
                                  <children>

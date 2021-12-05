@@ -671,7 +671,7 @@ public class TelaVendaController implements Initializable
                     tvParcelas.getItems().add(new Objeto(
                         NumberFormat.getCurrencyInstance().format(Utils.convertStringToDouble(tfEntrada.getText())),
                         "1",
-                        LocalDate.now().toString()));
+                        Utils.convertDataUTC(Utils.convertToDate(LocalDate.now()))));
                     
                     val += Utils.convertStringToDouble(tfEntrada.getText());
                     valor_parcela = Utils.truncate((total_venda - val)/max);
@@ -687,14 +687,16 @@ public class TelaVendaController implements Initializable
                         tvParcelas.getItems().add(new Objeto(NumberFormat.getCurrencyInstance().format
                             (valor_parcela), 
                             String.valueOf(i + 1),
-                            String.valueOf(Date.valueOf(dpVencimento.getValue().plusMonths(j).toString()))));
+                            Utils.convertDataUTC(Utils.convertToDate(dpVencimento.getValue().plusMonths(j)))));
+                            //String.valueOf(Date.valueOf(dpVencimento.getValue().plusMonths(j).toString()))));
                     }
                     else
                     {
                         tvParcelas.getItems().add(new Objeto(NumberFormat.getCurrencyInstance().format
                             (total_venda - val), 
                             String.valueOf(i + 1), 
-                            String.valueOf(Date.valueOf(dpVencimento.getValue().plusMonths(j).toString()))));
+                            Utils.convertDataUTC(Utils.convertToDate(dpVencimento.getValue().plusMonths(j)))));
+                            //String.valueOf(Date.valueOf(dpVencimento.getValue().plusMonths(j).toString()))));
                     }
                 }
             }
